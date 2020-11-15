@@ -44,7 +44,7 @@ CREATE TABLE `group` (
   `name` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
   `visibility` tinyint(1) NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
-  `date_created` date NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `picture` blob,
   `administrate` int(11) NOT NULL,
   PRIMARY KEY (`gID`),
