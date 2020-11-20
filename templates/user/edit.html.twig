@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Social Network Unlogged{% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig') }}
+{% endblock %}
+
+{% block body_container %}
+{#<div class="col-md-4 col-sm-6 col-xs-12">
+    {{ form_start(form) }}
+
+    {{ form_widget(form) }}
+
+    {{ form_end(form) }}
+
+</div>#}
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item" >
+            <a class="nav-link active" data-toggle="tab" href="#profile">Profile</a>
+        </li>
+        <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#account">Account</a>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+
+        <div class="tab-pane fade active show" id="profile">
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_start(form) }}
+
+                    {{ form_widget(form) }}
+
+                    {{ form_end(form) }}
+
+                </div>
+                <div class="col-md-4">
+                    <p> TODO change profile picture
+                    </p>
+                </div>
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="account">
+            <div class="row">
+                <div class="col-md-6">
+                    Change password
+                </div>
+                <div class="col-md-$">
+                    <button class="btn btn-lg btn-danger btn-block  mt-3" >
+                        Delete account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

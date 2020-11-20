@@ -15,13 +15,14 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">User</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">My profile</a>
+                            <a class="dropdown-item" href="{{ path('user') }}">My profile</a>
                             <a class="dropdown-item" href="#">Create new group</a>
                             <a class="dropdown-item" href="#">My groups</a>
 
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Help</a>
-                            <a class="dropdown-item" href="logout">Log out</a>
+                            <a class="dropdown-item" href="{{ path('edit_user') }}">Account settings</a>
+                            <a class="dropdown-item" href="{{ path('app_logout') }}">Log out</a>
                         </div>
                     </li>
                 {% else %}

@@ -7,11 +7,20 @@
 {% endblock %}
 
 {% block body_container %}
+    <div class="wrapper fadeInDown">
+    <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto t-50 form p-4">
+        <div id="formContent">
+            <h1 class="h3 mb-3 font-weight-normal text-center">Create an account</h1>
+            {{ form_start(form) }}
 
-    {{ form_start(form) }}
+            {{ form_widget(form) }}
 
-    {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+    </div>
 
-    {{ form_end(form) }}
+
+
 
 {% endblock %}

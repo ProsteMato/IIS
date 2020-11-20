@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
@@ -38,6 +39,7 @@ class RegistrationController extends AbstractController
 
             return $this->redirectToRoute('main_page_unlogged');
         }
+
 
         return $this->render('registration/index.html.twig', array('form' => $form->createView()));
     }
