@@ -45,9 +45,19 @@ class User implements UserInterface
     private $lastName;
 
     /**
+     * @ORM\Column(type="date")
+     */
+    private $birthDate;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $profilePicture;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
 
     /**
      * @ORM\Column(type="string", length=6)
@@ -55,19 +65,9 @@ class User implements UserInterface
     private $sex;
 
     /**
-     * @ORM\Column(type="date")
-     */
-    private $birthDate;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $visibility;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $description;
 
     public function getId(): ?int
     {
@@ -171,6 +171,18 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getBirthDate(): ?\DateTimeInterface
+    {
+        return $this->birthDate;
+    }
+
+    public function setBirthDate(\DateTimeInterface $birthDate): self
+    {
+        $this->birthDate = $birthDate;
+
+        return $this;
+    }
+
     public function getProfilePicture(): ?string
     {
         return $this->profilePicture;
@@ -179,6 +191,18 @@ class User implements UserInterface
     public function setProfilePicture(?string $profilePicture): self
     {
         $this->profilePicture = $profilePicture;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
@@ -195,18 +219,6 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getBirthDate(): ?\DateTimeInterface
-    {
-        return $this->birthDate;
-    }
-
-    public function setBirthDate(\DateTimeInterface $birthDate): self
-    {
-        $this->birthDate = $birthDate;
-
-        return $this;
-    }
-
     public function getVisibility(): ?bool
     {
         return $this->visibility;
@@ -215,18 +227,6 @@ class User implements UserInterface
     public function setVisibility(bool $visibility): self
     {
         $this->visibility = $visibility;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }
