@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Social Network Unlogged{% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig') }}
+{% endblock %}
+
+{% block body_container %}
+    <div class="jumbotron">
+    <div class="row">
+        <div class="col-md-3">
+            <img  src="{{ asset('/profilepics/'  ~ user.getProfilePicture())}}"
+                  class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+        </div>
+        <div class="col-md-9">
+            <h3 class=" mb-3 font-weight-normal text-left">{{ user.getFirstName() ~  ' ' ~ user.getLastName() }}
+            <a class="btn btn-link  btn-sm" href="{{  path('edit_user') }}"> (Edit profile)</a>
+            </h3>
+            {{ form_start(form) }}
+
+            {{ form_widget(form) }}
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    </div>
+
+{% endblock %}

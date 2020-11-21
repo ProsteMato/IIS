@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -24,6 +25,7 @@ class RegisterType extends AbstractType
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'required' => true,
+                'invalid_message' => 'Passwords do not match.',
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Confirm Password']])
             ->add('firstName', TextType::class)
@@ -34,10 +36,13 @@ class RegisterType extends AbstractType
                 'female' => 'female']])
             ->add('visibility', CheckboxType::class, ['required'=> false,
                                                                   'label' => 'Anyone can see my profile',
-                                                                    'label_attr' => ['class' => 'switch-custom']])
+                                                                   'label_attr' => ['class' => 'switch-custom']])
             ->add('description', TextareaType::class, ['required'=> false])
+            ->add('attachment', FileType::class, [ 'mapped' => false,
+                'required' => false,
+                'label' => 'Select profile photo'])
             ->add('save', SubmitType::class, ['label' => 'Register',
-                'attr' => array('class' => 'btn btn-primary float-right mt-3')])
+                'attr' => array('class' => 'btn btn-primary float-right mt-3 mb-3')])
         ;
     }
 

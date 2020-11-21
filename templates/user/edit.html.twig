@@ -7,14 +7,6 @@
 {% endblock %}
 
 {% block body_container %}
-{#<div class="col-md-4 col-sm-6 col-xs-12">
-    {{ form_start(form) }}
-
-    {{ form_widget(form) }}
-
-    {{ form_end(form) }}
-
-</div>#}
 
     <ul class="nav nav-tabs">
         <li class="nav-item" >
@@ -29,6 +21,7 @@
         <div class="tab-pane fade active show" id="profile">
             <div class="row">
                 <div class="col-md-6">
+                    <h5 class="h3 mt-3 mb-3 font-weight-normal text-left">Edit an account</h5>
                     {{ form_start(form) }}
 
                     {{ form_widget(form) }}
@@ -37,8 +30,23 @@
 
                 </div>
                 <div class="col-md-4">
-                    <p> TODO change profile picture
-                    </p>
+                    <h5 class="h3 mt-3 mb-3 mr-3 font-weight-normal text-left"></h5>
+                    <img  src="{{ asset('/profilepics/'  ~ user.getProfilePicture())}}"
+                         class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+
+                    <div class="form-group">
+                        {%   if user.getProfilePicture() == 'blank.png' %}
+                            <form action="/upload">
+                                <input type="file" class="form-control-file mt-2" id="exampleInputFile" >
+                            </form>
+
+                        {% else %}
+                            <a href="/delete_photo"  class="txt2">Delete profile photo</a></p>
+                            <input type="file" class="form-control-file mt-2" id="exampleInputFile" >
+                        {% endif %}
+                        {#<label for="exampleInputFile">Upload/Change profile photo</label>#}
+
+                    </div>
                 </div>
             </div>
 
@@ -46,12 +54,18 @@
         <div class="tab-pane fade" id="account">
             <div class="row">
                 <div class="col-md-6">
-                    Change password
+                    <h5 class="h3 mb-3 mt-3 font-weight-normal text-left">Change Password</h5>
+                    {{ form_start(changePasswordForm) }}
+
+                    {{ form_widget(changePasswordForm) }}
+
+                    {{ form_end(changePasswordForm) }}
+
                 </div>
-                <div class="col-md-$">
-                    <button class="btn btn-lg btn-danger btn-block  mt-3" >
-                        Delete account
-                    </button>
+                <div class="col-md-4">
+                    <a href="{{  path('delete_user') }}" class="btn btn-danger  mt-3 "
+                       onclick="return confirm('Are you sure you want to delete your account? ' +
+                                               'You can\'t restore it after.')">Delete account</a>
                 </div>
             </div>
         </div>
