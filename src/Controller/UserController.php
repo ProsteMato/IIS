@@ -36,15 +36,12 @@ class UserController extends AbstractController
     public function index(Request $request, EntityManagerInterface $entityManager, int $id, UserInterface $loggedUser = null): Response
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
-        //$form = $this->createForm(UserProfileType::class, $user);
-        //$form->getData();
 
         return $this->render('user/viewprofile.html.twig', [
             'showedUser' => $user,
             'loggedUser' => $loggedUser,
             'id' => $id,
             'controller_name' => 'UserController',
-            //'form' => $form->createView()
         ]);
     }
 
@@ -77,7 +74,7 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('user', ['id' => '12']);
+            return $this->redirectToRoute('user', ['id' => $user->getId()]);
         }
 
         $changePasswordModel = new ChangePassword();
@@ -108,6 +105,7 @@ class UserController extends AbstractController
 
         return $this->render('user/edit.html.twig', array('user' => $user,
             'form' => $form->createView(),
+
             'changePasswordForm' => $changePasswordForm->createView(),
         ));
         }
@@ -131,6 +129,7 @@ class UserController extends AbstractController
 
         return $this->redirectToRoute('main_page_unlogged');
     }
+
 
     /**
      * @Route("/delete_photo", name="delete_photo")

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig', {'loggedUser': loggedUser}) }}
+{% endblock %}
+
+{% block body_container %}
+    {% if users %}
+        <table id="users" class="table table-striped">
+            <thead>
+            <tr>
+                <th> User</th>
+                <th> Action</th>
+            </tr>
+            </thead>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.firstName ~ ' ' ~ user.lastName }}</td>
+                        <td>
+                            <a href="{{  path('user', {'id': user.id }) }}" class="btn btn-primary mr-1">Show</a>
+                            {% if not ('ROLE_ADMIN' in user.getRoles) %}
+                            <a href="{{  path('admin_delete', {'id': user.id }) }}" class="btn btn-danger"
+                               onclick="return confirm('Are you sure you want to delete account? ' +
+                                               'You can\'t restore it after.')">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            <tbody>
+
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}

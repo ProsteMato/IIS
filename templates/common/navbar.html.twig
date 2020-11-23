@@ -1,6 +1,10 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-primary mb-3">
     <div class="container">
-        <a href="/" class="navbar-brand">SocialNetwork</a>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('main_page_logged') }}" class="navbar-brand">SocialNetwork</a>
+        {% else %}
+            <a href="{{ path('main_page_unlogged') }}" class="navbar-brand">SocialNetwork</a>
+        {% endif %}
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mobile-nav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -15,16 +19,22 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">User</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ path('user', {'id': '12' }) }}">My profile</a>
+                            {% if loggedUser %}
+                                <a class="dropdown-item" href="{{ path('user', {'id': loggedUser.id }) }}">My profile</a>
+                            {% endif %}
                             <a class="dropdown-item" href="#">Create new group</a>
                             <a class="dropdown-item" href="#">My groups</a>
 
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Help</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a class="dropdown-item" href="{{ path('show_list_users') }}">Manage users</a>
+                            {% endif %}
                             <a class="dropdown-item" href="{{ path('edit_user') }}">Account settings</a>
                             <a class="dropdown-item" href="{{ path('app_logout') }}">Log out</a>
                         </div>
                     </li>
+
                 {% else %}
                     <li class="nav-item">
                         <a href="{{ path('register') }}"  class="nav-link">Registration</a>

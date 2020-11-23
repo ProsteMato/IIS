@@ -52,6 +52,12 @@ class RegistrationController extends AbstractController
 
             $user->setPassword($passwordEncoder->encodePassword($user, $form->get('password')->getData()));
 
+            /**
+             * Uncomment when want to create user with admin role
+             */
+            //$user->setRoles(['ROLE_ADMIN']);
+
+
             $entityManager->persist($user);
             $entityManager->flush();
 

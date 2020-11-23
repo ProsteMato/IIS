@@ -11,12 +11,12 @@
 
 
 {% block body %}
-    {{ include('common/navbar.html.twig') }}
+    {{ include('common/navbar.html.twig', {'loggedUser': loggedUser}) }}
 {% endblock %}
 
 {% block body_container %}
 
-    {% if showedUser.visibility or ( loggedUser != null and loggedUser.id == showedUser.id) %}
+    {% if showedUser.visibility or ( loggedUser != null and loggedUser.id == showedUser.id ) or is_granted('ROLE_ADMIN') %}
 
     <div class="jumbotron">
     <div class="row">
@@ -29,11 +29,122 @@
                 {% if showedUser.id == loggedUser.id %}
                     <a class="btn btn-link  btn-sm" href="{{  path('edit_user') }}"> (Edit profile)</a>
                 {% endif %}
-            </h3>
 
+
+                {%  if is_granted('ROLE_ADMIN')  and loggedUser.id != showedUser.id %}
+                    <a href="{{  path('admin_delete', {'id': showedUser.id }) }}" class="btn btn-danger float-right mt-3 "
+                       onclick="return confirm('Are you sure you want to delete account? ' +
+                                               'You can\'t restore it after.')">Delete account</a>
+                {% endif %}
+
+            </h3>
+            <div class="row">
+                <div class="col-md-2">
+                    <p>Email:</p>
+                    {%  if showedUser.birthDate != null %}
+                        <p>Birthday:</p>
+                    {% endif %}
+
+                    {%  if showedUser.sex != null %}
+                        <p>Sex:</p>
+                    {% endif %}
+
+                    {%  if showedUser.description != null %}
+                        <p>Description:</p>
+                    {% endif %}
+
+                </div>
+                <div class="col-md-10">
+                    <p>{{ showedUser.email }}</p>
+
+                    {%  if showedUser.birthDate != null  %}
+                        <p>{{ showedUser.birthDate.format('d.m.Y') }}</p>
+                    {% endif %}
+
+                    {%  if showedUser.sex != null  %}
+                        <p>{{ showedUser.sex }}</p>
+                    {% endif %}
+
+                    {%  if showedUser.description!= null  %}
+                        <p>{{ showedUser.description }}</p>
+                    {% endif %}
+                </div>
+
+            </div>
         </div>
     </div>
     </div>
+
+        {################################# PLACEHOLDERS #######################}
+
+    <div class="jumbotron mt-0">
+        <h5 > My groups:</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card border-secondary mb-3" style="max-width: 20rem;">
+                <div class="card-header">Header</div>
+                <div class="card-body">
+                    <h4 class="card-title">Secondary card title</h4>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-secondary mb-3" style="max-width: 20rem;">
+                    <div class="card-header">Header</div>
+                    <div class="card-body">
+                        <h4 class="card-title">Secondary card title</h4>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-secondary mb-3" style="max-width: 20rem;">
+                    <div class="card-header">Header</div>
+                    <div class="card-body">
+                        <h4 class="card-title">Secondary card title</h4>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    </div>
+                </div>
+
+                <p align="right">
+                    <a href="#" >More...</a>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="jumbotron mt-0">
+        <h5 > Recent posts:</h5>
+        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">List group item heading</h5>
+                <small class="text-muted">3 days ago</small>
+            </div>
+            <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+            <small class="text-muted">Donec id elit non mi porta.</small>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">List group item heading</h5>
+                <small class="text-muted">3 days ago</small>
+            </div>
+            <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+            <small class="text-muted">Donec id elit non mi porta.</small>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">List group item heading</h5>
+                <small class="text-muted">3 days ago</small>
+            </div>
+            <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+            <small class="text-muted">Donec id elit non mi porta.</small>
+        </a>
+    </div>
+
+
 
     {% else %}
         <h5> User not visible.</h5>

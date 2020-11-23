@@ -13,8 +13,8 @@ framework:
         gc_maxlifetime: 600
         gc_probability: 1
         gc_divisor: 1
-        #cookie_secure: auto
-        #cookie_samesite: lax
+        cookie_secure: auto
+        cookie_samesite: lax
 
 
     #esi: true

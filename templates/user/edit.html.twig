@@ -3,7 +3,7 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block body %}
-    {{ include('common/navbar.html.twig') }}
+    {{ include('common/navbar.html.twig', {'loggedUser': user}) }}
 {% endblock %}
 
 {% block body_container %}
@@ -58,9 +58,12 @@
 
                 </div>
                 <div class="col-md-4">
-                    <a href="{{  path('delete_user') }}" class="btn btn-danger  mt-3 "
-                       onclick="return confirm('Are you sure you want to delete your account? ' +
+                    {%  if not is_granted('ROLE_ADMIN') %}
+                        <a href="{{  path('delete_user') }}" class="btn btn-danger  mt-3 "
+                           onclick="return confirm('Are you sure you want to delete your account? ' +
                                                'You can\'t restore it after.')">Delete account</a>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
