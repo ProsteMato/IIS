@@ -1,7 +1,6 @@
 # IIS
 
-Chyby o ktorych viem: 
-po registracii neostane uzivatel prihlaseny
+
 
 databazu mam iba na localserver (zatial som si to iba tam skusala),
  treba to cele presunut na tu heroku (alebo kde sa dohodneme ze to bude) 

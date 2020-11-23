@@ -71,7 +71,7 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
 
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('User email could not be found.');
+            throw new CustomUserMessageAuthenticationException('Incorrect email or password.');
         }
 
         return $user;
@@ -96,8 +96,8 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
             return new RedirectResponse($targetPath);
         }
 
-        // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        return new RedirectResponse($this->urlGenerator->generate('main_page_unlogged'));
+        // TODO redirect na logged in
+        return new RedirectResponse($this->urlGenerator->generate('main_page_logged'));
     }
 
     protected function getLoginUrl()

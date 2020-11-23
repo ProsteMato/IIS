@@ -27,7 +27,8 @@ class RegisterType extends AbstractType
                 'required' => true,
                 'invalid_message' => 'Passwords do not match.',
                 'first_options'  => ['label' => 'Password'],
-                'second_options' => ['label' => 'Confirm Password']])
+                'second_options' => ['label' => 'Confirm Password'],
+                'label_attr' => ['class' => 'required']])
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('birthDate', BirthdayType::class)

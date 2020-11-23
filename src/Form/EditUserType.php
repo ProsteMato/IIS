@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,6 +30,9 @@ class EditUserType extends AbstractType
                                                                   'label' => 'Visible',
                                                                    'label_attr' => ['class' => 'switch-custom']])
             ->add('description', TextareaType::class, ['required'=> false])
+            ->add('attachment', FileType::class, [ 'mapped' => false,
+                'required' => false,
+                'label' => 'Select new profile photo'])
             ->add('save', SubmitType::class, ['label' => 'Update profile',
                 'attr' => array('class' => 'btn btn-primary float-left mb-5 mt-3')])
         ;

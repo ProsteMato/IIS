@@ -18,10 +18,9 @@ class UserProfileType extends AbstractType
     {
         $builder
             ->add('email', TextType::class, ['attr' => ['readonly' => true,
-                'class' => 'plaintext',
-                'type' => 'text']])
-            ->add('firstName', TextType::class, ['attr' => ['readonly' => true]])
-            ->add('lastName', TextType::class, ['attr' => ['readonly' => true]])
+                //'class' => 'plaintext',
+                'type' => 'text',
+                'class' => 'form-control-plaintext']])
             ->add('birthDate', BirthdayType::class, ['attr' => ['disabled' => true]])
             ->add('sex', ChoiceType::class, ['choices' => [
                 'male' => 'male',

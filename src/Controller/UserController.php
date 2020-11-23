@@ -23,26 +23,32 @@ class UserController extends AbstractController
 {
 
     /**
-     * @Route("/user", name="user")
-     * @param UserInterface $user
+     * @Route("/user/{id}", name="user")
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param int $id
      * @return Response
      */
-    public function index(UserInterface $user, Request $request): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
+
+        $user = new User();
+        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         $form = $this->createForm(UserProfileType::class, $user);
-        $form->handleRequest($request);
+        $form->getData();
+
 
 
         return $this->render('user/viewprofile.html.twig', [
             'user' => $user,
+            'id' => $id,
             'controller_name' => 'UserController',
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/user/edit", name="edit_user", methods={"GET", "POST"})
+     * @Route("/edit", name="edit_user", methods={"GET", "POST"})
      * @param UserInterface $user
      * @param Request $request
      * @param EntityManagerInterface $entityManager
@@ -57,9 +63,20 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
 
+            /* @var UploadedFile $file */
+            $file = $form['attachment']->getData();
+            print($file);
+            if ($file) {
+                $filename = md5(uniqid()) . '.' . $file->guessClientExtension();
+
+                $file->move($this->getParameter('profilepics_dir'), $filename);
+                $user->setProfilePicture($filename);
+            }
+
+            $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('user');
+            return $this->redirectToRoute('user', ['id' => '12']);
         }
 /**
         $file = [];
@@ -76,7 +93,14 @@ class UserController extends AbstractController
         $changePasswordForm->handleRequest($request);
 
         if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
+            /**
+             * TODO: finish this - vrati true ak sa hesla zhoduju
 
+             if ($changePasswordForm->get('oldPassword')->getData() == $changePasswordForm->get('newPassword')->getData())
+            {
+
+            }
+            */
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
@@ -86,13 +110,23 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('user');
+            return $this->redirectToRoute('edit_user');
         }
+
+        $uploadPhotoForm = $this->createFormBuilder(null)
+            ->add('attachment', FileType::class, [ 'mapped' => false,
+                'required' => false,
+                'label' => 'Select profile photo'])
+            ->getForm();
+
+
+
 
         return $this->render('user/edit.html.twig', array('user' => $user,
             'form' => $form->createView(),
-            'changePasswordForm' => $changePasswordForm->createView()));
-    }
+            'changePasswordForm' => $changePasswordForm->createView(),
+        ));
+        }
 
     /**
      * @Route("/user/delete", name="delete_user")
@@ -114,6 +148,22 @@ class UserController extends AbstractController
         return $this->redirectToRoute('main_page_unlogged');
     }
 
+    /**
+     * @Route("/delete_photo", name="delete_photo")
+     * @param UserInterface $user
+     * @param EntityManagerInterface $entityManager
+     * @return RedirectResponse
+     */
+    public function delete_photo(UserInterface $user, EntityManagerInterface $entityManager)
+    {
+
+        $user ->setProfilePicture('blank.png');
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('edit_user');
+    }
 
 
 
