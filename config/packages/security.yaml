@@ -39,6 +39,7 @@ security:
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/admin,  roles: ROLE_ADMIN}
         - { path: ^/edit, roles: ROLE_USER }
         - { path: ^/user, roles: IS_AUTHENTICATED_ANONYMOUSLY } #TODO - aj anonymously s kontrolou na vizibilitu profilu
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY}
