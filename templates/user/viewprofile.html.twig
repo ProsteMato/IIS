@@ -1,30 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Social Network Unlogged{% endblock %}
+    {% block title %}
+        {%  if showedUser.visibility %}
+
+            {{showedUser.firstName ~ ' ' ~ showedUser.lastName}}
+        {% else %}
+            Social Network
+        {% endif %}
+    {% endblock %}
+
 
 {% block body %}
     {{ include('common/navbar.html.twig') }}
 {% endblock %}
 
 {% block body_container %}
+
+    {% if showedUser.visibility or ( loggedUser != null and loggedUser.id == showedUser.id) %}
+
     <div class="jumbotron">
     <div class="row">
         <div class="col-md-3">
-            <img  src="{{ asset('/profilepics/'  ~ user.getProfilePicture())}}"
+            <img  src="{{ asset('/profilepics/'  ~ showedUser.getProfilePicture())}}"
                   class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
         </div>
         <div class="col-md-9">
-            <h3 class=" mb-3 font-weight-normal text-left">{{ user.getFirstName() ~  ' ' ~ user.getLastName() }}
-            <a class="btn btn-link  btn-sm" href="{{  path('edit_user') }}"> (Edit profile)</a>
+            <h3 class=" mb-3 font-weight-normal text-left">{{ showedUser.getFirstName() ~  ' ' ~ showedUser.getLastName() }}
+                {% if showedUser.id == loggedUser.id %}
+                    <a class="btn btn-link  btn-sm" href="{{  path('edit_user') }}"> (Edit profile)</a>
+                {% endif %}
             </h3>
-            {{ form_start(form) }}
 
-            {{ form_widget(form) }}
-
-            {{ form_end(form) }}
         </div>
     </div>
-
     </div>
+
+    {% else %}
+        <h5> User not visible.</h5>
+        <a href="{{ path('main_page_logged') }}">Go home.</a>
+    {% endif %}
+
 
 {% endblock %}

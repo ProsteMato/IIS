@@ -38,5 +38,5 @@ security:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY}
         - { path: ^/edit, roles: ROLE_USER }
-        - { path: ^/user, roles: ROLE_USER } #TODO - aj anonymously s kontrolou na vizibilitu profilu
+        - { path: ^/user, roles: IS_AUTHENTICATED_ANONYMOUSLY } #TODO - aj anonymously s kontrolou na vizibilitu profilu
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY}

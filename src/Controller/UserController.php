@@ -24,26 +24,27 @@ class UserController extends AbstractController
 
     /**
      * @Route("/user/{id}", name="user")
+     *
+     * Function shows user profile
+     *
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param int $id
+     * @param UserInterface $loggedUser
      * @return Response
      */
-    public function index(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, int $id, UserInterface $loggedUser = null): Response
     {
-
-        $user = new User();
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
-        $form = $this->createForm(UserProfileType::class, $user);
-        $form->getData();
-
-
+        //$form = $this->createForm(UserProfileType::class, $user);
+        //$form->getData();
 
         return $this->render('user/viewprofile.html.twig', [
-            'user' => $user,
+            'showedUser' => $user,
+            'loggedUser' => $loggedUser,
             'id' => $id,
             'controller_name' => 'UserController',
-            'form' => $form->createView()
+            //'form' => $form->createView()
         ]);
     }
 
@@ -78,16 +79,7 @@ class UserController extends AbstractController
 
             return $this->redirectToRoute('user', ['id' => '12']);
         }
-/**
-        $file = [];
-        $uploadFileForm = $this->createFormBuilder(UploadedFile::class, $file)
-            ->add('attachment', FileType::class, [ 'mapped' => false,
-            'required' => false,
-            'label' => 'Upload profile photo'])
-            ->getForm();
 
-        $uploadFileForm->handleRequest($request);
-*/
         $changePasswordModel = new ChangePassword();
         $changePasswordForm = $this->createForm(ChangePasswordType::class, $changePasswordModel);
         $changePasswordForm->handleRequest($request);
@@ -113,14 +105,6 @@ class UserController extends AbstractController
             return $this->redirectToRoute('edit_user');
         }
 
-        $uploadPhotoForm = $this->createFormBuilder(null)
-            ->add('attachment', FileType::class, [ 'mapped' => false,
-                'required' => false,
-                'label' => 'Select profile photo'])
-            ->getForm();
-
-
-
 
         return $this->render('user/edit.html.twig', array('user' => $user,
             'form' => $form->createView(),
@@ -131,11 +115,11 @@ class UserController extends AbstractController
     /**
      * @Route("/user/delete", name="delete_user")
      * @param UserInterface $user
+     * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return RedirectResponse
      */
     public function delete_user(UserInterface $user, Request $request, EntityManagerInterface $entityManager){
-        $userId = $user->getId();
 
         $this->get('security.token_storage')->setToken(null); // odhlasenie uzivatela
 
@@ -144,7 +128,7 @@ class UserController extends AbstractController
 
         $response = new Response();
         $response->send();
-        //return $this->render('unlogged/index.html.twig');
+
         return $this->redirectToRoute('main_page_unlogged');
     }
 

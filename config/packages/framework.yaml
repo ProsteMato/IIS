@@ -9,7 +9,8 @@ framework:
     session:
         handler_id: session.handler.native_file
         save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
-        cookie_lifetime: 600
+        cookie_lifetime: 0
+        gc_maxlifetime: 600
         gc_probability: 1
         gc_divisor: 1
         #cookie_secure: auto
