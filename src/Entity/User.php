@@ -57,7 +57,7 @@ class User implements UserInterface
     private $lastName;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date",  nullable=true)
      */
     private $birthDate;
 
@@ -72,7 +72,8 @@ class User implements UserInterface
     private $description;
 
     /**
-     * @ORM\Column(type="string", length=6)
+     * @ORM\Column(type="string", length=6, nullable=true)
+     *
      */
     private $sex;
 
@@ -188,8 +189,9 @@ class User implements UserInterface
         return $this->birthDate;
     }
 
-    public function setBirthDate(\DateTimeInterface $birthDate): self
+    public function setBirthDate(\DateTimeInterface $birthDate ): self
     {
+
         $this->birthDate = $birthDate;
 
         return $this;

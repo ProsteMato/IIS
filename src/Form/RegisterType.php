@@ -21,18 +21,35 @@ class RegisterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', TextType::class)
+            ->add('email', TextType::class,[
+                'label' => 'Email *',
+                'required' => true,
+                'help' => 'For example: name@email.com',
+            ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'required' => true,
                 'invalid_message' => 'Passwords do not match.',
-                'first_options'  => ['label' => 'Password'],
-                'second_options' => ['label' => 'Confirm Password'],
-                'label_attr' => ['class' => 'required']])
-            ->add('firstName', TextType::class)
-            ->add('lastName', TextType::class)
-            ->add('birthDate', BirthdayType::class)
+                'first_options'  => ['label' => 'Password *'],
+                'second_options' => ['label' => 'Confirm Password *',
+                    'help' => 'Password should be at least 6 characters.'],
+                ])
+            ->add('firstName', TextType::class, [
+                'required' => true,
+                'label' => 'First Name *'
+            ])
+            ->add('lastName', TextType::class, [
+                'required' => true,
+                'label' => 'First Name *'
+            ])
+            ->add('birthDate', BirthdayType::class, [
+                'placeholder' => [
+                    'year' => 'Year', 'month' => 'Month', 'day' => 'Day'],
+                'by_reference' => true,
+                'required' => false,
+            ])
             ->add('sex', ChoiceType::class, ['choices' => [
+                '' => NULL,
                 'male' => 'male',
                 'female' => 'female']])
             ->add('visibility', CheckboxType::class, ['required'=> false,
