@@ -81,7 +81,23 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $visibility;
+    
+    /**
+     * @ORM\OneToMany(targetEntity=Group::class, mappedBy="admin_user")
+     */
+    private $admin_for_groups;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Group::class, mappedBy="users")
+     */
+    private $liked_groups;
+
+    public function __construct()
+    {
+        $this->admin_for_groups = new ArrayCollection();
+        $this->liked_groups = new ArrayCollection();
+    }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -241,6 +257,63 @@ class User implements UserInterface
     public function setVisibility(bool $visibility): self
     {
         $this->visibility = $visibility;
+
+        return $this;
+    }
+    
+    /**
+     * @return Collection|Group[]
+     */
+    public function getAdminForGroups(): Collection
+    {
+        return $this->admin_for_groups;
+    }
+
+    public function addAdminForGroup(Group $adminForGroup): self
+    {
+        if (!$this->admin_for_groups->contains($adminForGroup)) {
+            $this->admin_for_groups[] = $adminForGroup;
+            $adminForGroup->setAdminUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdminForGroup(Group $adminForGroup): self
+    {
+        if ($this->admin_for_groups->removeElement($adminForGroup)) {
+            // set the owning side to null (unless already changed)
+            if ($adminForGroup->getAdminUser() === $this) {
+                $adminForGroup->setAdminUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Group[]
+     */
+    public function getLikedGroups(): Collection
+    {
+        return $this->liked_groups;
+    }
+
+    public function addLikedGroup(Group $likedGroup): self
+    {
+        if (!$this->liked_groups->contains($likedGroup)) {
+            $this->liked_groups[] = $likedGroup;
+            $likedGroup->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedGroup(Group $likedGroup): self
+    {
+        if ($this->liked_groups->removeElement($likedGroup)) {
+            $likedGroup->removeUser($this);
+        }
 
         return $this;
     }
