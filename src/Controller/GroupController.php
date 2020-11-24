@@ -65,9 +65,11 @@ class GroupController extends AbstractController
             $em->persist($group);
             $em->flush();
 
+            $users = $group->getUsers();
             return $this->render('group/show.html.twig', [
                 'group' => $group,
-                'loggedUser' => $loggedUser
+                'loggedUser' => $loggedUser,
+                'users' => $users
             ]);
         }
 
