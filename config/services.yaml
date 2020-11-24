@@ -5,7 +5,8 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     profilepics_dir: '%kernel.project_dir%/public/profilepics/'
-
+    group_pics_dir: '%kernel.project_dir%/public/group_pics/'
+    
 services:
     # default configuration for services in *this* file
     _defaults:
