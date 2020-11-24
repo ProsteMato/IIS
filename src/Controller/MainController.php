@@ -14,7 +14,9 @@ class MainController extends AbstractController
     public function unlogged(){
         // TODO: zobrazenie recently updated groups a najnovsie prispevky od users
 
-        return $this->render('unlogged/index.html.twig');
+        return $this->render('unlogged/index.html.twig', [
+            'loggedUser' => null    
+        ]);
     }
 
 
