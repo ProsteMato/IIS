@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ group.getName() }} {% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig') }}
+{% endblock %}
+
+{% block body_container %}
+    <div class="row">
+        <div class="container col-md-8">
+            <div class="jumbotron">
+                <div class="row">
+                    <div class="col-md-3">
+                        <img  src="{{ asset('/group_pics/'  ~ group.getPicture())}}"
+                              class="avatar img-circle img-thumbnail" alt="Group picture">
+                    </div>
+                    <div class="col-md-9">
+                        <h3> {{ group.name }} </h3>
+                        <p> {{ group.description }} </p>
+                        {% if group.visibility == 1 %}
+                            <p><b>Visibility: </b>Anyone</p>
+                        {% else %}
+                            <p><b>Visibility: </b>Only members</p>
+                        {% endif %}
+                        <p><b>Created: </b>{{ group.getDateString() }}</p>
+                        <p><b>Members: </b>{{ group.getUsersCount() }}</p>
+                        <a class="float-right" href="#">Leave</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jumbotron">
+
+                <h3 class="display-3">Threads</h3>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="row">
+                <div class="jumbotron col-md-11 offset-md-1">
+                    <h6 class="display-3">Members: {{ group.getUsersCount }}</h6>
+                    {% for user in users %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img href="#" src="{{ asset('/profilepics/' ~ user.getProfilePicture()) }}">
+                            </div>
+                            <div class="col-md-8">
+                                <a href="{{ path('user', {'id': user.getId() }) }}"><b>{{ user.getFirstName() }} {{ user.getLastName() }}</b></a>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}

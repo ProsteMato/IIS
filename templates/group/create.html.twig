@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create new group{% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig') }}
+{% endblock %}
+
+{% block body_container %}
+    <div class="wrapper fadeInDown">
+    <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto t-50 form p-4">
+        <div id="formContent">
+            <h1 class="h3 mb-3 font-weight-normal text-center">Create new group</h1>
+            {{ form(form) }}
+        </div>
+    </div>
+    </div>
+
+
+
+
+{% endblock %}
