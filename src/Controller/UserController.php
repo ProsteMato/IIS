@@ -82,14 +82,7 @@ class UserController extends AbstractController
         $changePasswordForm->handleRequest($request);
 
         if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
-            /**
-             * TODO: finish this - vrati true ak sa hesla zhoduju
 
-             if ($changePasswordForm->get('oldPassword')->getData() == $changePasswordForm->get('newPassword')->getData())
-            {
-
-            }
-            */
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,

@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search results!{% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig') }}
+{% endblock %}
+
+{% block body_container %}
+    <ul class="nav nav-tabs">
+        <li class="nav-item" >
+            <a class="nav-link active" data-toggle="tab" href="#users">Users ({{ users_count }})</a>
+        </li>
+        <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#groups">Groups ({{ groups_count }})</a>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+
+
+        <div class="tab-pane fade active show" id="users">
+            {% if users %}
+                <label class="mt-2"> Search results for: {{ search_val }}</label>
+                <table id="users" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th> User</th>
+                        <th> Action</th>
+                    </tr>
+                    </thead>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.firstName ~ ' ' ~ user.lastName }}</td>
+
+                            <td><a href="{{  path('user', {'id': user.id }) }}" class="btn btn-primary mr-1">Show</a>
+                                {% if not ('ROLE_ADMIN' in user.getRoles) and is_granted('ROLE_ADMIN')%}
+                                    <a href="{{  path('admin_delete', {'id': user.id }) }}" class="btn btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete account? ' +
+                                               'You can\'t restore it after.')">Delete</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h5> No results for: {{ search_val }}</h5>
+            {% endif %}
+        </div>
+
+        <div class="tab-pane fade" id="groups">
+            {% if groups %}
+            <label class=" mt-2"> Search results for: {{ search_val }}</label>
+            <table id="groups" class="table table-striped">
+                <thead>
+                <tr>
+                    <th> User</th>
+                    <th> Action</th>
+                </tr>
+                </thead>
+                {% for group in groups %}
+                <tr>
+                    <td>{{ group.name }}</td>
+                    <td>
+                        <a href="{{  path('show_group', {'group_id': group.id }) }}" class="btn btn-primary mr-1">Show</a>
+                        {% if  is_granted('ROLE_ADMIN')%}
+                            <a href="{{  path('delete_group', {'id': group.id }) }}" class="btn btn-danger"
+                               onclick="return confirm('Are you sure you want to delete group? ' +
+                                               'You can\'t restore it after.')">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+                <h5> No results for: {{ search_val }}</h5>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+
+
+
+{% endblock %}

@@ -11,10 +11,12 @@
         <div class="navbar-collapse" id="mobile-nav">
 
             <ul class="navbar-nav ml-auto">
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                <form class="form-inline my-2 my-lg-0" action="{{ path('search') }}">
+                    <input class="form-control mr-sm-2" type="text"  id="search_val" name="search_val" placeholder="Search">
+                    <button class="btn btn-secondary my-2 my-sm-0" href="{{ path('search') }}">Search</button>
+
                 </form>
+
                 {% if is_granted('ROLE_USER') %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">User</a>

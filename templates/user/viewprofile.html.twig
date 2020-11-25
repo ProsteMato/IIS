@@ -26,7 +26,7 @@
         </div>
         <div class="col-md-9">
             <h3 class=" mb-3 font-weight-normal text-left">{{ showedUser.getFirstName() ~  ' ' ~ showedUser.getLastName() }}
-                {% if showedUser.id == loggedUser.id %}
+                {% if is_granted('ROLE_USER') and showedUser.id == loggedUser.id %}
                     <a class="btn btn-link  btn-sm" href="{{  path('edit_user') }}"> (Edit profile)</a>
                 {% endif %}
 
@@ -147,8 +147,8 @@
 
 
     {% else %}
-        <h5> User not visible.</h5>
-        <a href="{{ path('main_page_logged') }}">Go home.</a>
+        <h5> User {{ showedUser.firstName ~ ' ' ~ showedUser.lastName }} has private profile.</h5>
+        <a href="/">Go home.</a>
     {% endif %}
 
 
