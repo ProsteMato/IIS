@@ -82,7 +82,7 @@ class GroupController extends AbstractController
     /**
      * @Route ("/group/delete/{id}", name="delete_group")
      */
-    public function remove(Group $group, UserInterface $loggedUser)
+    public function remove(Group $group)
     {
         $em = $this->getDoctrine()->getManager();
         $em->remove($group);
