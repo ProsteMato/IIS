@@ -15,10 +15,22 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Error\RuntimeError;
 
+/**
+ * Class AdminController
+ *
+ * Class handles functions for admin user in our information system
+ *
+ * @author Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
+ * @package App\Controller
+ */
 class AdminController extends AbstractController
 {
     /**
      * @Route("/admin/users", name="show_list_users")
+     *
+     * Function shows list of all users registered
+     * @param UserInterface $loggedUser looged in user object
+     * @return Response view
      */
     public function show_users(UserInterface $loggedUser): Response
     {
@@ -35,6 +47,10 @@ class AdminController extends AbstractController
 
     /**
      * @Route("/admin/groups", name="show_list_groups")
+     *
+     * Function shows list of all groups created
+     * @param UserInterface $loggedUser looged in user object
+     * @return Response view
      */
     public function show_groups(UserInterface $loggedUser): Response
     {
@@ -50,6 +66,8 @@ class AdminController extends AbstractController
 
     /**
      * @Route("/admin/delete/{id}", name="admin_delete")
+     *
+     * Function deletes user from system.
      * @param UserInterface $loggedUser
      * @param Request $request
      * @param EntityManagerInterface $entityManager
@@ -63,8 +81,7 @@ class AdminController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
 
-        $response = new Response();
-        $response->send();
+        $this->addFlash('notice', 'User was deleted');
 
         return $this->redirectToRoute('show_list_users');
     }

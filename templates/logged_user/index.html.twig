@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Social Network Home{% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig', {'loggedUser': loggedUser}) }}
+{% endblock %}

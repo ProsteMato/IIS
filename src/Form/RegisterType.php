@@ -17,6 +17,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 
+/**
+ * Class RegisterType
+ *
+ * Class that represents form for registration of user
+ *
+ * @author Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
+ * @package App\Form
+ */
 class RegisterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)

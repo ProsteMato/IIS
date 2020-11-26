@@ -19,6 +19,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Class UserController
+ *
+ * Class that handles user profile and its editation
+ *
+ * @author Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
+ * @package App\Controller
+ */
 class UserController extends AbstractController
 {
 
@@ -29,8 +37,8 @@ class UserController extends AbstractController
      *
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param int $id
-     * @param UserInterface $loggedUser
+     * @param int $id id of showed user
+     * @param UserInterface $loggedUser looged in user - or null (if person is not logged in)
      * @return Response
      */
     public function index(Request $request, EntityManagerInterface $entityManager, int $id, UserInterface $loggedUser = null): Response
@@ -51,14 +59,17 @@ class UserController extends AbstractController
 
     /**
      * @Route("/edit", name="edit_user", methods={"GET", "POST"})
+     *
+     * Function handles editation of  logged in user profile
+     *
      * @param UserInterface $user
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @return Response
      */
-    public function edit(UserInterface $user,  Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder)
-    {
+    public function edit(UserInterface $user,  Request $request, EntityManagerInterface $entityManager,
+                         UserPasswordEncoderInterface $passwordEncoder){
 
         $form = $this->createForm(EditUserType::class, $user);
         $form->handleRequest($request);
@@ -102,13 +113,15 @@ class UserController extends AbstractController
 
         return $this->render('user/edit.html.twig', array('user' => $user,
             'form' => $form->createView(),
-
             'changePasswordForm' => $changePasswordForm->createView(),
         ));
-        }
+    }
 
     /**
      * @Route("/user/delete", name="delete_user")
+     *
+     * Function handles deleting loggin-in users profile
+     *
      * @param UserInterface $user
      * @param Request $request
      * @param EntityManagerInterface $entityManager
@@ -130,6 +143,9 @@ class UserController extends AbstractController
 
     /**
      * @Route("/delete_photo", name="delete_photo")
+     *
+     * Function handles deleting current profile photo of user
+     *
      * @param UserInterface $user
      * @param EntityManagerInterface $entityManager
      * @return RedirectResponse

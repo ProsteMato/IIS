@@ -10,16 +10,28 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+/**
+ * Class SecurityController
+ *
+ * Class that handles login and loging out
+ *
+ * @author Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
+ * @package App\Controller
+ */
 class SecurityController extends AbstractController
 {
     /**
      * @Route("/login", name="app_login")
+     *
+     * Function creates login formular and logs in user
+     *
+     * @param AuthenticationUtils $authenticationUtils
+     * @param UserInterface|null $loggedUser logged in user - can be null
+     * @return Response
      */
     public function login(AuthenticationUtils $authenticationUtils, UserInterface $loggedUser = null): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+
         $user = new User();
 
         $form = $this->createForm(LoginType::class, $user);
@@ -38,6 +50,8 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/logout", name="app_logout")
+     *
+     * Function handles logout for user
      */
     public function logout()
     {

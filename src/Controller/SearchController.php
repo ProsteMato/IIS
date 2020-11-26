@@ -11,16 +11,27 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Class SearchController
+ *
+ * Class handles search
+ *
+ * @author Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
+ * @package App\Controller
+ */
 class SearchController extends AbstractController
 {
     /**
      * @Route("/search", name="search", methods={"GET", "POST"})
+     *
+     * Main function for displaying searched objects
+     *
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param $search_val
+     * @param UserInterface|null $loggedUser user object, if not logged it is set to null
      * @return Response
      */
-    public function search(Request $request, UserInterface $loggedUser = null, EntityManagerInterface $entityManager){
+    public function search(Request $request,  EntityManagerInterface $entityManager, UserInterface $loggedUser = null){
         $search_val = $request->query->get('search_val');
         $users = $this->search_users($entityManager, $search_val);
         $groups = $this->search_groups($entityManager, $search_val);
@@ -37,7 +48,13 @@ class SearchController extends AbstractController
     }
 
 
-
+    /**
+     * Function search for users in database - their first names or last names
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param $search_val 'searched value'
+     * @return array Array of User-type objects
+     */
     public function search_users(EntityManagerInterface $entityManager, $search_val){
         $usersFirstName = $entityManager->getRepository(User::class)->findBy([
             'firstName'  => $search_val]);
@@ -49,7 +66,13 @@ class SearchController extends AbstractController
         return $users;
     }
 
-
+    /**
+     * Function search for groups in database - their names
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param $search_val 'searched value'
+     * @return object[] object of groups
+     */
     public function search_groups(EntityManagerInterface $entityManager, $search_val){
         $groups = $entityManager->getRepository(Group::class)->findBy([
             'name'  => $search_val]);

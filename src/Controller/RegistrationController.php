@@ -15,23 +15,36 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
+/**
+ * Class RegistrationController
+ *
+ * Class handles registration of users
+ *
+ * @author Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
+ * @package App\Controller
+ */
 class RegistrationController extends AbstractController
 {
     /**
      * @Route("/register", name="register")
+     *
+     * Function handles registration of user
+     *
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param EntityManagerInterface $entityManager
      * @param LoginAuthenticator $login
      * @param GuardAuthenticatorHandler $guard
+     * @param UserInterface|null $loggedUser
      * @return Response
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder,
                              EntityManagerInterface $entityManager, LoginAuthenticator $login,
-                             UserInterface $loggedUser,
-                             GuardAuthenticatorHandler $guard): Response
+                             GuardAuthenticatorHandler $guard,
+                             UserInterface $loggedUser = null): Response
     {
         $user = new User();
         $form = $this->createForm(RegisterType::class, $user);
