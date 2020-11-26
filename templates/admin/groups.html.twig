@@ -18,11 +18,12 @@
                     <div class="col-11">
                         <div class="d-flex w-100 justify-content-between">
                             <h4 class="mb-1">{{ group.name}}</h4>
+                            <small class="text-muted"> Members: {{ group.getUsersCount() }} </small>
 
                         </div>
                         <div class="d-flex w-100 justify-content-between">
                             <p class="mb-1">{{ group.description }}</p>
-
+                            <small class="text-muted mb-2"> Threads: 0 </small>
                         </div>
                             <object><a type="button" href="{{  path('delete_group', {'id': group.id }) }}"
                                        onclick="return confirm('Are you sure you want to delete group? ' +
