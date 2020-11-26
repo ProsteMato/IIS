@@ -82,7 +82,7 @@ class GroupController extends AbstractController
     /**
      * @Route ("/group/delete/{id}", name="delete_group")
      */
-    public function remove(Group $group)
+    public function remove(Group $group, UserInterface $loggedUser)
     {
         $em = $this->getDoctrine()->getManager();
         $em->remove($group);
@@ -90,6 +90,13 @@ class GroupController extends AbstractController
 
         $this->addFlash('success', 'Post was removed');
 
-        return $this->redirect($this->generateUrl('post.index'));
+        if ($this->isGranted('ROLE_ADMIN'))
+        {
+            return $this->redirectToRoute('show_list_groups');
+        }
+        else {
+            return $this->redirectToRoute('list_groups');
+        }
+
     }
 }
