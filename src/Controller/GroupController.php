@@ -17,7 +17,7 @@ class GroupController extends AbstractController
     /**
      * @Route("/group/show/{group_id}", name="show_group")
      */
-    public function show($group_id, GroupRepository $groupRepository, UserInterface $loggedUser): Response
+    public function show($group_id, GroupRepository $groupRepository, UserInterface $loggedUser = null): Response
     {
         $group = $groupRepository->find($group_id);
         $users = $group->getUsers();

@@ -44,9 +44,9 @@ security:
         ## TODO toto mozno zbytocne - malo by to spadnut do ^/ na konci ak to tu nebude
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY}
-        - { path: ^/user, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        ##- { path: ^/user, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/group/show, roles: IS_AUTHENTICATED_ANONYMOUSLY}
-        - { path: ^/search, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        ##- { path: ^/search, roles: IS_AUTHENTICATED_ANONYMOUSLY}
 
 
         - { path: ^/edit, roles: ROLE_USER }
