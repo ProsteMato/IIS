@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 
 class RegisterType extends AbstractType
 {
@@ -58,6 +59,9 @@ class RegisterType extends AbstractType
             ->add('description', TextareaType::class, ['required'=> false])
             ->add('attachment', FileType::class, [ 'mapped' => false,
                 'required' => false,
+                'constraints' => [
+                    new Image(['maxSize' => '4M'])
+                ],
                 'label' => 'Select profile photo'])
             ->add('save', SubmitType::class, ['label' => 'Register',
                 'attr' => array('class' => 'btn btn-primary float-right mt-3 mb-3')])
