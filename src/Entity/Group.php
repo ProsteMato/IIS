@@ -56,9 +56,15 @@ class Group
      */
     private $users;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Thread::class, mappedBy="group_id", orphanRemoval=true)
+     */
+    private $threads;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->threads = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -168,6 +174,36 @@ class Group
     public function removeUser(User $user): self
     {
         $this->users->removeElement($user);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Thread[]
+     */
+    public function getThreads(): Collection
+    {
+        return $this->threads;
+    }
+
+    public function addThread(Thread $thread): self
+    {
+        if (!$this->threads->contains($thread)) {
+            $this->threads[] = $thread;
+            $thread->setGroupId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeThreah(Thread $thread): self
+    {
+        if ($this->threads->removeElement($thread)) {
+            // set the owning side to null (unless already changed)
+            if ($thread->getGroupId() === $this) {
+                $thread->setGroupId(null);
+            }
+        }
 
         return $this;
     }

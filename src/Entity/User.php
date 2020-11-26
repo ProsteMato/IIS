@@ -94,10 +94,22 @@ class User implements UserInterface
      */
     private $liked_groups;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Thread::class, mappedBy="created_by", orphanRemoval=true)
+     */
+    private $threads;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="created_by", orphanRemoval=true)
+     */
+    private $posts;
+
     public function __construct()
     {
         $this->admin_for_groups = new ArrayCollection();
         $this->liked_groups = new ArrayCollection();
+        $this->threads = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
     
     public function getId(): ?int
@@ -315,6 +327,66 @@ class User implements UserInterface
     {
         if ($this->liked_groups->removeElement($likedGroup)) {
             $likedGroup->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Thread[]
+     */
+    public function getThreads(): Collection
+    {
+        return $this->threads;
+    }
+
+    public function addThread(Thread $thread): self
+    {
+        if (!$this->threads->contains($thread)) {
+            $this->threads[] = $thread;
+            $thread->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeThread(Thread $thread): self
+    {
+        if ($this->threads->removeElement($thread)) {
+            // set the owning side to null (unless already changed)
+            if ($thread->getCreatedBy() === $this) {
+                $thread->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Post[]
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getCreatedBy() === $this) {
+                $post->setCreatedBy(null);
+            }
         }
 
         return $this;
