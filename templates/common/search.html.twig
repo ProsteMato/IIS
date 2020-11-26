@@ -16,32 +16,36 @@
         </li>
     </ul>
     <div id="myTabContent" class="tab-content">
-
-
         <div class="tab-pane fade active show" id="users">
+
             {% if users %}
                 <label class="mt-2"> Search results for: {{ search_val }}</label>
-                <table id="users" class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th> User</th>
-                        <th> Action</th>
-                    </tr>
-                    </thead>
-                    {% for user in users %}
-                        <tr>
-                            <td>{{ user.firstName ~ ' ' ~ user.lastName }}</td>
+                {% for user in users %}
+                    <a href="{{ path('user', {'id': user.id }) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="row">
+                            <div class="col-1">
+                                <img  src="{{ asset('/profilepics/'  ~ user.getProfilePicture())}}"
+                                      class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+                            </div>
+                            <div class="col-11">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h4 class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
 
-                            <td><a href="{{  path('user', {'id': user.id }) }}" class="btn btn-primary mr-1">Show</a>
+                                </div>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="mb-1">{{ user.description }}</p>
+
+                                </div>
                                 {% if not ('ROLE_ADMIN' in user.getRoles) and is_granted('ROLE_ADMIN')%}
-                                    <a href="{{  path('admin_delete', {'id': user.id }) }}" class="btn btn-danger"
-                                       onclick="return confirm('Are you sure you want to delete account? ' +
-                                               'You can\'t restore it after.')">Delete</a>
+                                    <object><a type="button" href="{{  path('admin_delete', {'id': user.id }) }}"
+                                               onclick="return confirm('Are you sure you want to delete account? ' +
+                                               'You can\'t restore it after.')"
+                                               class="btn btn-danger float-right">Delete</a></object>
                                 {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
             {% else %}
                 <h5> No results for: {{ search_val }}</h5>
             {% endif %}
@@ -49,28 +53,31 @@
 
         <div class="tab-pane fade" id="groups">
             {% if groups %}
-            <label class=" mt-2"> Search results for: {{ search_val }}</label>
-            <table id="groups" class="table table-striped">
-                <thead>
-                <tr>
-                    <th> User</th>
-                    <th> Action</th>
-                </tr>
-                </thead>
+                <label class="mt-2"> Search results for: {{ search_val }}</label>
                 {% for group in groups %}
-                <tr>
-                    <td>{{ group.name }}</td>
-                    <td>
-                        <a href="{{  path('show_group', {'group_id': group.id }) }}" class="btn btn-primary mr-1">Show</a>
-                        {% if  is_granted('ROLE_ADMIN')%}
-                            <a href="{{  path('delete_group', {'id': group.id }) }}" class="btn btn-danger"
-                               onclick="return confirm('Are you sure you want to delete group? ' +
-                                               'You can\'t restore it after.')">Delete</a>
-                        {% endif %}
-                    </td>
-                </tr>
+                    <a href="{{ path('show_group', {'group_id': group.id }) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="row">
+                            <div class="col-1">
+                                <img  src="{{ asset('/group_pics/'  ~ group.getPicture())}}"
+                                      class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+                            </div>
+                            <div class="col-11">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h4 class="mb-1">{{ group.name}}</h4>
+
+                                </div>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="mb-1">{{ group.description }}</p>
+
+                                </div>
+                                <object><a type="button" href="{{  path('delete_group', {'id': group.id }) }}"
+                                           onclick="return confirm('Are you sure you want to delete group? ' +
+                                               'You can\'t restore it after.')"
+                                           class="btn btn-danger float-right">Delete</a></object>
+                            </div>
+                        </div>
+                    </a>
                 {% endfor %}
-            </table>
             {% else %}
                 <h5> No results for: {{ search_val }}</h5>
             {% endif %}

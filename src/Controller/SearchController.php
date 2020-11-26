@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class SearchController extends AbstractController
 {
@@ -19,25 +20,25 @@ class SearchController extends AbstractController
      * @param $search_val
      * @return Response
      */
-    public function search(Request $request, EntityManagerInterface $entityManager){
+    public function search(Request $request, UserInterface $loggedUser = null, EntityManagerInterface $entityManager){
         $search_val = $request->query->get('search_val');
         $users = $this->search_users($entityManager, $search_val);
         $groups = $this->search_groups($entityManager, $search_val);
         $count_users = count($users);
         $count_groups = count($groups);
+
         return $this->render('common/search.html.twig', ['search_val' => $search_val,
             'users' => $users,
             'users_count' => $count_users,
             'groups' => $groups,
             'groups_count' => $count_groups,
-            'loggedUser'=> null,
+            'loggedUser'=> $loggedUser,
         ]);
     }
 
 
 
     public function search_users(EntityManagerInterface $entityManager, $search_val){
-        //$search_val = $request->query->get('search_val');
         $usersFirstName = $entityManager->getRepository(User::class)->findBy([
             'firstName'  => $search_val]);
         $usersLastName = $entityManager->getRepository(User::class)->findBy([
@@ -47,6 +48,7 @@ class SearchController extends AbstractController
 
         return $users;
     }
+
 
     public function search_groups(EntityManagerInterface $entityManager, $search_val){
         $groups = $entityManager->getRepository(Group::class)->findBy([

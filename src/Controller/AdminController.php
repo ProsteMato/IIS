@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Group;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,16 +17,31 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/users", name="show_list_users")
      */
-    public function show(UserInterface $loggedUser): Response
+    public function show_users(UserInterface $loggedUser): Response
     {
 
         $users =  $this->getDoctrine()->getRepository(User::class)->findAll();
 
 
-        return $this->render('admin/index.html.twig', [
+        return $this->render('admin/users.html.twig', [
             'controller_name' => 'AdminController',
             'loggedUser' =>  $loggedUser,
             'users' => $users
+        ]);
+    }
+
+    /**
+     * @Route("/admin/groups", name="show_list_groups")
+     */
+    public function show_groups(UserInterface $loggedUser): Response
+    {
+
+        $groups =  $this->getDoctrine()->getRepository(Group::class)->findAll();
+
+        return $this->render('admin/groups.html.twig', [
+            'controller_name' => 'AdminController',
+            'loggedUser' =>  $loggedUser,
+            'groups' => $groups
         ]);
     }
 

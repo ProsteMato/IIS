@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig', {'loggedUser': loggedUser}) }}
+{% endblock %}
+
+{% block body_container %}
+    {% if groups %}
+        {% for group in groups %}
+            <a href="{{ path('show_group', {'group_id': group.id }) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="row">
+                    <div class="col-1">
+                        <img  src="{{ asset('/group_pics/'  ~ group.getPicture())}}"
+                              class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+                    </div>
+                    <div class="col-11">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h4 class="mb-1">{{ group.name}}</h4>
+
+                        </div>
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1">{{ group.description }}</p>
+
+                        </div>
+                            <object><a type="button" href="{{  path('delete_group', {'id': group.id }) }}"
+                                       onclick="return confirm('Are you sure you want to delete group? ' +
+                                               'You can\'t restore it after.')"
+                                       class="btn btn-danger float-right">Delete</a></object>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

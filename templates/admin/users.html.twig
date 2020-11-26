@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig', {'loggedUser': loggedUser}) }}
+{% endblock %}
+
+{% block body_container %}
+    {% if users %}
+        {% for user in users %}
+        <a href="{{ path('user', {'id': user.id }) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="row">
+                <div class="col-1">
+                    <img  src="{{ asset('/profilepics/'  ~ user.getProfilePicture())}}"
+                          class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+                </div>
+                <div class="col-11">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h4 class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
+
+                    </div>
+                    <div class="d-flex w-100 justify-content-between">
+                        <p class="mb-1">{{ user.description }}</p>
+
+                    </div>
+                    {% if not ('ROLE_ADMIN' in user.getRoles) %}
+                     <object><a type="button" href="{{  path('admin_delete', {'id': user.id }) }}"
+                             onclick="return confirm('Are you sure you want to delete account? ' +
+                                               'You can\'t restore it after.')"
+                             class="btn btn-danger float-right">Delete</a></object>
+                    {% endif %}
+                </div>
+            </div>
+            </a>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
