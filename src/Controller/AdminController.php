@@ -60,10 +60,6 @@ class AdminController extends AbstractController
 
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
-        print($user->getId());
-
-        // TODO kontrola ci user nahodou nema admina prideleneho - zo stranky sa sem nedostane ale moze to vytukat
-
         $entityManager->remove($user);
         $entityManager->flush();
 

@@ -8,29 +8,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class MainController extends AbstractController
 {
     /**
-    * @Route("/", name = "main_page_unlogged", methods={"GET"})
+    * @Route("/", name = "main_page", methods={"GET"})
     */
-    public function unlogged(Request $request, EntityManagerInterface $entityManager){
+    public function main_page(Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null){
         // TODO: zobrazenie recently updated groups a najnovsie prispevky od users
-        /**$search_val = $request->query->get('search_val');
-        if ( $search_val )
-        {
-            $search = new SearchController();
-            $users =  $search->search_users($request, $entityManager, $search_val);
-            $groups = $search->search_groups($request, $entityManager, $search_val);
-            dump($groups);
-            return $this->render('common/search.html.twig', ['search_val' => $search_val,
-                'users' => $users,
-                'groups' => $groups,
-            ]);
-        }
-*/
+
         return $this->render('unlogged/index.html.twig', [
-            'loggedUser' => null    
+            'loggedUser' => $loggedUser
+        ]);
+    }
+
+    /**
+     * @Route("/acces_denied", name = "acces_denied")
+     */
+    public function access_denied(UserInterface $loggedUser = null){
+        return $this->render('common/access_denied.html.twig', [
+            'loggedUser' => $loggedUser
         ]);
     }
 

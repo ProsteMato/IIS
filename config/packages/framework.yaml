@@ -7,9 +7,10 @@ framework:
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
     session:
-        handler_id: session.handler.native_file
+        enabled: true
+        handler_id: 'session.handler.native_file'
         save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
-        cookie_lifetime: 0
+        cookie_lifetime: 84600
         gc_maxlifetime: 600
         gc_probability: 1
         gc_divisor: 1
