@@ -37,10 +37,14 @@ class UserController extends AbstractController
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
+        $groups = $loggedUser->getLikedGroups();
+
         return $this->render('user/viewprofile.html.twig', [
             'showedUser' => $user,
             'loggedUser' => $loggedUser,
             'id' => $id,
+            'groups' => $groups,
+            'groups_count' => count($groups),
             'controller_name' => 'UserController',
         ]);
     }

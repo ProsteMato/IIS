@@ -7,10 +7,13 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Twig\Error\RuntimeError;
 
 class AdminController extends AbstractController
 {
@@ -51,7 +54,7 @@ class AdminController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param int $id
-     * @return void
+     * @return RedirectResponse
      */
     public function delete_user(UserInterface $loggedUser, Request $request, EntityManagerInterface $entityManager, int $id){
 
@@ -68,6 +71,5 @@ class AdminController extends AbstractController
         $response->send();
 
         return $this->redirectToRoute('show_list_users');
-
     }
 }
