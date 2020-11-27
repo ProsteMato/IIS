@@ -7,6 +7,11 @@
 {% endblock %}
 
 {% block body_container %}
+    {% for message in app.flashes ('notice') %}
+        <div class="alert alert-warning">
+            {{ message }}
+        </div>
+    {% endfor %}
     <div class="row">
         <div class="container col-md-8">
             <div class="jumbotron">
@@ -25,7 +30,24 @@
                         {% endif %}
                         <p><b>Created: </b>{{ group.getDateString() }}</p>
                         <p><b>Members: </b>{{ group.getUsersCount() }}</p>
-                        <a class="float-right" href="#">Leave</a>
+                        <div>
+                            {% if group.isMember(loggedUser) == true %}
+                                <a href="{{ path('leave_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Leave</a>
+                                {% if group.getAdminUser() == loggedUser %}
+                                    <a href="{{ path('edit_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Settings</a>
+                                {% endif %}
+                            {% else %}
+                                {% if group.getOpen() == true %}
+                                    <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Join</a>
+                                {% else %}
+                                    {% if group.userApplied(loggedUser) == true %}
+                                        <a href="{{ path('unapply_group', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply</a>
+                                    {% else %}
+                                        <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply</a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

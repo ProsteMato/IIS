@@ -90,14 +90,30 @@ class User implements UserInterface
     private $admin_for_groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Group::class, mappedBy="users")
-     */
-    private $liked_groups;
-
-    /**
      * @ORM\OneToMany(targetEntity=Thread::class, mappedBy="created_by", orphanRemoval=true)
      */
     private $threads;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GroupUser::class, mappedBy="user")
+     */
+    private $groupUser;
+
+    /**
+     * @return mixed
+     */
+    public function getGroupUser()
+    {
+        return $this->groupUser;
+    }
+
+    /**
+     * @param mixed $groupUser
+     */
+    public function setGroupUser($groupUser): void
+    {
+        $this->groupUser = $groupUser;
+    }
 
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="created_by", orphanRemoval=true)
@@ -107,7 +123,6 @@ class User implements UserInterface
     public function __construct()
     {
         $this->admin_for_groups = new ArrayCollection();
-        $this->liked_groups = new ArrayCollection();
         $this->threads = new ArrayCollection();
         $this->posts = new ArrayCollection();
     }
@@ -390,5 +405,16 @@ class User implements UserInterface
         }
 
         return $this;
+    }
+
+    public function getGroups()
+    {
+        $arr = [];
+        foreach ($this->groupUser as &$gu){
+            if (in_array('MEM', $gu->getRole())){
+                array_push($arr, $gu->getGroup());
+            }
+        }
+        return $arr;
     }
 }

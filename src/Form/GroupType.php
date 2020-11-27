@@ -19,13 +19,6 @@ class GroupType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('visibility', CheckboxType::class, [
-                'required'=> false,
-                'label' => 'Anyone can see the group',
-                'label_attr' => [
-                                    'class' => 'switch-custom'
-                                ]
-            ])
             ->add('description', TextareaType::class, [
                 'required'=> false
             ])
@@ -40,9 +33,24 @@ class GroupType extends AbstractType
             ->add('save', SubmitType::class, [
                 'label' => 'Create',
                 'attr' =>   [
-                            'class' => 'btn btn-primary float-right mt-3 mb-3'
-                            ]
+                    'class' => 'btn btn-primary float-right mt-3 mb-3'
+                ]
             ])
+            ->add('visibility', CheckboxType::class, [
+                'required'=> false,
+                'label' => 'Anyone can see the group',
+                'label_attr' => [
+                    'class' => 'switch-custom'
+                ]
+            ])
+            ->add('open', CheckboxType::class, [
+                'required'=> false,
+                'label' => 'Anyone can join the group',
+                'label_attr' => [
+                    'class' => 'switch-custom'
+                ]
+            ])
+
         ;
     }
 
