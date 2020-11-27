@@ -52,9 +52,14 @@ class Group
     private $admin_user;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="liked_groups")
+     * @ORM\OneToMany(targetEntity=GroupUser::class, mappedBy="group", fetch="EXTRA_LAZY")
      */
-    private $users;
+    private $groupUser;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $open;
 
     /**
      * @ORM\OneToMany(targetEntity=Thread::class, mappedBy="group_id", orphanRemoval=true)
@@ -63,8 +68,15 @@ class Group
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
         $this->threads = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupUser()
+    {
+        return $this->groupUser;
     }
 
     public function getId(): ?int
@@ -149,33 +161,9 @@ class Group
         return $this->getDateCreated()->format('d/m/Y');
     }
 
-    /**
-     * @return Collection|User[]
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
     public function getUsersCount(): int
     {
-        return count($this->users);
-    }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        $this->users->removeElement($user);
-
-        return $this;
+        return count($this->getUsers());
     }
 
     /**
@@ -206,5 +194,61 @@ class Group
         }
 
         return $this;
+    }
+
+    public function getOpen(): ?bool
+    {
+        return $this->open;
+    }
+
+    public function setOpen(bool $open): self
+    {
+        $this->open = $open;
+
+        return $this;
+    }
+
+    public function isUserInGroup(User $user)
+    {
+        $users = $this->getUsers();
+        return in_array($user, $users);
+    }
+
+    public function userApplied(User $user)
+    {
+        $appliedUsers = $this->getAppliedUsers();
+        return in_array($user, $appliedUsers);
+    }
+
+    public function getAppliedUsers()
+    {
+        $arr = [];
+        foreach ($this->getGroupUser() as &$gu){
+            if(in_array('APP', $gu->getRole())){
+                array_push($arr, $gu->getUser());
+            }
+        }
+        return $arr;
+    }
+
+    public function isMember(User $user)
+    {
+        $users = $this->getUsers();
+        if (in_array($user, $users)){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public function getUsers()
+    {
+        $arr = [];
+        foreach ($this->getGroupUser() as &$gu){
+            if(in_array('MEM', $gu->getRole())){
+                array_push($arr, $gu->getUser());
+            }
+        }
+        return $arr;
     }
 }
