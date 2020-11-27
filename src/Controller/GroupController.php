@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Group;
 use App\Entity\Thread;
+use App\Form\ChangeOwnerType;
 use App\Form\GroupType;
 use App\Form\ThreadType;
 use App\Entity\GroupUser;
@@ -132,9 +133,9 @@ class GroupController extends AbstractController
     }
 
     /**
-     * @Route ("/group/delete/{id}", name="delete_group")
+     * @Route ("/group/show/{id}/edit/delete", name="delete_group")
      */
-    public function remove(Group $group)
+    public function delete_group(Group $group)
     {
         $em = $this->getDoctrine()->getManager();
         $groupUser = $group->getGroupUser();
@@ -216,6 +217,18 @@ class GroupController extends AbstractController
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
 
+        $formOwner = $this->createForm(ChangeOwnerType::class);
+        $formOwner->handleRequest($request);
+
+
+        $applications = $group->getAppliedUsers();
+        $modApps = $group->getAppliedMods();
+        $moderators = $group->getMods();
+
+        if (($key = array_search($loggedUser, $moderators)) !== false) {
+            unset($moderators[$key]);
+        }
+
         if($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             /* @var UploadedFile $file */
@@ -227,26 +240,33 @@ class GroupController extends AbstractController
             } else {
                 $group->setPicture("blank_group.png");
             }
-            $group->setAdminUser($loggedUser);
-            $group->setDateCreated(new DateTime());
+            $em->persist($group);
+            $em->flush();
+            return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+        }
 
-            $groupUser = new GroupUser();
-            $groupUser->setGroup($group);
-            $groupUser->setUser($loggedUser);
-            $groupUser->giveRole('ROLE_MEM');
-            $groupUser->giveRole('ROLE_MOD');
+        if($formOwner->isSubmitted() && $formOwner->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $formData = $formOwner->getData();
+            dump($formData);
+            die;
 
             $em->persist($group);
-            $em->persist($groupUser);
             $em->flush();
-
-            return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
+            return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
         }
 
         return $this->render('group/edit.html.twig', [
             'form' => $form->createView(),
+            'ownerForm' => $formOwner->createView(),
             'group' => $group,
-            'loggedUser' => $loggedUser
+            'loggedUser' => $loggedUser,
+            'applications' => $applications,
+            'appsCount' => count($applications),
+            'modApps' => $modApps,
+            'modAppsCount' => count($modApps),
+            'moderators' => $moderators,
+            'modCount' => count($moderators)
         ]);
     }
 
@@ -270,5 +290,13 @@ class GroupController extends AbstractController
             }
         }
         return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/edit/mod/delete/{user_id}", name="group_delete_mod")
+     */
+    public function delete_mod($group_id,  $user_id, GroupRepository $groupRepository, UserInterface $loggedUser = null)
+    {
+
     }
 }

@@ -234,6 +234,28 @@ class Group
         return $arr;
     }
 
+    public function getAppliedMods()
+    {
+        $arr = [];
+        foreach ($this->getGroupUser() as &$gu){
+            if(in_array('ROLE_MAPP', $gu->getRole())){
+                array_push($arr, $gu->getUser());
+            }
+        }
+        return $arr;
+    }
+
+    public function getMods()
+    {
+        $arr = [];
+        foreach ($this->getGroupUser() as &$gu){
+            if(in_array('ROLE_MOD', $gu->getRole())){
+                array_push($arr, $gu->getUser());
+            }
+        }
+        return $arr;
+    }
+
     public function isMember(User $user = null)
     {
         if ($user == null){

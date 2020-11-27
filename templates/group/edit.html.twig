@@ -1,34 +1,128 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}  {% endblock %}
+{% block title %}Edit Profile{% endblock %}
 
 {% block body %}
     {{ include('common/navbar.html.twig', {'loggedUser': loggedUser}) }}
 {% endblock %}
 
 {% block body_container %}
-    <div class="row justify-content-center">
-        <div class="d-flex">
-            <div class="jumbotron">
-                <h1 class="h3 mb-3 font-weight-normal text-center">You have to be member of <b>{{ group.name }}</b> to view it's content.</h1>
-                {% if loggedUser != null %}
-                    {% if group.open == true %}
-                        <div class="row justify-content-center">
-                            <a href="{{ path('subscribe_group_noshow', {'group_id': group.id, 'user_id' : loggedUser.id }) }}" type="button" class="btn btn-info float-center">Join</a>
-                        </div>
-                    {% else %}
-                        {% if group.userApplied(loggedUser) == true %}
-                            <div class="row justify-content-center">
-                                <a href="{{ path('unapply_group_noshow', {'group_id': group.id, 'user_id' : loggedUser.id }) }}" type="button" class="btn btn-warning float-center">Unapply</a>
-                            </div>
-                        {% else %}
-                            <div class="row justify-content-center">
-                                <a href="{{ path('subscribe_group_noshow', {'group_id': group.id, 'user_id' : loggedUser.id }) }}" type="button" class="btn btn-success float-center">Apply</a>
-                            </div>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item" >
+            <a class="nav-link active" data-toggle="tab" href="#group">Group</a>
+        </li>
+        <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#applications">Applications</a>
+        </li>
+        <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#moderators">Moderators</a>
+        </li>
+        <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#owner">Owner</a>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+
+        <div class="tab-pane fade active show" id="group">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="h3 mt-3 mb-3 font-weight-normal text-left">Edit an group</h5>
+                    {{form(form)}}
+                </div>
+                <div class="col-md-4">
+                    <h5 class="h3 mt-3 mb-3 mr-3 font-weight-normal text-left"></h5>
+                    <img  src="{{ asset('/group_pics/'  ~ group.getPicture())}}"
+                          class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+                    <div class="form-group">
+                        {%   if group.getPicture() != 'blank_group.png' %}
+
+                            <a href="/delete_photo"  class="txt2">Delete profile photo</a></p>
+
                         {% endif %}
-                    {% endif %}
-                {% endif %}
+                        {#<label for="exampleInputFile">Upload/Change profile photo</label>#}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="applications">
+            <div class="row">
+                <div class="jumbotron col-md-11 offset-md-1">
+                    <h6 class="display-3">Applications: {{ appsCount }}</h6>
+                    {% for user in applications %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img href="{{ path('user', {'id': user.getId() }) }}" src="{{ asset('/profilepics/' ~ user.getProfilePicture()) }}">
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{{ path('user', {'id': user.getId() }) }}"><b>{{ user.getFirstName() }} {{ user.getLastName() }}</b></a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{{  path('group_app_accept', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger  mt-3 ">Unmod</a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{{  path('group_app_deny', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger  mt-3 ">Unmod</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="moderators">
+            <div class="row">
+                <div class="jumbotron col-md-11 offset-md-1">
+                    <h6 class="display-3">Moderators: {{ modCount }}</h6>
+                    {% for mod in moderators %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img href="{{ path('user', {'id': mod.getId() }) }}" src="{{ asset('/profilepics/' ~ mod.getProfilePicture()) }}">
+                            </div>
+                            <div class="col-md-8">
+                                <a href="{{ path('user', {'id': mod.getId() }) }}"><b>{{ mod.getFirstName() }} {{ mod.getLastName() }}</b></a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{{  path('group_delete_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-danger  mt-3 ">Unmod</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="jumbotron col-md-11 offset-md-1">
+                    <h6 class="display-3">Applications: {{ modAppsCount }}</h6>
+                    {% for mod in modApps %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img href="{{ path('user', {'id': mod.getId() }) }}" src="{{ asset('/profilepics/' ~ mod.getProfilePicture()) }}">
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{{ path('user', {'id': mod.getId() }) }}"><b>{{ mod.getFirstName() }} {{ mod.getLastName() }}</b></a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{{  path('group_add_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-info  mt-3 ">Mod</a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{{  path('group_deny_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-danger  mt-3 ">Mod</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="owner">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="h3 mb-3 mt-3 font-weight-normal text-left">Change Owner</h6>
+                        {{ form(ownerForm) }}
+                </div>
+                <div class="col-md-4">
+                        <a href="{{  path('delete_group', {'id': group.getId()}) }}" class="btn btn-danger  mt-3 "
+                           onclick="return confirm('Are you sure you want to delete the group? ' +
+                                               'You can\'t restore it after.')">Delete group</a>
+                </div>
             </div>
         </div>
     </div>
+
 {% endblock %}
