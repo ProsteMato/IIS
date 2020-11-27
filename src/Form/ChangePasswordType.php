@@ -11,6 +11,14 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class ChangePasswordType
+ *
+ *  Class that represents form for changing password
+ *
+ * @author Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
+ * @package App\Form
+ */
 class ChangePasswordType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)

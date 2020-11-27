@@ -13,7 +13,16 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 
+/**
+ * Class EditUserType
+ *
+ * Class that represents form for editing user profile
+ *
+ * @author Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
+ * @package App\Form
+ */
 class EditUserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -32,6 +41,9 @@ class EditUserType extends AbstractType
             ->add('description', TextareaType::class, ['required'=> false])
             ->add('attachment', FileType::class, [ 'mapped' => false,
                 'required' => false,
+                'constraints' => [
+                    new Image(['maxSize' => '4M'])
+                ],
                 'label' => 'Select new profile photo'])
             ->add('save', SubmitType::class, ['label' => 'Update profile',
                 'attr' => array('class' => 'btn btn-primary float-left mb-5 mt-3')])

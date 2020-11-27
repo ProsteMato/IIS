@@ -17,7 +17,7 @@ class GroupController extends AbstractController
     /**
      * @Route("/group/show/{group_id}", name="show_group")
      */
-    public function show($group_id, GroupRepository $groupRepository, UserInterface $loggedUser): Response
+    public function show($group_id, GroupRepository $groupRepository, UserInterface $loggedUser = null): Response
     {
         $group = $groupRepository->find($group_id);
         $users = $group->getUsers();
@@ -90,6 +90,13 @@ class GroupController extends AbstractController
 
         $this->addFlash('success', 'Post was removed');
 
-        return $this->redirect($this->generateUrl('post.index'));
+        if ($this->isGranted('ROLE_ADMIN'))
+        {
+            return $this->redirectToRoute('show_list_groups');
+        }
+        else {
+            return $this->redirectToRoute('list_groups');
+        }
+
     }
 }

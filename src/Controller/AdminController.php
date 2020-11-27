@@ -7,15 +7,30 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Twig\Error\RuntimeError;
 
+/**
+ * Class AdminController
+ *
+ * Class handles functions for admin user in our information system
+ *
+ * @author Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
+ * @package App\Controller
+ */
 class AdminController extends AbstractController
 {
     /**
      * @Route("/admin/users", name="show_list_users")
+     *
+     * Function shows list of all users registered
+     * @param UserInterface $loggedUser looged in user object
+     * @return Response view
      */
     public function show_users(UserInterface $loggedUser): Response
     {
@@ -32,6 +47,10 @@ class AdminController extends AbstractController
 
     /**
      * @Route("/admin/groups", name="show_list_groups")
+     *
+     * Function shows list of all groups created
+     * @param UserInterface $loggedUser looged in user object
+     * @return Response view
      */
     public function show_groups(UserInterface $loggedUser): Response
     {
@@ -47,27 +66,23 @@ class AdminController extends AbstractController
 
     /**
      * @Route("/admin/delete/{id}", name="admin_delete")
+     *
+     * Function deletes user from system.
      * @param UserInterface $loggedUser
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param int $id
-     * @return void
+     * @return RedirectResponse
      */
     public function delete_user(UserInterface $loggedUser, Request $request, EntityManagerInterface $entityManager, int $id){
 
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
-        print($user->getId());
-
-        // TODO kontrola ci user nahodou nema admina prideleneho - zo stranky sa sem nedostane ale moze to vytukat
-
         $entityManager->remove($user);
         $entityManager->flush();
 
-        $response = new Response();
-        $response->send();
+        $this->addFlash('notice', 'User was deleted');
 
         return $this->redirectToRoute('show_list_users');
-
     }
 }
