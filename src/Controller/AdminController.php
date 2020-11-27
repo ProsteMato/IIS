@@ -32,7 +32,7 @@ class AdminController extends AbstractController
      * @param UserInterface $loggedUser looged in user object
      * @return Response view
      */
-    public function show_users(UserInterface $loggedUser): Response
+    public function show_users(UserInterface $loggedUser=null): Response
     {
 
         $users =  $this->getDoctrine()->getRepository(User::class)->findAll();
@@ -52,7 +52,7 @@ class AdminController extends AbstractController
      * @param UserInterface $loggedUser looged in user object
      * @return Response view
      */
-    public function show_groups(UserInterface $loggedUser): Response
+    public function show_groups(UserInterface $loggedUser = null): Response
     {
 
         $groups =  $this->getDoctrine()->getRepository(Group::class)->findAll();
@@ -74,7 +74,8 @@ class AdminController extends AbstractController
      * @param int $id
      * @return RedirectResponse
      */
-    public function delete_user(UserInterface $loggedUser, Request $request, EntityManagerInterface $entityManager, int $id){
+    public function delete_user(Request $request, EntityManagerInterface $entityManager, int $id,
+                                UserInterface $loggedUser = null){
 
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 

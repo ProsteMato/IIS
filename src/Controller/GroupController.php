@@ -94,7 +94,7 @@ class GroupController extends AbstractController
     /**
      * @Route("/group/create", name="create_group")
      */
-    public function create(Request $request, UserInterface $loggedUser): Response
+    public function create(Request $request, UserInterface $loggedUser = null): Response
     {
         $group = new Group();
         $form = $this->createForm(GroupType::class, $group, ['label' => 'Create']);
@@ -297,7 +297,8 @@ class GroupController extends AbstractController
     /**
      * @Route ("/group/show/{group_id}/edit/mod/delete/{user_id}", name="group_delete_mod")
      */
-    public function delete_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    public function delete_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+                               UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
         $groupUser = $group->getGroupUser();
@@ -386,7 +387,8 @@ class GroupController extends AbstractController
     /**
      * @Route ("/group/show/{group_id}/edit/mod/accept/{user_id}", name="group_accept_mod")
      */
-    public function accept_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    public function accept_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+                               UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
         $groupUser = $group->getGroupUser();
@@ -407,7 +409,8 @@ class GroupController extends AbstractController
     /**
      * @Route ("/group/show/{group_id}/edit/mod/deny/{user_id}", name="group_deny_mod")
      */
-    public function deny_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    public function deny_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+                             UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
         $groupUser = $group->getGroupUser();
@@ -427,7 +430,8 @@ class GroupController extends AbstractController
     /**
      * @Route ("/group/show/{group_id}/edit/apps/accep/{user_id}", name="group_app_accept")
      */
-    public function appl_accept($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    public function appl_accept($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+                                UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
         $groupUser = $group->getGroupUser();
@@ -448,7 +452,8 @@ class GroupController extends AbstractController
     /**
      * @Route ("/group/show/{group_id}/edit/apps/deny/{user_id}", name="group_app_deny")
      */
-    public function appl_deny($group_id, $user_id, UserRepository $userRepository, GroupRepository $groupRepository, UserInterface $loggedUser = null)
+    public function appl_deny($group_id, $user_id, UserRepository $userRepository, GroupRepository $groupRepository,
+                              UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
         $groupUser = $group->getGroupUser();

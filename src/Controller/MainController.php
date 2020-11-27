@@ -37,6 +37,8 @@ class MainController extends AbstractController
 
     /**
      * @Route("/acces_denied", name = "acces_denied")
+     * @param UserInterface|null $loggedUser
+     * @return Response
      */
     public function access_denied(UserInterface $loggedUser = null){
         return $this->render('common/access_denied.html.twig', [

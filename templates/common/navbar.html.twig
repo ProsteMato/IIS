@@ -25,7 +25,7 @@
 
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Help</a>
-                            {% if is_granted('ROLE_ADMIN') %}
+                            {% if 'ROLE_ADMIN' in loggedUser.getRoles %}
                                 <a class="dropdown-item" href="{{ path('show_list_users') }}">Manage users</a>
                                 <a class="dropdown-item" href="{{ path('show_list_groups') }}">Manage groups</a>
                             {% endif %}

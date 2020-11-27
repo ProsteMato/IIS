@@ -68,8 +68,8 @@ class UserController extends AbstractController
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @return Response
      */
-    public function edit(UserInterface $user,  Request $request, EntityManagerInterface $entityManager,
-                         UserPasswordEncoderInterface $passwordEncoder){
+    public function edit(Request $request, EntityManagerInterface $entityManager,
+                         UserPasswordEncoderInterface $passwordEncoder, UserInterface $user = null){
 
         $form = $this->createForm(EditUserType::class, $user);
         $form->handleRequest($request);
@@ -127,7 +127,7 @@ class UserController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return RedirectResponse
      */
-    public function delete_user(UserInterface $user, Request $request, EntityManagerInterface $entityManager){
+    public function delete_user(Request $request, EntityManagerInterface $entityManager, UserInterface $user = null){
 
         $this->get('security.token_storage')->setToken(null); // odhlasenie uzivatela
 
@@ -150,7 +150,7 @@ class UserController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return RedirectResponse
      */
-    public function delete_photo(UserInterface $user, EntityManagerInterface $entityManager)
+    public function delete_photo(EntityManagerInterface $entityManager, UserInterface $user =null)
     {
 
         $user ->setProfilePicture('blank.png');
