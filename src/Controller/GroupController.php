@@ -115,8 +115,8 @@ class GroupController extends AbstractController
             $groupUser = new GroupUser();
             $groupUser->setGroup($group);
             $groupUser->setUser($loggedUser);
-            $groupUser->giveRole('MEM');
-            $groupUser->giveRole('MOD');
+            $groupUser->giveRole('ROLE_MEM');
+            $groupUser->giveRole('ROLE_MOD');
 
             $em->persist($group);
             $em->persist($groupUser);
@@ -137,10 +137,14 @@ class GroupController extends AbstractController
     public function remove(Group $group)
     {
         $em = $this->getDoctrine()->getManager();
+        $groupUser = $group->getGroupUser();
+        foreach ($groupUser as &$gu){
+            $em->remove($gu);
+        }
         $em->remove($group);
         $em->flush();
 
-        $this->addFlash('success', 'Post was removed');
+        $this->addFlash('success', 'Group was removed');
 
         if ($this->isGranted('ROLE_ADMIN'))
         {
@@ -165,7 +169,7 @@ class GroupController extends AbstractController
             $newGU = new GroupUser();
             $newGU->setGroup($group);
             $newGU->setUser($loggedUser);
-            $newGU->giveRole('MEM');
+            $newGU->giveRole('ROLE_MEM');
 
             $em->persist($newGU);
             $em->flush();
@@ -176,7 +180,7 @@ class GroupController extends AbstractController
             $newGU = new GroupUser();
             $newGU->setGroup($group);
             $newGU->setUser($loggedUser);
-            $newGU->giveRole('APP');
+            $newGU->giveRole('ROLE_APP');
 
             $em->persist($newGU);
             $em->flush();
@@ -229,8 +233,8 @@ class GroupController extends AbstractController
             $groupUser = new GroupUser();
             $groupUser->setGroup($group);
             $groupUser->setUser($loggedUser);
-            $groupUser->giveRole('MEM');
-            $groupUser->giveRole('MOD');
+            $groupUser->giveRole('ROLE_MEM');
+            $groupUser->giveRole('ROLE_MOD');
 
             $em->persist($group);
             $em->persist($groupUser);

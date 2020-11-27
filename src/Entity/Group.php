@@ -214,8 +214,11 @@ class Group
         return in_array($user, $users);
     }
 
-    public function userApplied(User $user)
+    public function userApplied(User $user = null)
     {
+        if ($user == null){
+            return false;
+        }
         $appliedUsers = $this->getAppliedUsers();
         return in_array($user, $appliedUsers);
     }
@@ -224,15 +227,18 @@ class Group
     {
         $arr = [];
         foreach ($this->getGroupUser() as &$gu){
-            if(in_array('APP', $gu->getRole())){
+            if(in_array('ROLE_APP', $gu->getRole())){
                 array_push($arr, $gu->getUser());
             }
         }
         return $arr;
     }
 
-    public function isMember(User $user)
+    public function isMember(User $user = null)
     {
+        if ($user == null){
+            return false;
+        }
         $users = $this->getUsers();
         if (in_array($user, $users)){
             return true;
@@ -245,7 +251,7 @@ class Group
     {
         $arr = [];
         foreach ($this->getGroupUser() as &$gu){
-            if(in_array('MEM', $gu->getRole())){
+            if(in_array('ROLE_MEM', $gu->getRole())){
                 array_push($arr, $gu->getUser());
             }
         }

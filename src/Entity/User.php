@@ -411,7 +411,7 @@ class User implements UserInterface
     {
         $arr = [];
         foreach ($this->groupUser as &$gu){
-            if (in_array('MEM', $gu->getRole())){
+            if (in_array('ROLE_MEM', $gu->getRole())){
                 array_push($arr, $gu->getGroup());
             }
         }

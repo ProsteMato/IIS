@@ -43,7 +43,9 @@
                                     {% if group.userApplied(loggedUser) == true %}
                                         <a href="{{ path('unapply_group', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply</a>
                                     {% else %}
-                                        <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply</a>
+                                        {% if is_granted('ROLE_USER') %}
+                                            <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply</a>
+                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
