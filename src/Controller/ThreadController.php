@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Group;
+use App\Entity\Thread;
+use App\Form\ThreadType;
+use App\Repository\GroupRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -12,19 +16,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class ThreadController extends AbstractController
 {
-
-    /**
-     * @Route("/create", name="create")
-     * @param UserInterface $user
-     */
-    public function create(UserInterface $user) {
-
-    }
-
     /**
      * @Route("/show/{thread_id}", name="show")
      */
     public function show() {
-
+        return $this->render('thread/show.html.twig');
     }
 }

@@ -32,9 +32,59 @@
 
             <div class="jumbotron">
 
-                <h3 class="display-3">Threads</h3>
-
-
+                <div class="container">
+                    <div class="row">
+                        <div class="col"><h3 class="display-5" style="display: inline">Threads</h3></div>
+                        {% if is_granted('ROLE_USER') %}
+                            <div class="col"><a class="float-right pt-2" data-toggle="collapse" aria-expanded="true" aria-controls="collapseExample" style="text-decoration: none; font-size: 18px" href="#collapseExample">Create Thread</a></div>
+                        {% endif %}
+                    </div>
+                    <div class="collapse row" id="collapseExample">
+                        <div class="col">
+                            {{ form(form) }}
+                        </div>
+                    </div>
+                    {% for thread in threads %}
+                        <div class="container mb-3 rounded border border-light">
+                            <div class="row mt-1 border-bottom border-light">
+                                <div class="col-8">
+                                    <a style="text-decoration: none" href="{{ path('group.thread.show', {group_id: group.getId ,thread_id: thread.getId}) }}"><h5>{{ thread.getTitle }}</h5></a>
+                                </div>
+                                <div class="col">
+                                    <p class="text-right" style="font-size: 14px">
+                                        <b>Rating: </b> {{ thread.getRating() }}<br>
+                                        <i class="fa fa-thumbs-down float-right p-1" style="font-size:24px"></i>
+                                        <i class="fa fa-thumbs-up float-right p-1" style="font-size:24px"></i>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mt-1">
+                                    <p>
+                                        <b>Description: </b>{{ thread.getDescription() }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <p class="text-left">
+                                        <b>Created by:</b> <a style="text-decoration: none" href="{{ path('user', {id: thread.getCreatedBy().getId}) }}">{{ thread.getCreatedBy().getFirstName() }} {{ thread.getCreatedBy().getLastName }}</a>
+                                    </p>
+                                </div>
+                                <div class="col-2">
+                                    <p class="text-left">
+                                        {{ thread.getPostsCount }} posts
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="text-right">
+                                        <b>Last update:</b> {{ thread.getDateString() }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 

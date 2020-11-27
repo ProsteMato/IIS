@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Group;
+use App\Entity\Thread;
 use App\Form\GroupType;
+use App\Form\ThreadType;
 use App\Repository\GroupRepository;
+use App\Repository\ThreadRepository;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,15 +20,37 @@ class GroupController extends AbstractController
     /**
      * @Route("/group/show/{group_id}", name="show_group")
      */
-    public function show($group_id, GroupRepository $groupRepository, UserInterface $loggedUser = null): Response
+    public function show($group_id, Request $request, GroupRepository $groupRepository, UserInterface $user = null): Response
     {
         $group = $groupRepository->find($group_id);
         $users = $group->getUsers();
+        $threads = $group->getThreads();
+
+        $thread = new Thread();
+
+        $form = $this->createForm(ThreadType::class, $thread);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $thread = $form->getData();
+            $thread->setCreationDate(new \DateTime('now'));
+            $thread->setCreatedBy($user);
+            $thread->setRating(0);
+            $thread->setGroupId($groupRepository->find($group_id));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($thread);
+            $em->flush();
+
+            return $this->redirectToRoute('show_group', [
+                'group_id' => $group_id
+            ]);
+        }
 
         return $this->render('group/show.html.twig', [
             'group' => $group,
-            'loggedUser' => $loggedUser,
-            'users' => $users
+            'loggedUser' => $user,
+            'users' => $users,
+            'threads' => $threads,
+            'form' => $form->createView()
         ]);
     }
 

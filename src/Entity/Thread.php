@@ -107,6 +107,11 @@ class Thread
         return $this->creation_date;
     }
 
+    public function getDateString(): string
+    {
+        return $this->getCreationDate()->format('d.m.Y H:i:s');
+    }
+
     public function setCreationDate(\DateTimeInterface $creation_date): self
     {
         $this->creation_date = $creation_date;
@@ -120,6 +125,11 @@ class Thread
     public function getPosts(): Collection
     {
         return $this->posts;
+    }
+
+    public function getPostsCount(): int
+    {
+        return count($this->posts);
     }
 
     public function addPost(Post $post): self
