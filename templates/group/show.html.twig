@@ -34,7 +34,15 @@
                             {% if group.isMember(loggedUser) == true %}
                                 <a href="{{ path('leave_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Leave</a>
                                 {% if group.getAdminUser() == loggedUser %}
-                                    <a href="{{ path('edit_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Settings</a>
+                                    <a href="{{ path('edit_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Settings</a>
+                                {% else %}
+                                    {% if group.isMod(loggedUser) == false and group.isAppliedMod(loggedUser) == false %}
+                                        <a href="{{ path('group_apply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply mod</a>
+                                    {% elseif group.isMod(loggedUser) == false and group.isAppliedMod(loggedUser) == true %}
+                                        <a href="{{ path('group_unapply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply mod</a>
+                                    {% elseif group.isMod(loggedUser) == true %}
+                                        <a href="{{ path('group_revoke_mod', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Revoke mod</a>
+                                    {% endif %}
                                 {% endif %}
                             {% else %}
                                 {% if group.getOpen() == true %}

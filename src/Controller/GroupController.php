@@ -10,6 +10,7 @@ use App\Form\ThreadType;
 use App\Entity\GroupUser;
 use App\Repository\GroupRepository;
 use App\Repository\ThreadRepository;
+use App\Repository\UserRepository;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -96,7 +97,7 @@ class GroupController extends AbstractController
     public function create(Request $request, UserInterface $loggedUser): Response
     {
         $group = new Group();
-        $form = $this->createForm(GroupType::class, $group);
+        $form = $this->createForm(GroupType::class, $group, ['label' => 'Create']);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
@@ -137,6 +138,7 @@ class GroupController extends AbstractController
      */
     public function delete_group(Group $group)
     {
+        // aj s threadmi a postmi
         $em = $this->getDoctrine()->getManager();
         $groupUser = $group->getGroupUser();
         foreach ($groupUser as &$gu){
@@ -214,7 +216,7 @@ class GroupController extends AbstractController
     public function edit($group_id, Request $request, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
-        $form = $this->createForm(GroupType::class, $group);
+        $form = $this->createForm(GroupType::class, $group, ['label' => 'Edit']);
         $form->handleRequest($request);
 
         $formOwner = $this->createForm(ChangeOwnerType::class);
@@ -295,8 +297,171 @@ class GroupController extends AbstractController
     /**
      * @Route ("/group/show/{group_id}/edit/mod/delete/{user_id}", name="group_delete_mod")
      */
-    public function delete_mod($group_id,  $user_id, GroupRepository $groupRepository, UserInterface $loggedUser = null)
+    public function delete_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
     {
+        $group = $groupRepository->find($group_id);
+        $groupUser = $group->getGroupUser();
+        $user = $userRepository->find($user_id);
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $user){
+                $gu->removeRole('ROLE_MOD');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($gu);
+                $em->flush();
+                return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+            }
+        }
+        return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+    }
 
+    /**
+     * @Route ("/group/show/{group_id}/unapplymod", name="group_unapply_mod")
+     */
+    public function unapply_mod($group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    {
+        $group = $groupRepository->find($group_id);
+        $groupUser = $group->getGroupUser();
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $loggedUser){
+                $gu->removeRole('ROLE_MAPP');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($gu);
+                $em->flush();
+                return $this->redirectToRoute('show_group', [
+                    'group_id' => $group_id
+                ]);
+            }
+        }
+        return $this->redirectToRoute('show_group', [
+            'group_id' => $group_id
+        ]);
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/revokemod", name="group_revoke_mod")
+     */
+    public function revoke_mod($group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    {
+        $group = $groupRepository->find($group_id);
+        $groupUser = $group->getGroupUser();
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $loggedUser){
+                $gu->removeRole('ROLE_MOD');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($gu);
+                $em->flush();
+                return $this->redirectToRoute('show_group', [
+                    'group_id' => $group_id
+                ]);
+            }
+        }
+        return $this->redirectToRoute('show_group', [
+            'group_id' => $group_id
+        ]);
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/applymod", name="group_apply_mod")
+     */
+    public function apply_mod($group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    {
+        $group = $groupRepository->find($group_id);
+        $groupUser = $group->getGroupUser();
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $loggedUser){
+                $gu->giveRole('ROLE_MAPP');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($gu);
+                $em->flush();
+                return $this->redirectToRoute('show_group', [
+                    'group_id' => $group_id
+                ]);
+            }
+        }
+        return $this->redirectToRoute('show_group', [
+            'group_id' => $group_id
+        ]);
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/edit/mod/accept/{user_id}", name="group_accept_mod")
+     */
+    public function accept_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    {
+        $group = $groupRepository->find($group_id);
+        $groupUser = $group->getGroupUser();
+        $user = $userRepository->find($user_id);
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $user){
+                $gu->giveRole('ROLE_MOD');
+                $gu->removeRole('ROLE_MAPP');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($gu);
+                $em->flush();
+                return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+            }
+        }
+        return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/edit/mod/deny/{user_id}", name="group_deny_mod")
+     */
+    public function deny_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    {
+        $group = $groupRepository->find($group_id);
+        $groupUser = $group->getGroupUser();
+        $user = $userRepository->find($user_id);
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $user){
+                $gu->removeRole('ROLE_MAPP');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($gu);
+                $em->flush();
+                return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+            }
+        }
+        return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/edit/apps/accep/{user_id}", name="group_app_accept")
+     */
+    public function appl_accept($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    {
+        $group = $groupRepository->find($group_id);
+        $groupUser = $group->getGroupUser();
+        $user = $userRepository->find($user_id);
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $user){
+                $gu->giveRole('ROLE_MEM');
+                $gu->removeRole('ROLE_APP');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($gu);
+                $em->flush();
+                return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+            }
+        }
+        return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/edit/apps/deny/{user_id}", name="group_app_deny")
+     */
+    public function appl_deny($group_id, $user_id, UserRepository $userRepository, GroupRepository $groupRepository, UserInterface $loggedUser = null)
+    {
+        $group = $groupRepository->find($group_id);
+        $groupUser = $group->getGroupUser();
+        $user = $userRepository->find($user_id);
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $user){
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($gu);
+                $em->persist($group);
+                $em->flush();
+                return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+            }
+        }
+        return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
     }
 }

@@ -31,7 +31,7 @@ class GroupType extends AbstractType
                 'label' => 'Select group picture'
             ])
             ->add('save', SubmitType::class, [
-                'label' => 'Create',
+                'label' => $options['label'],
                 'attr' =>   [
                     'class' => 'btn btn-primary float-right mt-3 mb-3'
                 ]

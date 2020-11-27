@@ -89,4 +89,16 @@ class GroupUser
         }
     }
 
+    public function removeRole(string $role): void
+    {
+        if (($key = array_search($role, $this->role)) !== false) {
+            unset($this->role[$key]);
+        }
+        /*
+        if (in_array($role, $this->role)){
+            array_push($this->role, $role);
+        }
+        */
+    }
+
 }

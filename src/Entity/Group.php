@@ -223,6 +223,15 @@ class Group
         return in_array($user, $appliedUsers);
     }
 
+    public function isAppliedMod(User $user = null)
+    {
+        if ($user == null){
+            return false;
+        }
+        $appliedMods = $this->getAppliedMods();
+        return in_array($user, $appliedMods);
+    }
+
     public function getAppliedUsers()
     {
         $arr = [];
@@ -256,17 +265,22 @@ class Group
         return $arr;
     }
 
+    public function isMod(User $user = null)
+    {
+        if ($user == null){
+            return false;
+        }
+        $mods = $this->getMods();
+        return in_array($user, $mods);
+    }
+
     public function isMember(User $user = null)
     {
         if ($user == null){
             return false;
         }
         $users = $this->getUsers();
-        if (in_array($user, $users)){
-            return true;
-        } else{
-            return false;
-        }
+        return in_array($user, $users);
     }
 
     public function getUsers()

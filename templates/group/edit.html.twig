@@ -59,10 +59,10 @@
                                 <a href="{{ path('user', {'id': user.getId() }) }}"><b>{{ user.getFirstName() }} {{ user.getLastName() }}</b></a>
                             </div>
                             <div class="col-md-2">
-                                <a href="{{  path('group_app_accept', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger  mt-3 ">Unmod</a>
+                                <a href="{{  path('group_app_accept', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-info  mt-3 ">Accept</a>
                             </div>
                             <div class="col-md-2">
-                                <a href="{{  path('group_app_deny', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger  mt-3 ">Unmod</a>
+                                <a href="{{  path('group_app_deny', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger  mt-3 ">Deny</a>
                             </div>
                         </div>
                     {% endfor %}
@@ -100,10 +100,10 @@
                                 <a href="{{ path('user', {'id': mod.getId() }) }}"><b>{{ mod.getFirstName() }} {{ mod.getLastName() }}</b></a>
                             </div>
                             <div class="col-md-2">
-                                <a href="{{  path('group_add_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-info  mt-3 ">Mod</a>
+                                <a href="{{  path('group_accept_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-info  mt-3 ">Accept</a>
                             </div>
                             <div class="col-md-2">
-                                <a href="{{  path('group_deny_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-danger  mt-3 ">Mod</a>
+                                <a href="{{  path('group_deny_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-danger  mt-3 ">Deny</a>
                             </div>
                         </div>
                     {% endfor %}
