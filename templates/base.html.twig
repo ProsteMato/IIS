@@ -9,7 +9,7 @@
     {% block stylesheets %}
     {% endblock %}
 </head>
-<body onload="StartTimers();" onmousemove="ResetTimers();">
+<body onload="StartTimers();" onmouseenter="ResetTimers();" onclick="ResetTimers();" onscroll="ResetTimers();", onkeypress="ResetTimers();">
 
 {% block body %}
 
