@@ -120,7 +120,7 @@
     <div class="jumbotron mt-0">
         <h5 > Recent posts:</h5>
 
-        {% for post in posts|slice(0,10) %}
+        {% for post in posts|slice(0,10)|reverse %}
             {% if post.getThread.getGroupId.getVisibility %}
                 <a href="{{path('group.thread.show',
                     {group_id: post.getThread.getGroupId.getId,

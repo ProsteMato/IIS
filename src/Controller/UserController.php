@@ -48,7 +48,7 @@ class UserController extends AbstractController
 
         $groups = $loggedUser->getGroups();
         $posts = $loggedUser->getPosts();
-        
+
 
         return $this->render('user/viewprofile.html.twig', [
             'showedUser' => $user,
