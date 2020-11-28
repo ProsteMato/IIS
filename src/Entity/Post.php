@@ -36,7 +36,7 @@ class Post
 
     /**
      * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="replays")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $post;
 

@@ -1,20 +1,67 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ThreadController!{% endblock %}
-
+{% block title %} {{ thread.getTitle }} {% endblock %}
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    {{ include('common/navbar.html.twig') }}
+{% endblock %}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+{% block body_container %}
+    {% for message in app.flashes ('notice') %}
+        <div class="alert alert-warning">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <div class="row">
+        <div class="container">
+            <div class="jumbotron">
+                <div class="container mb-3">
+                    <div class="row mt-1">
+                        <div class="col-8">
+                            <h3>{{ thread.getTitle }}</h3>
+                        </div>
+                        <div class="col">
+                            <p class="text-right" style="font-size: 18px">
+                                <b>Rating: {{ thread.getRating() }}</b><br>
+                                {{ render(controller('App\\Controller\\ThreadController::userDisliked', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
+                                {{ render(controller('App\\Controller\\ThreadController::userLiked', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row ml-1">
+                        <div class="col ">
+                            <p style="font-size: 18px">
+                                {{ thread.getDescription() }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row ml-1">
+                        <div class="col">
+                            <p class="text-left">
+                                <b>Created by:</b> <a style="text-decoration: none" href="{{ path('user', {id: thread.getCreatedBy().getId}) }}">{{ thread.getCreatedBy().getFirstName() }} {{ thread.getCreatedBy().getLastName }}</a>
+                                &nbsp;&nbsp;|&nbsp;&nbsp;{{ thread.getDateString() }}
+                                &nbsp;&nbsp;|&nbsp;&nbsp;{{ thread.getPostsCount }} posts
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p class="text-right">
+                                <b>Last update:</b> {{ thread.getDateString() }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row ml-1 mb-4 mt-5">
+                        <div class="col">
+                            {{ render(path('create_post', { "thread_id": thread.getId(), "group_id": thread.groupId.getId }))}}
+                        </div>
+                    </div>
+                </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/student/lampstack-7.4.12-0/apache2/htdocs/IIS/src/Controller/ThreadController.php'|file_link(0) }}">src/Controller/ThreadController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/student/lampstack-7.4.12-0/apache2/htdocs/IIS/templates/thread/show.html.twig'|file_link(0) }}">templates/thread/index.html.twig</a></code></li>
-    </ul>
-</div>
+
+
+                <div class="container">
+                    <h4>Posts</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

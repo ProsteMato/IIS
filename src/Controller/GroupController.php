@@ -94,10 +94,10 @@ class GroupController extends AbstractController
     /**
      * @Route("/group/create", name="create_group")
      */
-    public function create(Request $request, UserInterface $loggedUser = null): Response
+    public function create(Request $request, GroupRepository $groupRepository, UserInterface $loggedUser = null): Response
     {
         $group = new Group();
-        $form = $this->createForm(GroupType::class, $group, ['label' => 'Create']);
+        $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
@@ -124,7 +124,9 @@ class GroupController extends AbstractController
             $em->persist($groupUser);
             $em->flush();
 
-            return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
+            return $this->redirectToRoute('show_group', [
+                'group_id' => $group->getId()
+            ]);
         }
 
         return $this->render('group/create.html.twig', [

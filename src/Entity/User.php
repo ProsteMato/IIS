@@ -120,11 +120,17 @@ class User implements UserInterface
      */
     private $posts;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ThreadUser::class, mappedBy="users", orphanRemoval=true)
+     */
+    private $threadUsers;
+
     public function __construct()
     {
         $this->admin_for_groups = new ArrayCollection();
         $this->threads = new ArrayCollection();
         $this->posts = new ArrayCollection();
+        $this->threadUsers = new ArrayCollection();
     }
     
     public function getId(): ?int
@@ -416,5 +422,35 @@ class User implements UserInterface
             }
         }
         return $arr;
+    }
+
+    /**
+     * @return Collection|ThreadUser[]
+     */
+    public function getThreadUsers(): Collection
+    {
+        return $this->threadUsers;
+    }
+
+    public function addThreadUser(ThreadUser $threadUser): self
+    {
+        if (!$this->threadUsers->contains($threadUser)) {
+            $this->threadUsers[] = $threadUser;
+            $threadUser->setUsers($this);
+        }
+
+        return $this;
+    }
+
+    public function removeThreadUser(ThreadUser $threadUser): self
+    {
+        if ($this->threadUsers->removeElement($threadUser)) {
+            // set the owning side to null (unless already changed)
+            if ($threadUser->getUsers() === $this) {
+                $threadUser->setUsers(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -64,7 +64,7 @@
 
             <div class="jumbotron">
 
-                <div class="container">
+                <div  class="container">
                     <div class="row">
                         <div class="col"><h3 class="display-5" style="display: inline">Threads</h3></div>
                         {% if is_granted('ROLE_USER') %}
@@ -84,9 +84,9 @@
                                 </div>
                                 <div class="col">
                                     <p class="text-right" style="font-size: 14px">
-                                        <b>Rating: </b> {{ thread.getRating() }}<br>
-                                        <i class="fa fa-thumbs-down float-right p-1" style="font-size:24px"></i>
-                                        <i class="fa fa-thumbs-up float-right p-1" style="font-size:24px"></i>
+                                        <b>Rating: {{ thread.getRating() }}</b><br>
+                                        {{ render(controller('App\\Controller\\ThreadController::userDisliked', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
+                                        {{ render(controller('App\\Controller\\ThreadController::userLiked', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
                                     </p>
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                                 </div>
                                 <div class="col-2">
                                     <p class="text-left">
-                                        {{ thread.getPostsCount }} posts
+                                        <b>Posts: </b>{{ thread.getPostsCount }}
                                     </p>
                                 </div>
                                 <div class="col-6">
@@ -140,8 +140,11 @@
                 </div>
             </div>
         </div>
-
     </div>
 
 
+{% endblock %}
+
+{% block javascripts %}
+ <script src="/js/main.js"></script>
 {% endblock %}

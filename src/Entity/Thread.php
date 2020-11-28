@@ -56,9 +56,15 @@ class Thread
      */
     private $created_by;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ThreadUser::class, mappedBy="threads", orphanRemoval=true)
+     */
+    private $threadUsers;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->threadUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -174,6 +180,36 @@ class Thread
     public function setCreatedBy(?User $created_by): self
     {
         $this->created_by = $created_by;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ThreadUser[]
+     */
+    public function getThreadUsers(): Collection
+    {
+        return $this->threadUsers;
+    }
+
+    public function addThreadUser(ThreadUser $threadUser): self
+    {
+        if (!$this->threadUsers->contains($threadUser)) {
+            $this->threadUsers[] = $threadUser;
+            $threadUser->setThreads($this);
+        }
+
+        return $this;
+    }
+
+    public function removeThreadUser(ThreadUser $threadUser): self
+    {
+        if ($this->threadUsers->removeElement($threadUser)) {
+            // set the owning side to null (unless already changed)
+            if ($threadUser->getThreads() === $this) {
+                $threadUser->setThreads(null);
+            }
+        }
 
         return $this;
     }

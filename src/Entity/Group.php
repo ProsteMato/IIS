@@ -66,9 +66,15 @@ class Group
      */
     private $threads;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ThreadUser::class, mappedBy="group_list", orphanRemoval=true)
+     */
+    private $threadUsers;
+
     public function __construct()
     {
         $this->threads = new ArrayCollection();
+        $this->threadUsers = new ArrayCollection();
     }
 
     /**
@@ -292,5 +298,35 @@ class Group
             }
         }
         return $arr;
+    }
+
+    /**
+     * @return Collection|ThreadUser[]
+     */
+    public function getThreadUsers(): Collection
+    {
+        return $this->threadUsers;
+    }
+
+    public function addThreadUser(ThreadUser $threadUser): self
+    {
+        if (!$this->threadUsers->contains($threadUser)) {
+            $this->threadUsers[] = $threadUser;
+            $threadUser->setGroupList($this);
+        }
+
+        return $this;
+    }
+
+    public function removeThreadUser(ThreadUser $threadUser): self
+    {
+        if ($this->threadUsers->removeElement($threadUser)) {
+            // set the owning side to null (unless already changed)
+            if ($threadUser->getGroupList() === $this) {
+                $threadUser->setGroupList(null);
+            }
+        }
+
+        return $this;
     }
 }
