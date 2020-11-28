@@ -70,7 +70,7 @@
                         <p>{{ showedUser.description }}</p>
                     {% endif %}
                 </div>
-                {%  if showedUser != loggedUser and loggedUser %}
+                {%  if is_granted('ROLE_USER') and showedUser != loggedUser %}
                     {% if not loggedUser.isFollowing(showedUser) %}
                         <a href="{{ path('follow_user', {'user_id': showedUser.getId()}) }}" type="button" class="btn btn-info float-right">Follow</a>
                     {% else %}
