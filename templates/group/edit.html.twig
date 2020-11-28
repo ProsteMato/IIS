@@ -7,7 +7,11 @@
 {% endblock %}
 
 {% block body_container %}
-
+    {% for message in app.flashes ('notice') %}
+        <div class="alert alert-warning">
+            {{ message }}
+        </div>
+    {% endfor %}
     <ul class="nav nav-tabs">
         <li class="nav-item" >
             <a class="nav-link active" data-toggle="tab" href="#group">Group</a>

@@ -7,6 +7,7 @@ use App\Form\ChangePasswordType;
 use App\Form\EditUserType;
 use App\Form\Model\ChangePassword;
 use App\Form\UserProfileType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -167,6 +168,73 @@ class UserController extends AbstractController
         return $this->redirectToRoute('edit_user');
     }
 
+    /**
+     * @Route("/user{user_id}/follow", name="follow_user")
+     *
+     * @param string $user_id
+     * @param EntityManagerInterface $entityManager
+     * @param UserInterface $user
+     * @return RedirectResponse
+     */
+    public function follow_user($user_id, EntityManagerInterface $entityManager, UserRepository $userRepository,
+                                UserInterface $loggedUser =null)
+    {
+        $user = $userRepository->find($user_id);
+        $loggedUser->addSubscriber($user);
+
+        $entityManager->persist($loggedUser);
+        $entityManager->flush();
+
+        $groups = $loggedUser->getGroups();
+        $posts = $loggedUser->getPosts();
+
+
+        return $this->render('user/viewprofile.html.twig', [
+            'showedUser' => $user,
+            'loggedUser' => $loggedUser,
+            'id' => $user_id,
+            'groups' => $groups,
+            'posts' => $posts,
+            'groups_count' => count($groups),
+            'threads_count' =>count($loggedUser->getThreads()),
+            'posts_count' => count($loggedUser->getPosts()),
+            'controller_name' => 'UserController',
+        ]);
+    }
+
+    /**
+     * @Route("/user{user_id}/unfollow", name="unfollow_user")
+     *
+     * @param string $user_id
+     * @param EntityManagerInterface $entityManager
+     * @param UserInterface $user
+     * @return RedirectResponse
+     */
+    public function unfollow_user($user_id, EntityManagerInterface $entityManager, UserRepository $userRepository,
+                                UserInterface $loggedUser =null)
+    {
+        $user = $userRepository->find($user_id);
+        $loggedUser->removeSubscriber($user);
+
+        $entityManager->persist($loggedUser);
+        $entityManager->flush();
+
+        $groups = $loggedUser->getGroups();
+        $posts = $loggedUser->getPosts();
+
+
+        return $this->render('user/viewprofile.html.twig', [
+            'showedUser' => $user,
+            'loggedUser' => $loggedUser,
+            'id' => $user_id,
+            'groups' => $groups,
+            'posts' => $posts,
+            'groups_count' => count($groups),
+            'threads_count' =>count($loggedUser->getThreads()),
+            'posts_count' => count($loggedUser->getPosts()),
+            'controller_name' => 'UserController',
+        ]);
+    }
 
 
 }

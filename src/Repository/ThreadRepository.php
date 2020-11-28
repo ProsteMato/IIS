@@ -19,6 +19,21 @@ class ThreadRepository extends ServiceEntityRepository
         parent::__construct($registry, Thread::class);
     }
 
+
+    /**
+     * @return Thread[] Returns an array of Thread objects
+     */
+    public function getNumOpen(int $num)
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.group_id', 'g', 'WITH', 'g.visibility = 1')
+            ->orderBy('t.id', 'DESC')
+            ->setMaxResults($num)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Thread[] Returns an array of Thread objects
     //  */

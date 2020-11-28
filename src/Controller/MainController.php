@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\GroupRepository;
+use App\Repository\ThreadRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,13 +30,29 @@ class MainController extends AbstractController
      * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
      * @return Response view
      */
-    public function main_page(Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null){
-        // TODO: zobrazenie recently updated groups a najnovsie prispevky od users
+    public function main_page(Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null,
+                              GroupRepository $groupRepository, UserRepository $userRepository, ThreadRepository $threadRepository){
 
-        return $this->render('unlogged/index.html.twig', [
-            'loggedUser' => $loggedUser
-        ]);
+        if ($this->isGranted('ROLE_USER')){
+            $threads = $threadRepository->getNumOpen(20);
+            $users = $loggedUser->getSubscribers();
+            //$threads = $threadRepository->getNumForUser(20, $loggedUser->getId);
+            return $this->render('user/index.html.twig', [
+                'loggedUser' => $loggedUser,
+                'threads' => $threads,
+                'users' => $users
+            ]);
+        } else {
+            $threads = $threadRepository->getNumOpen(20);
+            $users = $userRepository->getNumOpen(2);
+            return $this->render('unlogged/index.html.twig', [
+                'loggedUser' => $loggedUser,
+                'threads' => $threads,
+                'users' => $users
+            ]);
+        }
     }
+
 
     /**
      * @Route("/acces_denied", name = "acces_denied")

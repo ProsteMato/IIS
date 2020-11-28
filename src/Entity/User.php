@@ -130,6 +130,16 @@ class User implements UserInterface
      */
     private $postUsers;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="subscribedBy")
+     */
+    private $subscribers;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="subscribers")
+     */
+    private $subscribedBy;
+
     public function __construct()
     {
         $this->admin_for_groups = new ArrayCollection();
@@ -137,6 +147,8 @@ class User implements UserInterface
         $this->posts = new ArrayCollection();
         $this->threadUsers = new ArrayCollection();
         $this->postUsers = new ArrayCollection();
+        $this->subscribers = new ArrayCollection();
+        $this->subscribedBy = new ArrayCollection();
     }
     
     public function getId(): ?int
@@ -485,6 +497,62 @@ class User implements UserInterface
             if ($postUser->getUsers() === $this) {
                 $postUser->setUsers(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getSubscribers(): Collection
+    {
+        return $this->subscribers;
+    }
+
+    public function isFollowing($user)
+    {
+        return $this->subscribers->contains($user);
+    }
+
+    public function addSubscriber(self $subscriber): self
+    {
+        if (!$this->subscribers->contains($subscriber)) {
+            $this->subscribers[] = $subscriber;
+        }
+
+        return $this;
+    }
+
+    public function removeSubscriber(self $subscriber): self
+    {
+        $this->subscribers->removeElement($subscriber);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getSubscribedBy(): Collection
+    {
+        return $this->subscribedBy;
+    }
+
+    public function addSubscribedBy(self $subscribedBy): self
+    {
+        if (!$this->subscribedBy->contains($subscribedBy)) {
+            $this->subscribedBy[] = $subscribedBy;
+            $subscribedBy->addSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscribedBy(self $subscribedBy): self
+    {
+        if ($this->subscribedBy->removeElement($subscribedBy)) {
+            $subscribedBy->removeSubscriber($this);
         }
 
         return $this;

@@ -140,7 +140,9 @@ class GroupController extends AbstractController
      */
     public function delete_group(Group $group)
     {
-        // aj s threadmi a postmi
+        // aj s threadmi a postmi !!
+
+
         $em = $this->getDoctrine()->getManager();
         $groupUser = $group->getGroupUser();
         foreach ($groupUser as &$gu){
@@ -148,8 +150,6 @@ class GroupController extends AbstractController
         }
         $em->remove($group);
         $em->flush();
-
-        $this->addFlash('success', 'Group was removed');
 
         if ($this->isGranted('ROLE_ADMIN'))
         {
@@ -250,14 +250,8 @@ class GroupController extends AbstractController
         }
 
         if($formOwner->isSubmitted() && $formOwner->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $formData = $formOwner->getData();
-            dump($formData);
-            die;
-
-            $em->persist($group);
-            $em->flush();
-            return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+            return $this->redirectToRoute('group_change_owner', ['group_id' => $group->getId(), 'email'=>$formData['email']]);
         }
 
         return $this->render('group/edit.html.twig', [
@@ -470,5 +464,38 @@ class GroupController extends AbstractController
             }
         }
         return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/edit/changeowner/{email}", name="group_change_owner")
+     */
+    public function change_owner($group_id, $email, UserRepository $userRepository, GroupRepository $groupRepository,
+                              UserInterface $loggedUser = null)
+    {
+        $group = $groupRepository->find($group_id);
+        $newOwner = $userRepository->findByEmail($email);
+        if (!$newOwner) {
+            $this->addFlash("notice", "User not found");
+            return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+        } elseif (!$group->isMember($newOwner[0])) {
+            $this->addFlash("notice", "User has to be member of group");
+            return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+        } else {
+            $group->setAdminUser($newOwner[0]);
+            $groupUser = $group->getGroupUser();
+            $em = $this->getDoctrine()->getManager();
+            foreach ($groupUser as &$gu) {
+                if ($gu->getUser() == $newOwner[0]) {
+                    $gu->giveRole('ROLE_MEM');
+                    $em->persist($gu);
+                    break;
+                }
+            }
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($group);
+            $em->flush();
+            return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
+        }
     }
 }
