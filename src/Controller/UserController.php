@@ -46,8 +46,8 @@ class UserController extends AbstractController
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
-        $groups = $loggedUser->getGroups();
-        $posts = $loggedUser->getPosts();
+        $groups = $user->getGroups();
+        $posts = $user->getPosts();
 
 
         return $this->render('user/viewprofile.html.twig', [
@@ -57,8 +57,8 @@ class UserController extends AbstractController
             'groups' => $groups,
             'posts' => $posts,
             'groups_count' => count($groups),
-            'threads_count' =>count($loggedUser->getThreads()),
-            'posts_count' => count($loggedUser->getPosts()),
+            'threads_count' =>count($user->getThreads()),
+            'posts_count' => count($user->getPosts()),
             'controller_name' => 'UserController',
         ]);
     }
