@@ -31,16 +31,16 @@
                         <p><b>Created: </b>{{ group.getDateString() }}</p>
                         <p><b>Members: </b>{{ group.getUsersCount() }}</p>
                         <div>
-                            {% if group.isMember(loggedUser) == true %}
+                            {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
                                 <a href="{{ path('leave_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Leave</a>
-                                {% if group.getAdminUser() == loggedUser %}
+                                {% if is_granted('GROUP_OWNER', [group, loggedUser]) %}
                                     <a href="{{ path('edit_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Settings</a>
                                 {% else %}
-                                    {% if group.isMod(loggedUser) == false and group.isAppliedMod(loggedUser) == false %}
+                                    {% if not is_granted('GROUP_MOD', [group, loggedUser]) and not is_granted('GROUP_MOD_APPL', [group, loggedUser]) %}
                                         <a href="{{ path('group_apply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply mod</a>
-                                    {% elseif group.isMod(loggedUser) == false and group.isAppliedMod(loggedUser) == true %}
+                                    {% elseif not is_granted('GROUP_MOD', [group, loggedUser]) and is_granted('GROUP_MOD_APPL', [group, loggedUser]) %}
                                         <a href="{{ path('group_unapply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply mod</a>
-                                    {% elseif group.isMod(loggedUser) == true %}
+                                    {% elseif is_granted('GROUP_MOD', [group, loggedUser]) %}
                                         <a href="{{ path('group_revoke_mod', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Revoke mod</a>
                                     {% endif %}
                                 {% endif %}
@@ -48,7 +48,7 @@
                                 {% if group.getOpen() == true %}
                                     <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Join</a>
                                 {% else %}
-                                    {% if group.userApplied(loggedUser) == true %}
+                                    {% if is_granted('GROUP_APPL', [group, loggedUser]) %}
                                         <a href="{{ path('unapply_group', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply</a>
                                     {% else %}
                                         {% if is_granted('ROLE_USER') %}

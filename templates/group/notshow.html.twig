@@ -11,13 +11,13 @@
         <div class="d-flex">
             <div class="jumbotron">
                 <h1 class="h3 mb-3 font-weight-normal text-center">You have to be member of <b>{{ group.name }}</b> to view it's content.</h1>
-                {% if loggedUser != null %}
+                {% if is_granted('ROLE_USER') %}
                     {% if group.open == true %}
                         <div class="row justify-content-center">
                             <a href="{{ path('subscribe_group', {'group_id': group.id }) }}" type="button" class="btn btn-info float-center">Join</a>
                         </div>
                     {% else %}
-                        {% if group.userApplied(loggedUser) == true %}
+                        {% if is_granted('GROUP_APPL', [group, loggedUser]) %}
                             <div class="row justify-content-center">
                                 <a href="{{ path('unapply_group', {'group_id': group.id }) }}" type="button" class="btn btn-warning float-center">Unapply</a>
                             </div>

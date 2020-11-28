@@ -214,12 +214,6 @@ class Group
         return $this;
     }
 
-    public function isUserInGroup(User $user)
-    {
-        $users = $this->getUsers();
-        return in_array($user, $users);
-    }
-
     public function userApplied(User $user = null)
     {
         if ($user == null){
