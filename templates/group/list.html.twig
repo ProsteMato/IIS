@@ -13,11 +13,7 @@
             <a href="{{ path('show_group', {'group_id': group.id }) }}" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="row">
                     <div class="col-1">
-                        {% if group.picture is defined and group.picture is not null %}
-                            <img src="{{ asset('/public/group_pics/blank_group.png') }}" class="img-fluid rounded-circle z-depth-1"/>
-                        {% else %}
-                            <img src="/public/group_pics/".{{ group.picture }} class="img-fluid rounded-circle z-depth-1"/>
-                        {% endif %}
+                        <img src="{{ asset('/group_pics/') ~ group.picture }}" class="img-fluid rounded-circle z-depth-2"/>
                     </div>
                     <div class="col-11">
                         <div class="d-flex w-100 justify-content-between">
@@ -34,9 +30,4 @@
             </a>
         {% endfor %}
     </div>
-
-
-
-
-
 {% endblock %}
