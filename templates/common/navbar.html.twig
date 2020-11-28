@@ -47,3 +47,42 @@
         </div>
     </div>
 </nav>
+{%  if loggedUser %}
+    {% block javascripts %}
+        <script type="text/javascript">
+            var timoutWarning = 540000; // Display warning in 9 Mins.
+            var timoutNow = 60000; // Timeout in 1 min.
+
+            var warningTimer;
+            var timeoutTimer;
+
+
+
+            // Start timers.
+            function StartTimers() {
+                warningTimer = setTimeout("IdleWarning()", timoutWarning);
+
+            }
+
+            // Reset timers.
+            function ResetTimers() {
+                clearTimeout(warningTimer);
+                clearTimeout(timeoutTimer);
+                StartTimers();
+
+            }
+
+            // Show idle timeout warning dialog.
+            function IdleWarning() {
+                timeoutTimer = setTimeout("IdleTimeout()", timoutNow);
+                $("#timeout").modal();
+            }
+
+            // Logout the user.
+            function IdleTimeout() {
+                window.location.href = '{{ path('app_logout') }}';
+            }
+        </script>
+    {% endblock %}
+{% endif %}
+
