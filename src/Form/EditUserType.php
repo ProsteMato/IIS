@@ -31,8 +31,14 @@ class EditUserType extends AbstractType
             ->add('email', TextType::class)
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
-            ->add('birthDate', BirthdayType::class)
+            ->add('birthDate', BirthdayType::class, [
+                'placeholder' => [
+                    'year' => 'Year', 'month' => 'Month', 'day' => 'Day'],
+                'by_reference' => true,
+                'required' => false,
+            ])
             ->add('sex', ChoiceType::class, ['choices' => [
+                '' => NULL,
                 'male' => 'male',
                 'female' => 'female']])
             ->add('visibility', CheckboxType::class, ['required'=> false,
