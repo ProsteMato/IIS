@@ -71,10 +71,16 @@ class Group
      */
     private $threadUsers;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PostUser::class, mappedBy="group_list", orphanRemoval=true)
+     */
+    private $postUsers;
+
     public function __construct()
     {
         $this->threads = new ArrayCollection();
         $this->threadUsers = new ArrayCollection();
+        $this->postUsers = new ArrayCollection();
     }
 
     /**
@@ -318,6 +324,36 @@ class Group
             // set the owning side to null (unless already changed)
             if ($threadUser->getGroupList() === $this) {
                 $threadUser->setGroupList(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PostUser[]
+     */
+    public function getPostUsers(): Collection
+    {
+        return $this->postUsers;
+    }
+
+    public function addPostUser(PostUser $postUser): self
+    {
+        if (!$this->postUsers->contains($postUser)) {
+            $this->postUsers[] = $postUser;
+            $postUser->setGroupList($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostUser(PostUser $postUser): self
+    {
+        if ($this->postUsers->removeElement($postUser)) {
+            // set the owning side to null (unless already changed)
+            if ($postUser->getGroupList() === $this) {
+                $postUser->setGroupList(null);
             }
         }
 

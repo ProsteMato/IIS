@@ -57,9 +57,15 @@ class Post
      */
     private $created_by;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PostUser::class, mappedBy="posts")
+     */
+    private $postUsers;
+
     public function __construct()
     {
         $this->replays = new ArrayCollection();
+        $this->postUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -94,6 +100,11 @@ class Post
     public function getCreationDate(): ?\DateTimeInterface
     {
         return $this->creation_date;
+    }
+
+    public function getStringCreationDate(): string
+    {
+        return $this->creation_date->format("d.m.Y H:i:s");
     }
 
     public function setCreationDate(\DateTimeInterface $creation_date): self
@@ -165,6 +176,36 @@ class Post
     public function setCreatedBy(?User $created_by): self
     {
         $this->created_by = $created_by;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PostUser[]
+     */
+    public function getPostUsers(): Collection
+    {
+        return $this->postUsers;
+    }
+
+    public function addPostUser(PostUser $postUser): self
+    {
+        if (!$this->postUsers->contains($postUser)) {
+            $this->postUsers[] = $postUser;
+            $postUser->setPosts($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostUser(PostUser $postUser): self
+    {
+        if ($this->postUsers->removeElement($postUser)) {
+            // set the owning side to null (unless already changed)
+            if ($postUser->getPosts() === $this) {
+                $postUser->setPosts(null);
+            }
+        }
 
         return $this;
     }

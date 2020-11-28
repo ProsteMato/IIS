@@ -61,10 +61,16 @@ class Thread
      */
     private $threadUsers;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PostUser::class, mappedBy="threads", orphanRemoval=true)
+     */
+    private $postUsers;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->threadUsers = new ArrayCollection();
+        $this->postUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -208,6 +214,36 @@ class Thread
             // set the owning side to null (unless already changed)
             if ($threadUser->getThreads() === $this) {
                 $threadUser->setThreads(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PostUser[]
+     */
+    public function getPostUsers(): Collection
+    {
+        return $this->postUsers;
+    }
+
+    public function addPostUser(PostUser $postUser): self
+    {
+        if (!$this->postUsers->contains($postUser)) {
+            $this->postUsers[] = $postUser;
+            $postUser->setThreads($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostUser(PostUser $postUser): self
+    {
+        if ($this->postUsers->removeElement($postUser)) {
+            // set the owning side to null (unless already changed)
+            if ($postUser->getThreads() === $this) {
+                $postUser->setThreads(null);
             }
         }
 

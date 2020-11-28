@@ -1,5 +1,5 @@
 {% if liked %}
-    <i class="fa fa-thumbs-up float-right p-1 like-btn" data-id="{{ thread_id }}" style="font-size:24px"></i>
+    <i id="thread_like{{ thread_id }}" class="fa fa-thumbs-up float-right p-1 like-btn" data-id="{{ thread_id }}" style="font-size:24px"></i>
 {% else %}
-    <i class="fa fa-thumbs-o-up float-right p-1 like-btn" data-id="{{ thread_id }}" style="font-size:24px"></i>
+    <i id="thread_like{{ thread_id }}" class="fa fa-thumbs-o-up float-right p-1 like-btn" data-id="{{ thread_id }}" style="font-size:24px"></i>
 {% endif %}

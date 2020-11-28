@@ -73,7 +73,7 @@ class ThreadController extends AbstractController
 
 
     /**
-     * @Route("/{thread_id}/liker", name="like_thread")
+     * @Route("/show/{thread_id}/liker", name="like_thread")
      */
     public function liker($group_id, $thread_id, Request $request) {
         if (strpos($request->headers->get('Content-Type'), 'application/json') === 0) {

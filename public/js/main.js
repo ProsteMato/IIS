@@ -1,7 +1,6 @@
 const like_btns = document.querySelectorAll(".like-btn");
 const dislike_btns = document.querySelectorAll(".dislike-btn");
 
-
 function like_dislike(selector) {
     selector.forEach(
         function(like_btn) {
@@ -10,7 +9,7 @@ function like_dislike(selector) {
                 let group_id = window.location.pathname;
                 let action = "";
                 let request = new XMLHttpRequest();
-                request.open("POST", group_id + "/thread/"+ id +"/liker", true);
+                request.open("POST", group_id + "/thread/show/"+ id +"/liker", true);
                 request.setRequestHeader("Content-Type", "application/json");
                 if (e.target.classList.contains("fa-thumbs-o-up")) {
                     action = "like";
