@@ -18,8 +18,12 @@
             <a class="nav-link active" data-toggle="tab" href="#group">Group</a>
         </li>
         {% endif %}
+
         <li class="nav-item" >
             <a class="nav-link" data-toggle="tab" href="#applications">Applications</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#members">Members</a>
         </li>
         {% if is_granted('GROUP_OWNER', [group, loggedUser]) %}
         <li class="nav-item" >
@@ -58,7 +62,7 @@
         {% endif%}
 
         {% if is_granted('GROUP_MOD', [group, loggedUser]) and not is_granted('GROUP_OWNER', [group, loggedUser]) %}
-        <div class="tab-pane fade active show" id="group">
+        <div class="tab-pane fade active show" id="applications">
             {% else %}
         <div class="tab-pane fade" id="applications">
             {% endif %}
@@ -86,9 +90,52 @@
             {% endfor %}
         </div>
 
-        <div class="tab-pane fade" id="moderators">
 
-            {################### SHOW MODERATORS  ###################}
+        <div class="tab-pane fade" id="members">
+            <h3 class="h3 mb-3 mt-3 font-weight-normal text-left">Members: {{ membersCount }}</h3>
+            {% for user in members %}
+            <a href="{{ path('user', {'id': user.id }) }}"
+               class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="row">
+                    <div class="col-1">
+                        <img  src="{{ asset('/profilepics/'  ~ user.getProfilePicture())}}"
+                              class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+                    </div>
+                    <div class="col-11">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h4 class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
+
+                            {% if is_granted('GROUP_MOD', [group, loggedUser]) %}
+
+                            {% if not is_granted('GROUP_OWNER', [group, user]) %}
+                                <object>
+                                    <a href="{{  path('group_kick_user', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger float-right ml-2 mt-3 ">Kick</a>
+
+                                {% if is_granted('GROUP_MOD', [group, user]) %}
+                                <a href="{{  path('group_delete_mod', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger  float-right mt-3 ">Unmod</a>
+                                {% endif %}
+                                {% if not is_granted('GROUP_MOD', [group, user]) %}
+                                <a href="{{  path('group_give_mod', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-info float-right ml-2 mt-3 ">Mod</a>
+                                {% endif %}
+                                
+                            {% endif %}
+
+                            </object>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+
+
+
+
+        {################### SHOW MODERATORS  ###################}
+        <div class="tab-pane fade" id="moderators">
             <h3 class="h3 mb-3 mt-3 font-weight-normal text-left">Moderators: {{ modCount }}</h3>
             {% for mod in moderators %}
             <a href="{{ path('user', {'id': mod.id }) }}"
