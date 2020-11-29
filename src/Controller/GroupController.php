@@ -218,7 +218,7 @@ class GroupController extends AbstractController
     public function edit($group_id, Request $request, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
-        $form = $this->createForm(GroupType::class, $group, ['label' => 'Edit']);
+        $form = $this->createForm(GroupType::class, $group, ['label' => 'Edit group']);
         $form->handleRequest($request);
 
         $formOwner = $this->createForm(ChangeOwnerType::class);
@@ -246,7 +246,7 @@ class GroupController extends AbstractController
             }
             $em->persist($group);
             $em->flush();
-            return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+            return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
         }
 
         if($formOwner->isSubmitted() && $formOwner->isValid()) {

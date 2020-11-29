@@ -49,7 +49,7 @@ class UserController extends AbstractController
 
         $groups = $user->getGroups();
         $posts = $user->getPosts();
-        
+
         $commonGroup = false;
         if ($loggedUser) {
             $loggedUser_groups = $loggedUser->getGroups();
@@ -63,11 +63,6 @@ class UserController extends AbstractController
                 }
             }
         }
-
-
-
-
-
 
         return $this->render('user/viewprofile.html.twig', [
             'showedUser' => $user,
