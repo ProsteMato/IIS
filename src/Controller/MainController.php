@@ -24,31 +24,47 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class MainController extends AbstractController
 {
     /**
-     * @Route("/", name = "main_page", methods={"GET"})
+     * @Route("/{filter}", name = "main_page", methods={"GET"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
      * @return Response view
      */
-    public function main_page(Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null,
+    public function main_page($filter = 'recent', Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null,
                               GroupRepository $groupRepository, UserRepository $userRepository, ThreadRepository $threadRepository){
 
         if ($this->isGranted('ROLE_USER')){
-            $threads = $threadRepository->getNumOpen(20);
+
             $users = $loggedUser->getSubscribers();
-            //$threads = $threadRepository->getNumForUser(20, $loggedUser->getId);
+
+            if ($filter == 'recent'){
+                $threads = [];
+                $groups = $loggedUser->getGroups();
+                foreach($groups as &$group){
+                    $threads_temp = $group->getThreads();
+                    foreach ($threads_temp as &$thread){
+                        array_push($threads, $thread);
+                    }
+                }
+                usort($threads, function ($a, $b) {
+                    return $b->getCreationDate() <=> $a->getCreationDate();
+                });
+            }
+
             return $this->render('user/index.html.twig', [
                 'loggedUser' => $loggedUser,
-                'threads' => $threads,
-                'users' => $users
+                'threads' => array_slice($threads, 0, 20),
+                'users' => $users,
+                'currentFilter' => $filter
             ]);
         } else {
             $threads = $threadRepository->getNumOpen(20);
-            $users = $userRepository->getNumOpen(2);
+            $users = $userRepository->getNumOpen(40);
             return $this->render('unlogged/index.html.twig', [
                 'loggedUser' => $loggedUser,
                 'threads' => $threads,
-                'users' => $users
+                'users' => $users,
+                'currentFilter' => $filter
             ]);
         }
     }
