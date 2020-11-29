@@ -5,6 +5,7 @@ function like_dislike(selector) {
     selector.forEach(
         function(like_btn) {
             like_btn.addEventListener("click", function (e){
+                e.stopImmediatePropagation();
                 let id = e.target.getAttribute("data-id");
                 let group_id = window.location.pathname;
                 let action = "";
