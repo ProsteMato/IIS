@@ -49,18 +49,21 @@ class UserController extends AbstractController
 
         $groups = $user->getGroups();
         $posts = $user->getPosts();
-
-
-        $loggedUser_groups = $loggedUser->getGroups();
+        
         $commonGroup = false;
+        if ($loggedUser) {
+            $loggedUser_groups = $loggedUser->getGroups();
 
-        for ($i=0;  $i < count($groups); $i++){
-            for ($j = 0; $j < count($loggedUser_groups); $j++) {
-                if ($groups[$i] == $loggedUser_groups[$j]){
-                    $commonGroup = true;
+
+            for ($i=0;  $i < count($groups); $i++){
+                for ($j = 0; $j < count($loggedUser_groups); $j++) {
+                    if ($groups[$i] == $loggedUser_groups[$j]){
+                        $commonGroup = true;
+                    }
                 }
             }
         }
+
 
 
 
