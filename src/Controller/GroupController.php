@@ -148,6 +148,20 @@ class GroupController extends AbstractController
         foreach ($groupUser as &$gu){
             $em->remove($gu);
         }
+
+        $threads = $group->getThreads();
+        foreach ($threads as &$thread){
+            foreach ($thread->getPosts() as &$post){
+                $em->remove($post);
+            }
+            foreach ($thread->getPostUsers() as &$pu){
+                $em->remove($pu);
+            }
+            foreach ($thread->getThreadUsers() as &$tu){
+                $em->remove($tu);
+            }
+            $em->remove($thread);
+        }
         $em->remove($group);
         $em->flush();
 
@@ -158,7 +172,6 @@ class GroupController extends AbstractController
         else {
             return $this->redirectToRoute('list_groups');
         }
-
     }
 
     /**
