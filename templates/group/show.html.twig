@@ -72,26 +72,33 @@
                 <div  class="container">
                     <div class="row">
                         <div class="col"><h3 class="display-5" style="display: inline">Threads</h3></div>
-                        {% if is_granted('ROLE_USER') %}
+                        {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
                             <div class="col"><a class="float-right pt-2" data-toggle="collapse" aria-expanded="true" aria-controls="collapseExample" style="text-decoration: none; font-size: 18px" href="#collapseExample">Create Thread</a></div>
                         {% endif %}
                     </div>
+                    {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
                     <div class="collapse row" id="collapseExample">
                         <div class="col">
                             {{ form(form) }}
                         </div>
                     </div>
+                    {% endif %}
                     {% for thread in threads %}
                         <div class="container mb-3 rounded border border-light">
                             <div class="row mt-1 border-bottom border-light">
                                 <div class="col-8">
                                     <a style="text-decoration: none" href="{{ path('group.thread.show', {group_id: group.getId ,thread_id: thread.getId}) }}"><h5>{{ thread.getTitle }}</h5></a>
                                 </div>
+
                                 <div class="col">
                                     <p class="text-right" style="font-size: 14px">
-                                        {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId})) }}
+                                        <b>Rating: {{ thread.rating }}</b><br>
+                                        {% if is_granted('ROLE_USER') %}
+                                            {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId})) }}
+                                        {% endif %}
                                     </p>
                                 </div>
+
                             </div>
                             <div class="row">
                                 <div class="col mt-1">

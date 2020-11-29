@@ -43,7 +43,10 @@
                             </div>
                             <div class="col">
                                 <p class="text-right" style="font-size: 14px">
+                                    <b>Rating: {{ thread.rating }}</b><br>
+                                    {% if is_granted("GROUP_MEMBER", [thread.groupId, loggedUser]) %}
                                     {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId})) }}
+                                    {% endif %}
                                 </p>
                             </div>
                         </div>
