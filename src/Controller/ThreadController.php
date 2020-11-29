@@ -71,7 +71,8 @@ class ThreadController extends AbstractController
                 "liked" => !empty($liked),
                 "disliked" => !empty($disliked),
                 "rating" => $thread->getRating(),
-                "thread_id" => $thread_id
+                "thread_id" => $thread_id,
+                "group_id" => $group_id
             ]
         );
     }

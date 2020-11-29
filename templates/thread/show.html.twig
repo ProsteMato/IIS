@@ -21,7 +21,7 @@
                         </div>
                         <div class="col">
                             <p class="text-right" style="font-size: 18px">
-                                {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
+                                {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId})) }}
                             </p>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                             </div>
                             <div class="row">
                                 <div class="col mb-2">
-                                    {{ render(controller('App\\Controller\\PostController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId, 'post_id': post.id})) }}
+                                    {{ render(controller('App\\Controller\\PostController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId, 'post_id': post.id})) }}
                                 </div>
                             </div>
                         </div>

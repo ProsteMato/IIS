@@ -12,7 +12,7 @@ function like_dislike(selector) {
 
 
                 let id = e.target.getAttribute("data-id");
-                let group_id = window.location.pathname;
+                let group_id = e.target.getAttribute("data-group-id");
                 let action = "";
                 let request = new XMLHttpRequest();
 
@@ -26,7 +26,7 @@ function like_dislike(selector) {
                     action = "undislike";
                 }
 
-                request.open("POST", group_id + "/thread/show/"+ id +"/liker", true);
+                request.open("POST", "/group/show/" + group_id + "/thread/show/"+ id +"/liker", true);
                 request.setRequestHeader("Content-Type", "application/json");
 
                 request.onload = function() {

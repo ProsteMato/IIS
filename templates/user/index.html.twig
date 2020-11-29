@@ -43,7 +43,7 @@
                             </div>
                             <div class="col">
                                 <p class="text-right" style="font-size: 14px">
-                                    {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
+                                    {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId})) }}
                                 </p>
                             </div>
                         </div>
