@@ -12,8 +12,7 @@ function like_dislike(selector) {
                 let group_id = window.location.pathname;
                 let action = "";
                 let request = new XMLHttpRequest();
-                request.open("POST", group_id + "/thread/show/"+ id +"/liker", true);
-                request.setRequestHeader("Content-Type", "application/json");
+
                 if (e.target.classList.contains("fa-thumbs-o-up")) {
                     action = "like";
                 } else if (e.target.classList.contains("fa-thumbs-up")) {
@@ -25,14 +24,17 @@ function like_dislike(selector) {
                 }
 
                 if (last_action === "like" && action === "like") {
-                    return
+                    action = "unlike"
                 } else if (last_action === "unlike" && action === "unlike") {
-                    return
+                    action = "like"
                 } else if (last_action === "dislike" && action === "dislike") {
-                    return
+                    action = "undislike"
                 } else if (last_action === "undislike" && action === "undislike") {
-                    return
+                    action = "dislike"
                 }
+
+                request.open("POST", group_id + "/thread/show/"+ id +"/liker", true);
+                request.setRequestHeader("Content-Type", "application/json");
 
                 request.onload = function() {
                     if (this.status >= 200 && this.status < 400) {
