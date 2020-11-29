@@ -498,4 +498,29 @@ class GroupController extends AbstractController
             return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
         }
     }
+
+    /**
+     * @Route ("/group/show/{group_id}/kick/{user_id}", name="group_kick_user")
+     */
+    public function group_kick($group_id, $user_id, UserRepository $userRepository, GroupRepository $groupRepository,
+                                UserInterface $loggedUser)
+    {
+        $group = $groupRepository->find($group_id);
+        $user = $userRepository->find($user_id);
+
+        if ($group->getAdminUser() == $user){
+            $this->addFlash("notice", "You have to change admin of group first in order to leave");
+            return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
+        }
+        $em = $this->getDoctrine()->getManager();
+        $groupUser = $group->getGroupUser();
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $user){
+                $em->remove($gu);
+                $em->flush();
+                break;
+            }
+        }
+        return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
+    }
 }

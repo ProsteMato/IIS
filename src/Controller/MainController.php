@@ -26,12 +26,13 @@ class MainController extends AbstractController
     /**
      * @Route("/", name = "main_page", methods={"GET"})
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
+     * @param UserRepository $userRepository
+     * @param ThreadRepository $threadRepository
      * @return Response view
      */
-    public function main_page(Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null,
-                              GroupRepository $groupRepository, UserRepository $userRepository, ThreadRepository $threadRepository){
+    public function main_page(Request $request, UserInterface $loggedUser = null,
+                              UserRepository $userRepository, ThreadRepository $threadRepository){
         $filter = 'New';
         $time_filter = "All Time";
         if ($this->isGranted('ROLE_USER')){
@@ -77,8 +78,8 @@ class MainController extends AbstractController
      * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
      * @return Response view
      */
-    public function filter_threads($filter, $time_filter, Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null,
-                              GroupRepository $groupRepository, UserRepository $userRepository, ThreadRepository $threadRepository){
+    public function filter_threads($filter, $time_filter, Request $request, UserInterface $loggedUser = null,
+                            UserRepository $userRepository, ThreadRepository $threadRepository){
 
         if ($this->isGranted('ROLE_USER')){
 
