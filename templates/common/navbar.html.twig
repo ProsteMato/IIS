@@ -18,7 +18,11 @@
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">User</a>
                         <div class="dropdown-menu">
                             {% if loggedUser %}
+                                <a class="dropdown-item disabled">Sign in as</a>
+                                <a class="dropdown-item disabled"><b>{{ loggedUser.firstName ~ ' ' ~ loggedUser.lastName }}</b></a>
+                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ path('user', {'id': loggedUser.id }) }}">My profile</a>
+
                             {% endif %}
                             <a class="dropdown-item" href="{{ path('create_group') }}">Create new group</a>
                             <a class="dropdown-item" href="{{ path('list_groups') }}">My groups</a>
