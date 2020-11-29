@@ -13,21 +13,26 @@
         </div>
     {% endfor %}
     <ul class="nav nav-tabs">
+        {% if is_granted('GROUP_OWNER', [group, loggedUser]) %}
         <li class="nav-item" >
             <a class="nav-link active" data-toggle="tab" href="#group">Group</a>
         </li>
+        {% endif %}
         <li class="nav-item" >
             <a class="nav-link" data-toggle="tab" href="#applications">Applications</a>
         </li>
+        {% if is_granted('GROUP_OWNER', [group, loggedUser]) %}
         <li class="nav-item" >
             <a class="nav-link" data-toggle="tab" href="#moderators">Moderators</a>
         </li>
+
         <li class="nav-item" >
             <a class="nav-link" data-toggle="tab" href="#owner">Owner</a>
         </li>
+        {% endif %}
     </ul>
     <div id="myTabContent" class="tab-content">
-
+        {% if is_granted('GROUP_OWNER', [group, loggedUser]) %}
         <div class="tab-pane fade active show" id="group">
             <div class="row">
                 <div class="col-md-6">
@@ -50,9 +55,13 @@
             </div>
 
         </div>
+        {% endif%}
 
-
+        {% if is_granted('GROUP_MOD', [group, loggedUser]) and not is_granted('GROUP_OWNER', [group, loggedUser]) %}
+        <div class="tab-pane fade active show" id="group">
+            {% else %}
         <div class="tab-pane fade" id="applications">
+            {% endif %}
             <h3 class="h3 mb-3 mt-3 font-weight-normal text-left">Applications: {{ appsCount }}</h3>
             {% for user in applications %}
                 <a href="{{ path('user', {'id': user.id }) }}"
@@ -126,33 +135,6 @@
 
         </div>
 
-
-
-        {# <div class="tab-pane fade" id="moderators">
-
-           {#<div class="row">
-                 <div class="jumbotron col-md-11 offset-md-1">
-                     <h6 class="display-3">Applications: {{ modAppsCount }}</h6>
-                     {% for mod in modApps %}
-                         <div class="row">
-                             <div class="col-md-2">
-                                 <img href="{{ path('user', {'id': mod.getId() }) }}" src="{{ asset('/profilepics/' ~ mod.getProfilePicture()) }}">
-                             </div>
-                             <div class="col-md-6">
-                                 <a href="{{ path('user', {'id': mod.getId() }) }}"><b>{{ mod.getFirstName() }} {{ mod.getLastName() }}</b></a>
-                             </div>
-                             <div class="col-md-2">
-                                 <a href="{{  path('group_accept_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-info  mt-3 ">Accept</a>
-                             </div>
-                             <div class="col-md-2">
-                                 <a href="{{  path('group_deny_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-danger  mt-3 ">Deny</a>
-                             </div>
-                         </div>
-                     {% endfor %}
-                 </div>
-             </div>
-         </div>
-         #}
         <div class="tab-pane fade" id="owner">
             <div class="row">
                 <div class="col-md-6">
