@@ -11,12 +11,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class GroupVoter extends Voter
 {
-    // these strings are just invented: you can use anything
     const MEMBER = 'GROUP_MEMBER';
     const MOD = 'GROUP_MOD';
     const OWNER = 'GROUP_OWNER';
     const APPL = 'GROUP_APPL';
     const M_APPL = 'GROUP_MOD_APPL';
+    const VIEW = 'GROUP_VIEW';
 
     private $security;
 
@@ -28,11 +28,10 @@ class GroupVoter extends Voter
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::MEMBER, self::MOD, self::OWNER, self::APPL, self::M_APPL])) {
+        if (!in_array($attribute, [self::MEMBER, self::MOD, self::OWNER, self::APPL, self::M_APPL, self::VIEW])) {
             return false;
         }
-
-        // only vote on `Post` objects
+        // if the subject isn't one we support, return false
         if ($subject[0] instanceof Group and $subject[1] instanceof User) {
             return true;
         }
@@ -42,15 +41,6 @@ class GroupVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
     {
-        $user = $token->getUser();
-
-        /*
-        if (!$user instanceof User) {
-            // the user must be logged in; if not, deny access
-            return false;
-        }
-        */
-
         /** @var Group $group */
         $group = $subject[0];
         /** @var User $user */
@@ -58,15 +48,17 @@ class GroupVoter extends Voter
 
         switch ($attribute) {
             case self::MEMBER:
-                return $this->isMember($group, $user);
+                return $group->isMember($user);
             case self::MOD:
-                return $this->isMod($group, $user);
+                return $group->isMOD($user);
             case self::OWNER:
-                return $this->isOwner($group, $user);
+                return $group->getAdminUser() == $user;
             case self::APPL:
                 return $this->isAppl($group, $user);
             case self::M_APPL:
                 return $this->isMAppl($group, $user);
+            case self::VIEW:
+                return $this->canView($group, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -102,5 +94,9 @@ class GroupVoter extends Voter
 
     private function isMAppl(Group $group, User $user) {
         return $group->isAppliedMod($user);
+    }
+
+    private function canView(Group $group, User $user) {
+        return $group->getVisibility() or $group->isMember($user);
     }
 }
