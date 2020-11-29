@@ -51,6 +51,21 @@ class UserController extends AbstractController
         $posts = $user->getPosts();
 
 
+        $loggedUser_groups = $loggedUser->getGroups();
+        $commonGroup = false;
+
+        for ($i=0;  $i < count($groups); $i++){
+            for ($j = 0; $j < count($loggedUser_groups); $j++) {
+                if ($groups[$i] == $loggedUser_groups[$j]){
+                    $commonGroup = true;
+                }
+            }
+        }
+
+
+
+
+
         return $this->render('user/viewprofile.html.twig', [
             'showedUser' => $user,
             'loggedUser' => $loggedUser,
@@ -60,6 +75,7 @@ class UserController extends AbstractController
             'groups_count' => count($groups),
             'threads_count' =>count($user->getThreads()),
             'posts_count' => count($user->getPosts()),
+            'common_group' => $commonGroup,
             'controller_name' => 'UserController',
         ]);
     }

@@ -18,14 +18,15 @@
 
     {% if showedUser.visibility == 'everyone'
         or ( loggedUser and showedUser.visibility == 'registered')
+        or (common_group and showedUser.visibility == 'members')
         or ( loggedUser != null and loggedUser.id == showedUser.id )
         or is_granted('ROLE_ADMIN')
 
     %}
-        <!--
+        <!-- if explained
         everyone
         logged in users
-        todo: members of groups
+        members of groups
         only me
         admin
         -->
