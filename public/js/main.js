@@ -9,9 +9,7 @@ function like_dislike(selector) {
 
                 like_btn.setAttribute('disabled', true);
 
-                setTimeout(() => {
-                    like_btn.removeAttribute('disabled')
-                }, 600);
+
 
                 let id = e.target.getAttribute("data-id");
                 let group_id = window.location.pathname;
@@ -69,6 +67,7 @@ function like_dislike(selector) {
                                 .classList.add("fa-thumbs-o-up");
                         }
                     }
+                    like_btn.removeAttribute('disabled');
                 };
 
                 request.send(JSON.stringify({

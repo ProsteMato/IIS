@@ -47,26 +47,30 @@ class ThreadController extends AbstractController
         $threadUserRepository = $em->getRepository(ThreadUser::class);
         $groupRepository = $em->getRepository(Group::class);
 
+        $thread = $threadRepository->find($thread_id);
+        $group = $threadRepository->find($group_id);
+
         $liked = $threadUserRepository->findBy([
-            'threads' => $threadRepository->find($thread_id),
-            'group_list' => $groupRepository->find($group_id),
+            'threads' => $thread,
+            'group_list' => $group,
             'users' => $user,
             "liked" => "like"
         ]);
 
         $disliked = $threadUserRepository->findBy([
-            'threads' => $threadRepository->find($thread_id),
-            'group_list' => $groupRepository->find($group_id),
+            'threads' => $thread,
+            'group_list' => $group,
             'users' => $user,
             "liked" => "dislike"
         ]);
+
 
         return $this->render(
             "thread/ratings.html.twig",
             [
                 "liked" => !empty($liked),
                 "disliked" => !empty($disliked),
-                "rating" => $this->userRating($thread_id, $group_id),
+                "rating" => $thread->getRating(),
                 "thread_id" => $thread_id
             ]
         );
