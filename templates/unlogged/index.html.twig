@@ -44,8 +44,6 @@
                             <div class="col">
                                 <p class="text-right" style="font-size: 14px">
                                     <b>Rating: {{ thread.getRating() }}</b><br>
-                                    {{ render(controller('App\\Controller\\ThreadController::userDisliked', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
-                                    {{ render(controller('App\\Controller\\ThreadController::userLiked', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
                                 </p>
                             </div>
                         </div>
