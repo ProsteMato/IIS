@@ -1,13 +1,14 @@
 const like_btns = document.querySelectorAll(".like-btn");
 const dislike_btns = document.querySelectorAll(".dislike-btn");
 
-let last_action = "";
-
 function like_dislike(selector) {
     selector.forEach(
         function(like_btn) {
             like_btn.addEventListener("click", function (e){
-                e.stopImmediatePropagation();
+                e.preventDefault();
+
+                like_btn.classList.add('disabled')
+
                 let id = e.target.getAttribute("data-id");
                 let group_id = window.location.pathname;
                 let action = "";
@@ -21,16 +22,6 @@ function like_dislike(selector) {
                     action = "dislike";
                 } else if (e.target.classList.contains("fa-thumbs-down")) {
                     action = "undislike";
-                }
-
-                if (last_action === "like" && action === "like") {
-                    action = "unlike"
-                } else if (last_action === "unlike" && action === "unlike") {
-                    action = "like"
-                } else if (last_action === "dislike" && action === "dislike") {
-                    action = "undislike"
-                } else if (last_action === "undislike" && action === "undislike") {
-                    action = "dislike"
                 }
 
                 request.open("POST", group_id + "/thread/show/"+ id +"/liker", true);
@@ -73,9 +64,10 @@ function like_dislike(selector) {
                             e.target.nextElementSibling
                                 .classList.add("fa-thumbs-o-up");
                         }
-
-                        last_action = action;
                     }
+                    setTimeout(() => {
+                        like_btn.classList.remove('disabled')
+                    }, 500);
                 };
 
                 request.send(JSON.stringify({
