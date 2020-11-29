@@ -38,7 +38,7 @@ class ThreadController extends AbstractController
             ]);
     }
 
-    private function userLike($thread_id, $group_id, $value_search, $twig, $twig_key) {
+    public function userLike($thread_id, $group_id) {
         $user = $this->getUser();
 
         $em = $this->getDoctrine()->getManager();
@@ -51,26 +51,49 @@ class ThreadController extends AbstractController
             'threads' => $threadRepository->find($thread_id),
             'group_list' => $groupRepository->find($group_id),
             'users' => $user,
-            "liked" => $value_search
+            "liked" => "like"
+        ]);
+
+        $disliked = $threadUserRepository->findBy([
+            'threads' => $threadRepository->find($thread_id),
+            'group_list' => $groupRepository->find($group_id),
+            'users' => $user,
+            "liked" => "dislike"
         ]);
 
         return $this->render(
-            $twig,
+            "thread/ratings.html.twig",
             [
-                $twig_key => !empty($liked),
+                "liked" => !empty($liked),
+                "disliked" => !empty($disliked),
+                "rating" => $this->userRating($thread_id, $group_id),
                 "thread_id" => $thread_id
             ]
         );
     }
 
-    public function userLiked($thread_id, $group_id) {
-        return $this->userLike($thread_id, $group_id, "like", "thread/like.html.twig", "liked");
-    }
+    public function userRating($thread_id, $group_id){
 
-    public function userDisliked($thread_id, $group_id) {
-        return $this->userLike($thread_id, $group_id, "dislike", "thread/dislike.html.twig", "disliked");
-    }
+        $em = $this->getDoctrine()->getManager();
 
+        $threadRepository = $em->getRepository(Thread::class);
+        $threadUserRepository = $em->getRepository(ThreadUser::class);
+        $groupRepository = $em->getRepository(Group::class);
+
+        $liked = $threadUserRepository->findBy([
+            'threads' => $threadRepository->find($thread_id),
+            'group_list' => $groupRepository->find($group_id),
+            'liked' => "like"
+        ]);
+
+        $disliked = $threadUserRepository->findBy([
+            'threads' => $threadRepository->find($thread_id),
+            'group_list' => $groupRepository->find($group_id),
+            'liked' => "dislike"
+        ]);
+
+        return count($liked) - count($disliked);
+    }
 
     /**
      * @Route("/show/{thread_id}/liker", name="like_thread")
