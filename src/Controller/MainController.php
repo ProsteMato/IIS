@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class MainController extends AbstractController
 {
     /**
-     * @Route("/{filter}", name = "main_page", methods={"GET"})
+     * @Route("/", name = "main_page", methods={"GET"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
