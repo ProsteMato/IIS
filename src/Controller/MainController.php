@@ -81,29 +81,26 @@ class MainController extends AbstractController
 
             $users = $loggedUser->getSubscribers();
 
-            if ($filter == 'New'){
-                $threads = [];
-                $groups = $loggedUser->getGroups();
-                foreach($groups as &$group){
-                    $threads_temp = $group->getThreads();
-                    foreach ($threads_temp as &$thread){
-                        array_push($threads, $thread);
-                    }
+            $threads = [];
+            $groups = $loggedUser->getGroups();
+            foreach($groups as &$group){
+                $threads_temp = $group->getThreads();
+                foreach ($threads_temp as &$thread){
+                    array_push($threads, $thread);
                 }
+            }
+
+            if ($filter == 'New'){
                 usort($threads, function ($a, $b) {
                     return $b->getCreationDate() <=> $a->getCreationDate();
                 });
             } elseif ($filter == 'Top'){
-                $threads = [];
-                $groups = $loggedUser->getGroups();
-                foreach($groups as &$group){
-                    $threads_temp = $group->getThreads();
-                    foreach ($threads_temp as &$thread){
-                        array_push($threads, $thread);
-                    }
-                }
                 usort($threads, function ($a, $b) {
                     return $b->getRating() <=> $a->getRating();
+                });
+            } elseif ($filter == 'Most commented'){
+                usort($threads, function ($a, $b) {
+                    return $b->getPosts()->count() <=> $a->getPosts()->count();
                 });
             }
 
@@ -120,6 +117,12 @@ class MainController extends AbstractController
                 $threads = $threadRepository->getOpen(20);
             } elseif ($filter == 'Top'){
                 $threads = $threadRepository->getTopOpen(20);
+            } elseif ($filter == "Most commented"){
+                $threads = $threadRepository->getOpen(200);
+                usort($threads, function ($a, $b) {
+                    return $b->getPosts()->count() <=> $a->getPosts()->count();
+                });
+                $threads = array_slice($threads, 0, 20);
             }
 
 
