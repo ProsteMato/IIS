@@ -30,14 +30,58 @@ class MainController extends AbstractController
      * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
      * @return Response view
      */
-    public function main_page($filter = 'recent', Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null,
+    public function main_page(Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null,
+                              GroupRepository $groupRepository, UserRepository $userRepository, ThreadRepository $threadRepository){
+        $filter = 'New';
+        if ($this->isGranted('ROLE_USER')){
+
+            $users = $loggedUser->getSubscribers();
+
+            $threads = [];
+            $groups = $loggedUser->getGroups();
+            foreach($groups as &$group){
+                $threads_temp = $group->getThreads();
+                foreach ($threads_temp as &$thread){
+                    array_push($threads, $thread);
+                }
+            }
+            usort($threads, function ($a, $b) {
+                return $b->getCreationDate() <=> $a->getCreationDate();
+            });
+
+            return $this->render('user/index.html.twig', [
+                'loggedUser' => $loggedUser,
+                'threads' => array_slice($threads, 0, 20),
+                'users' => $users,
+                'currentFilter' => $filter
+            ]);
+        } else {
+            $threads = $threadRepository->getOpen(20);
+            $users = $userRepository->getNumOpen(40);
+            return $this->render('unlogged/index.html.twig', [
+                'loggedUser' => $loggedUser,
+                'threads' => $threads,
+                'users' => $users,
+                'currentFilter' => $filter
+            ]);
+        }
+    }
+
+    /**
+     * @Route("/filter/{filter}", name = "main_page_filter", methods={"GET"})
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
+     * @return Response view
+     */
+    public function filter_threads($filter, Request $request, EntityManagerInterface $entityManager, UserInterface $loggedUser = null,
                               GroupRepository $groupRepository, UserRepository $userRepository, ThreadRepository $threadRepository){
 
         if ($this->isGranted('ROLE_USER')){
 
             $users = $loggedUser->getSubscribers();
 
-            if ($filter == 'recent'){
+            if ($filter == 'New'){
                 $threads = [];
                 $groups = $loggedUser->getGroups();
                 foreach($groups as &$group){
@@ -49,6 +93,18 @@ class MainController extends AbstractController
                 usort($threads, function ($a, $b) {
                     return $b->getCreationDate() <=> $a->getCreationDate();
                 });
+            } elseif ($filter == 'Top'){
+                $threads = [];
+                $groups = $loggedUser->getGroups();
+                foreach($groups as &$group){
+                    $threads_temp = $group->getThreads();
+                    foreach ($threads_temp as &$thread){
+                        array_push($threads, $thread);
+                    }
+                }
+                usort($threads, function ($a, $b) {
+                    return $b->getRating() <=> $a->getRating();
+                });
             }
 
             return $this->render('user/index.html.twig', [
@@ -58,8 +114,15 @@ class MainController extends AbstractController
                 'currentFilter' => $filter
             ]);
         } else {
-            $threads = $threadRepository->getNumOpen(20);
             $users = $userRepository->getNumOpen(40);
+
+            if ($filter == 'New'){
+                $threads = $threadRepository->getOpen(20);
+            } elseif ($filter == 'Top'){
+                $threads = $threadRepository->getTopOpen(20);
+            }
+
+
             return $this->render('unlogged/index.html.twig', [
                 'loggedUser' => $loggedUser,
                 'threads' => $threads,

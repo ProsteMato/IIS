@@ -10,12 +10,12 @@
     <div class="row">
         <div class="col-md-8">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <button type="button" class="btn btn-primary">{{ currentFilter }}</button>
+                    <button type="button" class="btn btn-primary active">{{ currentFilter }}</button>
                     <div class="btn-group" role="group">
                         <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
-                            <a class="dropdown-item" href="#">Recent</a>
-                            <a class="dropdown-item" href="#">Top</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'New'}) }}">New</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Top'}) }}">Top</a>
                         </div>
                     </div>
                 </div>
@@ -26,7 +26,8 @@
                     <div class="container mb-3 rounded border border-light">
                         <div class="row mt-1 border-bottom border-light">
                             <div class="col-8">
-                                <a style="text-decoration: none" href="{{ path('group.thread.show', {group_id: thread.getGroupId().getId ,thread_id: thread.getId}) }}"><h5>{{ thread.getTitle }}</h5></a>
+                                <a class="text-primary" href="{{ path('show_group', {group_id: thread.getGroupId().getId()}) }}">{{ thread.getGroupId().getName() }}</a>
+                                <a class="text-info" style="text-decoration: none " href="{{ path('group.thread.show', {group_id: thread.getGroupId().getId() ,thread_id: thread.getId()}) }}"><h5><b>{{ thread.getTitle }}</b></h5></a>
                             </div>
                             <div class="col">
                                 <p class="text-right" style="font-size: 14px">
@@ -38,7 +39,7 @@
                         </div>
                         <div class="row">
                             <div class="col mt-1">
-                                <p>
+                                <p class="text-muted">
                                     {{ thread.getDescription() }}
                                 </p>
                             </div>

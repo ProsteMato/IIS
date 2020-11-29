@@ -26,7 +26,7 @@ class ThreadRepository extends ServiceEntityRepository
     /**
      * @return Thread[] Returns an array of Thread objects
      */
-    public function getNumOpen(int $num)
+    public function getOpen(int $num)
     {
         return $this->createQueryBuilder('t')
             ->innerJoin('t.group_id', 'g', 'WITH', 'g.visibility = 1')
@@ -35,6 +35,20 @@ class ThreadRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+     * @return Thread[] Returns an array of Thread objects
+     */
+    public function getTopOpen(int $num)
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.group_id', 'g', 'WITH', 'g.visibility = 1')
+            ->orderBy('t.rating', 'DESC')
+            ->setMaxResults($num)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     // /**
