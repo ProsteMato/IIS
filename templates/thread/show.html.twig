@@ -21,7 +21,10 @@
                         </div>
                         <div class="col">
                             <p class="text-right" style="font-size: 18px">
+                                <b>Rating: {{ thread.rating }}</b><br>
+                                {% if is_granted('ROLE_USER') %}
                                 {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId})) }}
+                                {% endif %}
                             </p>
                         </div>
                     </div>
@@ -48,7 +51,9 @@
                     </div>
                     <div class="row ml-1 mb-4 mt-5">
                         <div class="col">
+                            {% if is_granted('GROUP_MEMBER', [thread.groupId, loggedUser]) %}
                             {{ render(path('create_post', { "thread_id": thread.getId(), "group_id": thread.groupId.getId }))}}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -74,7 +79,9 @@
                             </div>
                             <div class="row">
                                 <div class="col mb-2">
-                                    {{ render(controller('App\\Controller\\PostController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId, 'post_id': post.id})) }}
+                                    {% if is_granted('ROLE_USER') %}
+                                        {{ render(controller('App\\Controller\\PostController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId, 'post_id': post.id})) }}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
