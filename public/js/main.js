@@ -1,6 +1,8 @@
 const like_btns = document.querySelectorAll(".like-btn");
 const dislike_btns = document.querySelectorAll(".dislike-btn");
 
+let last_action = "";
+
 function like_dislike(selector) {
     selector.forEach(
         function(like_btn) {
@@ -20,6 +22,16 @@ function like_dislike(selector) {
                     action = "dislike";
                 } else if (e.target.classList.contains("fa-thumbs-down")) {
                     action = "undislike";
+                }
+
+                if (last_action === "like" && action === "like") {
+                    return
+                } else if (last_action === "unlike" && action === "unlike") {
+                    return
+                } else if (last_action === "dislike" && action === "dislike") {
+                    return
+                } else if (last_action === "undislike" && action === "undislike") {
+                    return
                 }
 
                 request.onload = function() {
@@ -59,6 +71,8 @@ function like_dislike(selector) {
                             e.target.nextElementSibling
                                 .classList.add("fa-thumbs-o-up");
                         }
+
+                        last_action = action;
                     }
                 };
 
