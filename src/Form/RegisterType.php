@@ -49,7 +49,7 @@ class RegisterType extends AbstractType
             ])
             ->add('lastName', TextType::class, [
                 'required' => true,
-                'label' => 'First Name *'
+                'label' => 'Last Name *'
             ])
             ->add('birthDate', BirthdayType::class, [
                 'placeholder' => [
@@ -61,9 +61,15 @@ class RegisterType extends AbstractType
                 '' => NULL,
                 'male' => 'male',
                 'female' => 'female']])
-            ->add('visibility', CheckboxType::class, ['required'=> false,
-                                                                  'label' => 'Anyone can see my profile',
-                                                                   'label_attr' => ['class' => 'switch-custom']])
+            ->add('visibility', ChoiceType::class, [
+                        'label' => 'Select who can see your profile *',
+                        'choices' => [
+                            'everyone' => 'everyone',
+                            'only registered users' => 'registered',
+                            'only members of same groups' => 'members',
+                            'only me'=> 'noone'
+                        ]
+                ])
             ->add('description', TextareaType::class, ['required'=> false])
             ->add('attachment', FileType::class, [ 'mapped' => false,
                 'required' => false,

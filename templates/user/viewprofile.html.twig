@@ -16,9 +16,19 @@
 
 {% block body_container %}
 
-    {% if showedUser.visibility or ( loggedUser != null and loggedUser.id == showedUser.id ) or is_granted('ROLE_ADMIN') %}
+    {% if showedUser.visibility == 'everyone'
+        or ( loggedUser and showedUser.visibility == 'registered')
+        or ( loggedUser != null and loggedUser.id == showedUser.id )
+        or is_granted('ROLE_ADMIN')
 
-
+    %}
+        <!--
+        everyone
+        logged in users
+        todo: members of groups
+        only me
+        admin
+        -->
     <div class="jumbotron">
     <div class="row">
         <div class="col-md-3">

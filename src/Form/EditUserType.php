@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
  * Class EditUserType
@@ -28,9 +30,18 @@ class EditUserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', TextType::class)
-            ->add('firstName', TextType::class)
-            ->add('lastName', TextType::class)
+            ->add('email', TextType::class, [
+                'label' => 'Email *',
+                'required' => true,
+            ])
+            ->add('firstName', TextType::class, [
+                'required' => true,
+                'label' => 'First Name *'
+            ])
+            ->add('lastName', TextType::class, [
+                'required' => true,
+                'label' => 'Last Name *'
+            ])
             ->add('birthDate', BirthdayType::class, [
                 'placeholder' => [
                     'year' => 'Year', 'month' => 'Month', 'day' => 'Day'],
@@ -41,9 +52,15 @@ class EditUserType extends AbstractType
                 '' => NULL,
                 'male' => 'male',
                 'female' => 'female']])
-            ->add('visibility', CheckboxType::class, ['required'=> false,
-                                                                  'label' => 'Visible',
-                                                                   'label_attr' => ['class' => 'switch-custom']])
+            ->add('visibility', ChoiceType::class, [
+                'label' => 'Select who can see your profile *',
+                'choices' => [
+                    'everyone' => 'everyone',
+                    'only registered users' => 'registered',
+                    'only members of same groups' => 'members',
+                    'only me'=> 'noone'
+                ]
+            ])
             ->add('description', TextareaType::class, ['required'=> false])
             ->add('attachment', FileType::class, [ 'mapped' => false,
                 'required' => false,
