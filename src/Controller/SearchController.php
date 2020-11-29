@@ -56,12 +56,20 @@ class SearchController extends AbstractController
      * @return array Array of User-type objects
      */
     public function search_users(EntityManagerInterface $entityManager, $search_val){
-        $usersFirstName = $entityManager->getRepository(User::class)->findBy([
-            'firstName'  => $search_val]);
-        $usersLastName = $entityManager->getRepository(User::class)->findBy([
-            'lastName' => $search_val]);
 
-        $users = array_merge($usersFirstName, $usersLastName);
+        if ($search_val )
+        {
+            $usersFirstName = $entityManager->getRepository(User::class)->findBy([
+                'firstName'  => $search_val]);
+            $usersLastName = $entityManager->getRepository(User::class)->findBy([
+                'lastName' => $search_val]);
+            $users = array_unique(array_merge($usersFirstName,$usersLastName), SORT_REGULAR);
+
+        }
+        else {
+            $users = $entityManager->getRepository(User::class)->findAll();
+        }
+
 
         return $users;
     }
@@ -74,8 +82,15 @@ class SearchController extends AbstractController
      * @return object[] object of groups
      */
     public function search_groups(EntityManagerInterface $entityManager, $search_val){
-        $groups = $entityManager->getRepository(Group::class)->findBy([
-            'name'  => $search_val]);
+        if ($search_val)
+        {
+            $groups = $entityManager->getRepository(Group::class)->findBy([
+                'name'  => $search_val]);
+        }
+        else {
+            $groups= $entityManager->getRepository(Group::class)->findAll();
+        }
+
 
         return $groups;
     }
