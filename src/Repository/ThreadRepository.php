@@ -6,6 +6,7 @@ use App\Entity\Group;
 use App\Entity\GroupUser;
 use App\Entity\Thread;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,10 +27,25 @@ class ThreadRepository extends ServiceEntityRepository
     /**
      * @return Thread[] Returns an array of Thread objects
      */
-    public function getOpen(int $num)
+    public function getOpen(int $num, string $timeFilter)
     {
+        $datetime = new DateTime();
+        if ($timeFilter == "Today"){
+            $datetime->setTimestamp(time()-(24*60*60));
+        } elseif ($timeFilter == "Week"){
+            $datetime->setTimestamp(time()-(7*24*60*60));
+        } elseif ($timeFilter == "Month"){
+            $datetime->setTimestamp(time()-(30*24*60*60));
+        } elseif ($timeFilter == "Year"){
+            $datetime->setTimestamp(time()-(365*24*60*60));
+        } else {
+            $datetime->setTimestamp(0);
+        }
+
         return $this->createQueryBuilder('t')
             ->innerJoin('t.group_id', 'g', 'WITH', 'g.visibility = 1')
+            ->andWhere('t.creation_date > :date')
+            ->setParameter('date', $datetime)
             ->orderBy('t.id', 'DESC')
             ->setMaxResults($num)
             ->getQuery()
@@ -40,10 +56,25 @@ class ThreadRepository extends ServiceEntityRepository
     /**
      * @return Thread[] Returns an array of Thread objects
      */
-    public function getTopOpen(int $num)
+    public function getTopOpen(int $num, string $timeFilter)
     {
+        $datetime = new DateTime();
+        if ($timeFilter == "Today"){
+            $datetime->setTimestamp(time()-(24*60*60));
+        } elseif ($timeFilter == "Week"){
+            $datetime->setTimestamp(time()-(7*24*60*60));
+        } elseif ($timeFilter == "Month"){
+            $datetime->setTimestamp(time()-(30*24*60*60));
+        } elseif ($timeFilter == "Year"){
+            $datetime->setTimestamp(time()-(365*24*60*60));
+        } else {
+            $datetime->setTimestamp(0);
+        }
+
         return $this->createQueryBuilder('t')
             ->innerJoin('t.group_id', 'g', 'WITH', 'g.visibility = 1')
+            ->andWhere('t.creation_date > :date')
+            ->setParameter('date', $datetime)
             ->orderBy('t.rating', 'DESC')
             ->setMaxResults($num)
             ->getQuery()

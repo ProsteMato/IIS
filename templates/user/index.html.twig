@@ -14,9 +14,22 @@
                     <div class="btn-group" role="group">
                         <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
-                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'New'}) }}">New</a>
-                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Top'}) }}">Top</a>
-                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Most commented'}) }}">Most commented</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'New', time_filter: timeFilter }) }}">New</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Top', time_filter: timeFilter }) }}">Top</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Most commented', time_filter: timeFilter }) }}">Most commented</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <button type="button" class="btn btn-primary active">{{ timeFilter }}</button>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "Today" }) }}">Today</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "Week" }) }}">Week</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "Month" }) }}">Month</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "Year" }) }}">Year</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "All Time" }) }}">All Time</a>
                         </div>
                     </div>
                 </div>
