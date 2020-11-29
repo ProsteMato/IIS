@@ -8,37 +8,48 @@
 
 {% block body_container %}
     <div class="row">
-        <div class="col-md-7">
-
+        <div class="col-md-8">
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn btn-primary">Primary</button>
+                <button type="button" class="btn btn-primary active">{{ currentFilter }}</button>
                 <div class="btn-group" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
-                        <a class="dropdown-item" href="#">Recent</a>
-                        <a class="dropdown-item" href="#">Top</a>
+                        <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'New', time_filter: timeFilter }) }}">New</a>
+                        <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Top', time_filter: timeFilter }) }}">Top</a>
+                        <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Most commented', time_filter: timeFilter}) }}">Most commented</a>
                     </div>
                 </div>
             </div>
-
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-primary active">{{ timeFilter }}</button>
+                <div class="btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                        <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "Today" }) }}">Today</a>
+                        <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "Week" }) }}">Week</a>
+                        <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "Month" }) }}">Month</a>
+                        <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "Year" }) }}">Year</a>
+                        <a class="dropdown-item" href="{{ path('main_page_filter', {filter: currentFilter, time_filter: "All Time" }) }}">All Time</a>
+                    </div>
+                </div>
+            </div>
             <div id="threads" class="jumbotron">
                 {% for thread in threads %}
                     <div class="container mb-3 rounded border border-light">
                         <div class="row mt-1 border-bottom border-light">
                             <div class="col-8">
-                                <a style="text-decoration: none" href="{{ path('group.thread.show', {group_id: thread.getGroupId().getId ,thread_id: thread.getId}) }}"><h5>{{ thread.getTitle }}</h5></a>
+                                <a class="text-primary" href="{{ path('show_group', {group_id: thread.getGroupId().getId()}) }}">{{ thread.getGroupId().getName() }}</a>
+                                <a class="text-info" style="text-decoration: none" href="{{ path('group.thread.show', {group_id: thread.getGroupId().getId ,thread_id: thread.getId}) }}"><h5>{{ thread.getTitle }}</h5></a>
                             </div>
                             <div class="col">
                                 <p class="text-right" style="font-size: 14px">
                                     <b>Rating: {{ thread.getRating() }}</b><br>
-                                    {{ render(controller('App\\Controller\\ThreadController::userDisliked', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
-                                    {{ render(controller('App\\Controller\\ThreadController::userLiked', {'thread_id': thread.getId, 'group_id': thread.groupId})) }}
                                 </p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col mt-1">
-                                <p>
+                                <p class="text-muted">
                                     {{ thread.getDescription() }}
                                 </p>
                             </div>
@@ -46,22 +57,22 @@
                     </div>
                 {% endfor %}
             </div>
-            <button id="load_button" type="button" class="btn btn-primary float-center">More</button>
-
         </div>
-        <div class="jumbotron col-md-4 offset-md-1">
-            <h3 class="display-5">New profiles:</h3>
-            <div class="container">
-                {% for user in users %}
-                    <div class="row mb-1">
-                        <div class="col-md-2">
-                            <img style="width: 25px; height: 25px" href="#" src="{{ asset('/profilepics/' ~ user.getProfilePicture()) }}">
+        <div class="col-md-4">
+            <div class="jumbotron col-md-11 offset-md-1">
+                <h3 class="display-5">New profiles:</h3>
+                <div class="container">
+                    {% for user in users %}
+                        <div class="row mb-1">
+                            <div class="col-md-2">
+                                <img style="width: 25px; height: 25px" href="#" src="{{ asset('/profilepics/' ~ user.getProfilePicture()) }}">
+                            </div>
+                            <div class="col-md-8 pl-3">
+                                <a href="{{ path('user', {'id': user.getId() }) }}"><b>{{ user.getFirstName() }} {{ user.getLastName() }}</b></a>
+                            </div>
                         </div>
-                        <div class="col-md-8 pl-3">
-                            <a href="{{ path('user', {'id': user.getId() }) }}"><b>{{ user.getFirstName() }} {{ user.getLastName() }}</b></a>
-                        </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

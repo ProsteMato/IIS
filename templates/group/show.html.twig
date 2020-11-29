@@ -22,7 +22,7 @@
                     </div>
                     <div class="col-md-9">
                         <h3> {{ group.name }} </h3>
-                        <p> {{ group.description }} </p>
+
                         {% if group.visibility == 1 %}
                             <p><b>Visibility: </b>Anyone</p>
                         {% else %}
@@ -30,20 +30,25 @@
                         {% endif %}
                         <p><b>Created: </b>{{ group.getDateString() }}</p>
                         <p><b>Members: </b>{{ group.getUsersCount() }}</p>
+                        <p align="justify"> <b>Description: </b>{{ group.description }} </p>
                         <div>
                             {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
-                                <a href="{{ path('leave_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Leave</a>
-                                {% if is_granted('GROUP_OWNER', [group, loggedUser]) %}
+                                <a href="{{ path('leave_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right ml-2">Leave</a>
+                                {% if is_granted('GROUP_MOD', [group, loggedUser]) and not is_granted('GROUP_OWNER', [group, loggedUser])%}
+                                    <a href="{{ path('group_revoke_mod', {'group_id': group.id}) }}" type="button" class="btn btn-danger ml-2 float-right">Revoke mod</a>
+                                {% endif %}
+                                {% if is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]) %}
                                     <a href="{{ path('edit_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Settings</a>
                                 {% else %}
                                     {% if not is_granted('GROUP_MOD', [group, loggedUser]) and not is_granted('GROUP_MOD_APPL', [group, loggedUser]) %}
                                         <a href="{{ path('group_apply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply mod</a>
                                     {% elseif not is_granted('GROUP_MOD', [group, loggedUser]) and is_granted('GROUP_MOD_APPL', [group, loggedUser]) %}
                                         <a href="{{ path('group_unapply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply mod</a>
-                                    {% elseif is_granted('GROUP_MOD', [group, loggedUser]) %}
-                                        <a href="{{ path('group_revoke_mod', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Revoke mod</a>
-                                    {% endif %}
+                                     {% endif %}
                                 {% endif %}
+
+
+
                             {% else %}
                                 {% if group.getOpen() == true %}
                                     <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Join</a>
@@ -121,7 +126,7 @@
         <div class="col-md-4">
             <div class="row">
                 <div class="jumbotron col-md-11 offset-md-1">
-                    <h3 class="display-5">Members: {{ group.getUsersCount }}</h3>
+                    <h4 class="display-5 mt-0" align="center">Members: {{ group.getUsersCount }}</h4>
                     <div class="container">
                         {% for user in users %}
                             <div class="row mb-1">
@@ -131,6 +136,14 @@
                                 <div class="col-md-8 pl-3">
                                     <a href="{{ path('user', {'id': user.getId() }) }}"><b>{{ user.getFirstName() }} {{ user.getLastName() }}</b></a>
                                 </div>
+                                {% if (is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]))
+                                    and not is_granted('GROUP_OWNER', [group, user])
+                                    and user != loggedUser
+                                %}
+                                <div class="col-md-2 pl-3">
+                                    <a href="{{ path('group_kick_user', {'group_id': group.id, 'user_id': user.getId()}) }}" type="button" class="btn btn-danger float-right">Kick</a>
+                                </div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>

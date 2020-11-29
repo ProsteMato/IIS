@@ -148,6 +148,20 @@ class GroupController extends AbstractController
         foreach ($groupUser as &$gu){
             $em->remove($gu);
         }
+
+        $threads = $group->getThreads();
+        foreach ($threads as &$thread){
+            foreach ($thread->getPosts() as &$post){
+                $em->remove($post);
+            }
+            foreach ($thread->getPostUsers() as &$pu){
+                $em->remove($pu);
+            }
+            foreach ($thread->getThreadUsers() as &$tu){
+                $em->remove($tu);
+            }
+            $em->remove($thread);
+        }
         $em->remove($group);
         $em->flush();
 
@@ -158,7 +172,6 @@ class GroupController extends AbstractController
         else {
             return $this->redirectToRoute('list_groups');
         }
-
     }
 
     /**
@@ -218,7 +231,7 @@ class GroupController extends AbstractController
     public function edit($group_id, Request $request, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
-        $form = $this->createForm(GroupType::class, $group, ['label' => 'Edit']);
+        $form = $this->createForm(GroupType::class, $group, ['label' => 'Edit group']);
         $form->handleRequest($request);
 
         $formOwner = $this->createForm(ChangeOwnerType::class);
@@ -228,6 +241,8 @@ class GroupController extends AbstractController
         $applications = $group->getAppliedUsers();
         $modApps = $group->getAppliedMods();
         $moderators = $group->getMods();
+        $members = $group->getUsers();
+
 
         if (($key = array_search($loggedUser, $moderators)) !== false) {
             unset($moderators[$key]);
@@ -246,7 +261,7 @@ class GroupController extends AbstractController
             }
             $em->persist($group);
             $em->flush();
-            return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+            return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
         }
 
         if($formOwner->isSubmitted() && $formOwner->isValid()) {
@@ -259,6 +274,8 @@ class GroupController extends AbstractController
             'ownerForm' => $formOwner->createView(),
             'group' => $group,
             'loggedUser' => $loggedUser,
+            'members' => $members,
+            'membersCount' => count($members),
             'applications' => $applications,
             'appsCount' => count($applications),
             'modApps' => $modApps,
@@ -305,7 +322,14 @@ class GroupController extends AbstractController
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($gu);
                 $em->flush();
-                return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+                if ($user == $loggedUser)
+                {
+                    return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
+
+                } else {
+                    return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+                }
+
             }
         }
         return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
@@ -393,6 +417,27 @@ class GroupController extends AbstractController
             if ($gu->getUser() == $user){
                 $gu->giveRole('ROLE_MOD');
                 $gu->removeRole('ROLE_MAPP');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($gu);
+                $em->flush();
+                return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+            }
+        }
+        return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/edit/mod/give/{user_id}", name="group_give_mod")
+     */
+    public function give_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+                             UserInterface $loggedUser = null)
+    {
+        $group = $groupRepository->find($group_id);
+        $groupUser = $group->getGroupUser();
+        $user = $userRepository->find($user_id);
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $user){
+                $gu->giveRole('ROLE_MOD');
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($gu);
                 $em->flush();
@@ -497,5 +542,30 @@ class GroupController extends AbstractController
             $em->flush();
             return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
         }
+    }
+
+    /**
+     * @Route ("/group/show/{group_id}/kick/{user_id}", name="group_kick_user")
+     */
+    public function group_kick($group_id, $user_id, UserRepository $userRepository, GroupRepository $groupRepository,
+                                UserInterface $loggedUser)
+    {
+        $group = $groupRepository->find($group_id);
+        $user = $userRepository->find($user_id);
+
+        if ($group->getAdminUser() == $user){
+            $this->addFlash("notice", "You have to change admin of group first in order to leave");
+            return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
+        }
+        $em = $this->getDoctrine()->getManager();
+        $groupUser = $group->getGroupUser();
+        foreach ($groupUser as &$gu){
+            if ($gu->getUser() == $user){
+                $em->remove($gu);
+                $em->flush();
+                break;
+            }
+        }
+        return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
     }
 }

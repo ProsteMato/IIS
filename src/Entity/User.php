@@ -31,6 +31,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\Email(
      *     message = "The email '{{ value }}' is not a valid email.")
+     * @Assert\NotNull
      */
     private $email;
 
@@ -50,11 +51,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Assert\NotNull
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Assert\NotNull
      */
     private $lastName;
 
@@ -79,11 +82,7 @@ class User implements UserInterface
      */
     private $sex;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $visibility;
-    
+
     /**
      * @ORM\OneToMany(targetEntity=Group::class, mappedBy="admin_user")
      */
@@ -139,6 +138,11 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity=User::class, mappedBy="subscribers")
      */
     private $subscribedBy;
+
+    /**
+     * @ORM\Column(type="string", length=25)
+     */
+    private $visibility;
 
     public function __construct()
     {
@@ -302,18 +306,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getVisibility(): ?bool
-    {
-        return $this->visibility;
-    }
 
-    public function setVisibility(bool $visibility): self
-    {
-        $this->visibility = $visibility;
-
-        return $this;
-    }
-    
     /**
      * @return Collection|Group[]
      */
@@ -554,6 +547,18 @@ class User implements UserInterface
         if ($this->subscribedBy->removeElement($subscribedBy)) {
             $subscribedBy->removeSubscriber($this);
         }
+
+        return $this;
+    }
+
+    public function getVisibility(): ?string
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(string $visibility): self
+    {
+        $this->visibility = $visibility;
 
         return $this;
     }
