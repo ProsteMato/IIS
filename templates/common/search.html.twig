@@ -70,10 +70,12 @@
                                     <p class="mb-1">{{ group.description }}</p>
 
                                 </div>
+                                {% if is_granted('ROLE_ADMIN') %}
                                 <object><a type="button" href="{{  path('delete_group', {'id': group.id }) }}"
                                            onclick="return confirm('Are you sure you want to delete group? ' +
                                                'You can\'t restore it after.')"
                                            class="btn btn-danger float-right">Delete</a></object>
+                                {% endif %}
                             </div>
                         </div>
                     </a>

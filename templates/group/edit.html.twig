@@ -113,22 +113,24 @@
 
                             <h4 class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
 
-
-                            {% if is_granted('GROUP_MOD', [group, loggedUser]) %}
-
-                            {% if not is_granted('GROUP_OWNER', [group, user]) %}
+                            {% if is_granted('GROUP_OWNER', [group, loggedUser]) and not is_granted('GROUP_OWNER', [group,user]) %}
                                 <object>
-                                    <a href="{{  path('group_kick_user', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger float-right ml-2 mt-3 ">Kick</a>
-
-                                {% if is_granted('GROUP_MOD', [group, user]) and is_granted('GROUP_OWNER', [group, loggedUser]) %}
-                                <a href="{{  path('group_delete_mod', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger  float-right mt-3 ">Unmod</a>
-                                {% endif %}
-                                {% if not is_granted('GROUP_MOD', [group, user]) and is_granted('GROUP_OWNER', [group, loggedUser]) %}
-                                <a href="{{  path('group_give_mod', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-info float-right ml-2 mt-3 ">Mod</a>
-                                {% endif %}
-
+                                <a href="{{  path('group_kick_user', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger float-right ml-2 mt-3 ">Kick</a>
+                                {%  if  is_granted('GROUP_MOD', [group,user]) %}
+                                    <a href="{{  path('group_delete_mod', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger  float-right mt-3 ">Unmod</a>
+                                {% else %}
+                                    <a href="{{  path('group_give_mod', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-info float-right ml-2 mt-3 ">Mod</a>
+                               {% endif %}
+                                </object>
                             {% endif %}
 
+                            {% if is_granted('GROUP_MOD', [group, loggedUser])
+                                and not is_granted('GROUP_OWNER', [group,user])
+                                and not is_granted('GROUP_OWNER', [group, loggedUser])
+                                and not is_granted('GROUP_MOD', [group, user])
+                            %}
+                            <object>
+                                    <a href="{{  path('group_kick_user', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger float-right ml-2 mt-3 ">Kick</a>
                             </object>
                             {% endif %}
                         </div>
