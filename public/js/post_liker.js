@@ -6,13 +6,11 @@ function like_dislike(selector) {
     selector.forEach(
         function(like_btn) {
             like_btn.addEventListener("click", function (e){
-                e.stopImmediatePropagation();
+                e.preventDefault();
+                like_btn.setAttribute('disabled', true);
+
                 let id = e.target.getAttribute("data-id");
                 let rating = document.getElementById("rating" + id);
-                let thread_rating = document.getElementById("thread_rating");
-
-
-
                 let base_url = window.location.pathname;
                 let action = "";
                 let request = new XMLHttpRequest();
@@ -89,6 +87,7 @@ function like_dislike(selector) {
                             }
                         }
                     }
+                    like_btn.removeAttribute('disabled');
                 };
 
                 request.send(JSON.stringify({

@@ -48,7 +48,7 @@ class ThreadController extends AbstractController
         $groupRepository = $em->getRepository(Group::class);
 
         $thread = $threadRepository->find($thread_id);
-        $group = $threadRepository->find($group_id);
+        $group = $groupRepository->find($group_id);
 
         $liked = $threadUserRepository->findBy([
             'threads' => $thread,
@@ -76,29 +76,6 @@ class ThreadController extends AbstractController
         );
     }
 
-    public function userRating($thread_id, $group_id){
-
-        $em = $this->getDoctrine()->getManager();
-
-        $threadRepository = $em->getRepository(Thread::class);
-        $threadUserRepository = $em->getRepository(ThreadUser::class);
-        $groupRepository = $em->getRepository(Group::class);
-
-        $liked = $threadUserRepository->findBy([
-            'threads' => $threadRepository->find($thread_id),
-            'group_list' => $groupRepository->find($group_id),
-            'liked' => "like"
-        ]);
-
-        $disliked = $threadUserRepository->findBy([
-            'threads' => $threadRepository->find($thread_id),
-            'group_list' => $groupRepository->find($group_id),
-            'liked' => "dislike"
-        ]);
-
-        return count($liked) - count($disliked);
-    }
-
     /**
      * @Route("/show/{thread_id}/liker", name="like_thread")
      */
@@ -115,65 +92,59 @@ class ThreadController extends AbstractController
         $threadUserRepository = $em->getRepository(ThreadUser::class);
         $groupRepository = $em->getRepository(Group::class);
 
-        $thread_user = new ThreadUser();
-        $thread_user->setUsers($user);
-        $thread_user->setThreads($threadRepository->find($thread_id));
-        $thread_user->setGroupList($groupRepository->find($group_id));
-        $thread_user->setLiked($action);
 
         $thread = $threadRepository->find($thread_id);
+        $group = $groupRepository->find($group_id);
+
+        $thread_user = new ThreadUser();
+        $thread_user->setUsers($user);
+        $thread_user->setThreads($thread);
+        $thread_user->setGroupList($group);
+        $thread_user->setLiked($action);
 
         $record = $threadUserRepository->findOneBy([
             'threads' => $thread,
-            'group_list' => $groupRepository->find($group_id),
+            'group_list' => $group,
             'users' => $user
         ]);
 
         if ($record) {
             switch ($action) {
                 case "like":
-                    $record->setLiked($action);
-                    $thread->setRating($thread->getRating() + 2);
-                    break;
-                case "unlike":
-                    $em->remove($record);
-                    $thread->setRating($thread->getRating() - 1);
-                    break;
                 case "dislike":
                     $record->setLiked($action);
-                    $thread->setRating($thread->getRating() - 2);
                     break;
+                case "unlike":
                 case "undislike":
                     $em->remove($record);
-                    $thread->setRating($thread->getRating() + 1);
                     break;
             }
         } else {
             $em->persist($thread_user);
-            if ($action == "like") {
-                $thread->setRating($thread->getRating() + 1);
-            } else if ($action == "dislike") {
-                $thread->setRating($thread->getRating() - 1);
-            }
         }
-
         $em->flush();
 
         $liked = $threadUserRepository->findBy([
-            'threads' => $threadRepository->find($thread_id),
-            'group_list' => $groupRepository->find($group_id),
+            'threads' => $thread,
+            'group_list' => $group,
             'liked' => "like"
         ]);
 
         $disliked = $threadUserRepository->findBy([
-            'threads' => $threadRepository->find($thread_id),
-            'group_list' => $groupRepository->find($group_id),
+            'threads' => $thread,
+            'group_list' => $group,
             'liked' => "dislike"
         ]);
 
+        $rating = count($liked) - count($disliked);
+
+        $thread->setRating($rating);
+        $em->flush();
+
+
         return new Response(
             json_encode([[
-                "rating" => count($liked) - count($disliked)
+                "rating" => $rating
             ]], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
             Response::HTTP_OK,
             ['content-type' => 'application/json']

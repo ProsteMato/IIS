@@ -18,6 +18,8 @@ class PostController extends AbstractController
     /**
      * @Route("/group/show/{group_id}/thread/show/{thread_id}/post/create", name="create_post")
      * @param Request $request
+     * @param $group_id
+     * @param $thread_id
      * @return Response
      */
     public function create(Request $request, $group_id, $thread_id): Response
@@ -73,7 +75,7 @@ class PostController extends AbstractController
         ]);
     }
 
-    private function userLike($thread_id, $group_id, $post_id, $value_search, $twig, $twig_key) {
+    public function userLike($thread_id, $group_id, $post_id) {
         $user = $this->getUser();
 
         $em = $this->getDoctrine()->getManager();
@@ -83,29 +85,34 @@ class PostController extends AbstractController
         $postRepository = $em->getRepository(Post::class);
         $groupRepository = $em->getRepository(Group::class);
 
+        $thread = $threadRepository->find($thread_id);
+        $group = $groupRepository->find($group_id);
+        $post = $postRepository->find($post_id);
+
         $liked = $threadUserRepository->findBy([
-            'threads' => $threadRepository->find($thread_id),
-            'group_list' => $groupRepository->find($group_id),
-            'posts' => $postRepository->find($post_id),
+            'threads' => $thread,
+            'group_list' => $group,
+            'posts' => $post,
             'users' => $user,
-            "liked" => $value_search
+            "liked" => "like"
+        ]);
+
+        $disliked = $threadUserRepository->findBy([
+            'threads' => $thread,
+            'group_list' => $group,
+            'posts' => $post,
+            'users' => $user,
+            "liked" => "dislike"
         ]);
 
         return $this->render(
-            $twig,
+            "post/ratings.html.twig",
             [
-                $twig_key => !empty($liked),
+                "liked" => !empty($liked),
+                "disliked" => !empty($disliked),
                 "post_id" => $post_id
             ]
         );
-    }
-
-    public function userLiked($thread_id, $group_id, $post_id) {
-        return $this->userLike($thread_id, $group_id, $post_id, "like", "post/like.html.twig", "liked");
-    }
-
-    public function userDisliked($thread_id, $group_id, $post_id) {
-        return $this->userLike($thread_id, $group_id, $post_id, "dislike", "post/dislike.html.twig", "disliked");
     }
 
     /**
@@ -125,18 +132,20 @@ class PostController extends AbstractController
         $groupRepository = $em->getRepository(Group::class);
         $postRepository = $em->getRepository(Post::class);
 
-        $post_user = new PostUser();
-        $post_user->setUsers($user);
-        $post_user->setThreads($threadRepository->find($thread_id));
-        $post_user->setGroupList($groupRepository->find($group_id));
-        $post_user->setPosts($postRepository->find($post_id));
-        $post_user->setLiked($action);
-
+        $thread = $threadRepository->find($thread_id);
+        $group = $groupRepository->find($group_id);
         $post = $postRepository->find($post_id);
 
+        $post_user = new PostUser();
+        $post_user->setUsers($user);
+        $post_user->setThreads($thread);
+        $post_user->setGroupList($group);
+        $post_user->setPosts($post);
+        $post_user->setLiked($action);
+
         $record = $postUserRepository->findOneBy([
-            'threads' => $threadRepository->find($thread_id),
-            'group_list' => $groupRepository->find($group_id),
+            'threads' => $thread,
+            'group_list' => $group,
             'posts' => $post,
             'users' => $user
         ]);
@@ -144,31 +153,17 @@ class PostController extends AbstractController
         if ($record) {
             switch ($action) {
                 case "like":
-                    $record->setLiked($action);
-                    $post->setRating($post->getRating() + 2);
-                    break;
-                case "unlike":
-                    $em->remove($record);
-                    $post->setRating($post->getRating() - 1);
-                    break;
                 case "dislike":
                     $record->setLiked($action);
-                    $post->setRating($post->getRating() - 2);
                     break;
+                case "unlike":
                 case "undislike":
                     $em->remove($record);
-                    $post->setRating($post->getRating() + 1);
                     break;
             }
         } else {
             $em->persist($post_user);
-            if ($action == "like") {
-                $post->setRating($post->getRating() + 1);
-            } else if ($action == "dislike") {
-                $post->setRating($post->getRating() - 1);
-            }
         }
-
         $em->flush();
 
         $liked = $postUserRepository->findBy([
@@ -185,9 +180,13 @@ class PostController extends AbstractController
             'liked' => "dislike"
         ]);
 
+        $count = count($liked) - count($disliked);
+        $post->setRating($count);
+        $em->flush();
+
         return new Response(
             json_encode([[
-                "rating" => count($liked) - count($disliked)
+                "rating" => $count
             ]], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
             Response::HTTP_OK,
             ['content-type' => 'application/json']
