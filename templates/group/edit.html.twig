@@ -47,6 +47,8 @@
                     <h5 class="h3 mt-3 mb-3 mr-3 font-weight-normal text-left"></h5>
                     <img  src="{{ asset('/group_pics/'  ~ group.getPicture())}}"
                           class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+                    <a href="{{ path('show_group', {'group_id': group.getId()}) }}" class="btn btn-primary float-right ">Back to group</a>
+
                     <div class="form-group">
                         {%   if group.getPicture() != 'blank_group.png' %}
 
@@ -100,10 +102,13 @@
                     <div class="col-1">
                         <img  src="{{ asset('/profilepics/'  ~ user.getProfilePicture())}}"
                               class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+                        <small class="text-muted"> {{ user.email }}</small>
                     </div>
                     <div class="col-11">
                         <div class="d-flex w-100 justify-content-between">
+
                             <h4 class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
+
 
                             {% if is_granted('GROUP_MOD', [group, loggedUser]) %}
 
@@ -111,13 +116,13 @@
                                 <object>
                                     <a href="{{  path('group_kick_user', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger float-right ml-2 mt-3 ">Kick</a>
 
-                                {% if is_granted('GROUP_MOD', [group, user]) %}
+                                {% if is_granted('GROUP_MOD', [group, user]) and is_granted('GROUP_OWNER', [group, loggedUser]) %}
                                 <a href="{{  path('group_delete_mod', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger  float-right mt-3 ">Unmod</a>
                                 {% endif %}
-                                {% if not is_granted('GROUP_MOD', [group, user]) %}
+                                {% if not is_granted('GROUP_MOD', [group, user]) and is_granted('GROUP_OWNER', [group, loggedUser]) %}
                                 <a href="{{  path('group_give_mod', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-info float-right ml-2 mt-3 ">Mod</a>
                                 {% endif %}
-                                
+
                             {% endif %}
 
                             </object>

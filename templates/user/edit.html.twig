@@ -32,6 +32,8 @@
                     <h5 class="h3 mt-3 mb-3 mr-3 font-weight-normal text-left"></h5>
                     <img  src="{{ asset('/profilepics/'  ~ user.getProfilePicture())}}"
                          class="avatar img-circle img-thumbnail" width="200" height="240" alt="Avatar">
+                    <a href="{{ path('user', {'id': user.getId()}) }}" class="btn btn-primary float-right ">Back to profile</a>
+
 
                     <div class="form-group">
                         {%   if user.getProfilePicture() != 'blank.png' %}
