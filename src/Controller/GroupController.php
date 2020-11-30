@@ -89,6 +89,10 @@ class GroupController extends AbstractController
      */
     public function list(UserInterface $loggedUser): Response
     {
+        if(!$this->isGranted('ROLE_USER')){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $groups = $loggedUser->getGroups();
 
         return $this->render('group/list.html.twig', [
@@ -102,6 +106,11 @@ class GroupController extends AbstractController
      */
     public function create(Request $request, GroupRepository $groupRepository, UserInterface $loggedUser = null): Response
     {
+
+        if(!$this->isGranted('ROLE_USER')){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $group = new Group();
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
@@ -146,6 +155,10 @@ class GroupController extends AbstractController
      */
     public function delete_group(Group $group)
     {
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $em = $this->getDoctrine()->getManager();
         $groupUser = $group->getGroupUser();
         foreach ($groupUser as &$gu){
@@ -183,6 +196,11 @@ class GroupController extends AbstractController
     public function subscribe($group_id, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if($this->isGranted('GROUP_MEMBER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $em = $this->getDoctrine()->getManager();
 
         if ($group->getOpen() or $this->isGranted('ROLE_ADMIN')){
@@ -216,6 +234,11 @@ class GroupController extends AbstractController
     public function unapply($group_id, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('GROUP_APPL', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $em = $this->getDoctrine()->getManager();
         $groupUser = $group->getGroupUser();
         foreach ($groupUser as &$gu){
@@ -234,6 +257,12 @@ class GroupController extends AbstractController
     public function edit($group_id, Request $request, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])
+            and !$this->isGranted('GROUP_MOD', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $form = $this->createForm(GroupType::class, $group, ['label' => 'Edit group']);
         $form->handleRequest($request);
 
@@ -294,6 +323,11 @@ class GroupController extends AbstractController
     public function leave($group_id,  GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('GROUP_MEMBER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         if ($group->getAdminUser() == $loggedUser){
             $this->addFlash("notice", "You have to change admin of group first in order to leave");
             return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
@@ -317,6 +351,11 @@ class GroupController extends AbstractController
                                UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $groupUser = $group->getGroupUser();
         $user = $userRepository->find($user_id);
         foreach ($groupUser as &$gu){
@@ -344,6 +383,12 @@ class GroupController extends AbstractController
     public function unapply_mod($group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!($this->isGranted('GROUP_MEMBER', [$group, $loggedUser]) and !$this->isGranted('GROUP_MOD_APPL', [$group, $loggedUser]))){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
+
         $groupUser = $group->getGroupUser();
         foreach ($groupUser as &$gu){
             if ($gu->getUser() == $loggedUser){
@@ -367,6 +412,11 @@ class GroupController extends AbstractController
     public function revoke_mod($group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $groupUser = $group->getGroupUser();
         foreach ($groupUser as &$gu){
             if ($gu->getUser() == $loggedUser){
@@ -390,6 +440,11 @@ class GroupController extends AbstractController
     public function apply_mod($group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!($this->isGranted('GROUP_MEMBER', [$group, $loggedUser]) and $this->isGranted('ROLE_MOD_APPL', [$group, $loggedUser]))){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $groupUser = $group->getGroupUser();
         foreach ($groupUser as &$gu){
             if ($gu->getUser() == $loggedUser){
@@ -414,6 +469,11 @@ class GroupController extends AbstractController
                                UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $groupUser = $group->getGroupUser();
         $user = $userRepository->find($user_id);
         foreach ($groupUser as &$gu){
@@ -436,6 +496,11 @@ class GroupController extends AbstractController
                              UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $groupUser = $group->getGroupUser();
         $user = $userRepository->find($user_id);
         foreach ($groupUser as &$gu){
@@ -457,6 +522,11 @@ class GroupController extends AbstractController
                              UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $groupUser = $group->getGroupUser();
         $user = $userRepository->find($user_id);
         foreach ($groupUser as &$gu){
@@ -478,6 +548,12 @@ class GroupController extends AbstractController
                                 UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])
+            and !$this->isGranted('GROUP_MOD', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $groupUser = $group->getGroupUser();
         $user = $userRepository->find($user_id);
         foreach ($groupUser as &$gu){
@@ -500,6 +576,12 @@ class GroupController extends AbstractController
                               UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])
+                and !$this->isGranted('GROUP_MOD', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $groupUser = $group->getGroupUser();
         $user = $userRepository->find($user_id);
         foreach ($groupUser as &$gu){
@@ -521,6 +603,11 @@ class GroupController extends AbstractController
                               UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $newOwner = $userRepository->findByEmail($email);
         if (!$newOwner) {
             $this->addFlash("notice", "User not found");
@@ -554,6 +641,12 @@ class GroupController extends AbstractController
                                 UserInterface $loggedUser)
     {
         $group = $groupRepository->find($group_id);
+
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])
+            and !$this->isGranted('GROUP_MOD', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
         $user = $userRepository->find($user_id);
 
         if ($group->getAdminUser() == $user){

@@ -185,6 +185,8 @@ class UserController extends AbstractController
     /**
      * @Route("/user{user_id}/follow", name="follow_user")
      *
+     * Function handles adding a follower to user
+     *
      * @param string $user_id
      * @param EntityManagerInterface $entityManager
      * @param UserInterface $user
@@ -218,6 +220,8 @@ class UserController extends AbstractController
 
     /**
      * @Route("/user{user_id}/unfollow", name="unfollow_user")
+     *
+     * Function hadnles removing follower from user
      *
      * @param string $user_id
      * @param EntityManagerInterface $entityManager
