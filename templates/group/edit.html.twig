@@ -13,7 +13,7 @@
         </div>
     {% endfor %}
     <ul class="nav nav-tabs">
-        {% if is_granted('GROUP_OWNER', [group, loggedUser]) %}
+        {% if is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('ROLE_ADMIN') %}
         <li class="nav-item" >
             <a class="nav-link active" data-toggle="tab" href="#group">Group</a>
         </li>
@@ -25,7 +25,7 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#members">Members</a>
         </li>
-        {% if is_granted('GROUP_OWNER', [group, loggedUser]) %}
+        {% if is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('ROLE_ADMIN') %}
         <li class="nav-item" >
             <a class="nav-link" data-toggle="tab" href="#moderators">Moderators</a>
         </li>
@@ -36,7 +36,7 @@
         {% endif %}
     </ul>
     <div id="myTabContent" class="tab-content">
-        {% if is_granted('GROUP_OWNER', [group, loggedUser]) %}
+        {% if is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('ROLE_ADMIN') %}
         <div class="tab-pane fade active show" id="group">
             <div class="row">
                 <div class="col-md-6">
@@ -113,7 +113,7 @@
 
                             <h4 class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
 
-                            {% if is_granted('GROUP_OWNER', [group, loggedUser]) and not is_granted('GROUP_OWNER', [group,user]) %}
+                            {% if ( is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('ROLE_ADMIN') ) and not is_granted('GROUP_OWNER', [group,user]) %}
                                 <object>
                                 <a href="{{  path('group_kick_user', {'group_id': group.getId(), 'user_id': user.getId()}) }}" class="btn btn-danger float-right ml-2 mt-3 ">Kick</a>
                                 {%  if  is_granted('GROUP_MOD', [group,user]) %}
@@ -161,9 +161,11 @@
                     <div class="col-11">
                         <div class="d-flex w-100 justify-content-between">
                             <h4 class="mb-1">{{ mod.firstName ~ ' ' ~ mod.lastName}}</h4>
-                            <object>
-                                <a href="{{  path('group_delete_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-danger  float-right mt-3 ">Unmod</a>
-                            </object>
+                            {% if is_granted('GROUP_OWNER', [group, mod]) %}
+                                <object>
+                                    <a href="{{  path('group_delete_mod', {'group_id': group.getId(), 'user_id': mod.getId()}) }}" class="btn btn-danger  float-right mt-3 ">Unmod</a>
+                                </object>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

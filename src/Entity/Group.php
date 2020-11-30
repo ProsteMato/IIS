@@ -316,7 +316,7 @@ class Group
     {
         $arr = [];
         foreach ($this->getGroupUser() as $gu){
-            if(!in_array('ROLE_MOD', $gu->getRole())){
+            if(!in_array('ROLE_MOD', $gu->getRole()) and !in_array('ROLE_APP', $gu->getRole())){
                 array_push($arr, $gu->getUser());
             }
         }
