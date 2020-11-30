@@ -50,7 +50,7 @@ class GroupVoter extends Voter
 
 
     /**
-     * Checks wheter this class supports the attribute and subject
+     * Checks whether this class supports the attribute and subject
      *
      * @param string $attribute
      * @param mixed $subject
