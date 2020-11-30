@@ -15,45 +15,47 @@
         <div class="container">
             <div class="jumbotron">
                 <div class="container mb-3">
-                    <div class="row mt-1">
-                        <div class="col-8">
-                            <h3>{{ thread.getTitle }}</h3>
+                    <div id="thread-info">
+                        <div class="row mt-1">
+                            <div class="col-8">
+                                <h3 id="thread_title">{{ thread.getTitle }}</h3>
+                            </div>
+                            <div class="col">
+                                <p class="text-right" style="font-size: 18px">
+                                    <b>Rating: {{ thread.rating }}</b><br>
+                                    {% if is_granted('ROLE_USER') %}
+                                        {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId})) }}
+                                    {% endif %}
+                                </p>
+                            </div>
                         </div>
-                        <div class="col">
-                            <p class="text-right" style="font-size: 18px">
-                                <b>Rating: {{ thread.rating }}</b><br>
-                                {% if is_granted('ROLE_USER') %}
-                                {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId})) }}
-                                {% endif %}
-                            </p>
+                        <div class="row ml-1">
+                            <div class="col ">
+                                <p id="thread_description" style="word-break:break-word;font-size: 18px">
+                                    {{ thread.getDescription() }}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row ml-1">
-                        <div class="col ">
-                            <p style="font-size: 18px">
-                                {{ thread.getDescription() }}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row ml-1">
-                        <div class="col">
-                            <p class="text-left">
-                                <b>Created by:</b> <a style="text-decoration: none" href="{{ path('user', {id: thread.getCreatedBy().getId}) }}">{{ thread.getCreatedBy().getFirstName() }} {{ thread.getCreatedBy().getLastName }}</a>
-                                &nbsp;&nbsp;|&nbsp;&nbsp;{{ thread.getDateString() }}
-                                &nbsp;&nbsp;|&nbsp;&nbsp;{{ thread.getPostsCount }} posts
-                            </p>
-                        </div>
-                        <div class="col">
-                            <p class="text-right">
-                                <b>Last update:</b> {{ thread.getDateString() }}
-                            </p>
+                        <div class="row ml-1">
+                            <div class="col">
+                                <p class="text-left">
+                                    <b>Created by:</b> <a style="text-decoration: none" href="{{ path('user', {id: thread.getCreatedBy().getId}) }}"><b>{{ thread.getCreatedBy().getFirstName() }} {{ thread.getCreatedBy().getLastName }}</b></a>
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;<b>{{ thread.getDateString() }}</b>
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;<b id="thread_post_count">{{ thread.getPostsCount }} posts</b>
+                                </p>
+                            </div>
+                            <div class="col">
+                                <p class="text-right">
+                                    <b id="thread_last_update">Last update: {{ thread.getDateString() }}</b>
+                                </p>
+                            </div>
                         </div>
                     </div>
                     {% if is_granted('OWNER', thread) %}
                     <div class="row ml-1">
                         <div class="col">
                             <a href="{{ path('group.thread.delete', {'group_id': thread.groupId.getId, 'thread_id': thread.id}) }}" type="button" class="btn btn-danger float-right m-2">Delete</a>
-                            <a type="button" class="btn btn-info float-right m-2">Edit</a>
+                            <a id="thread_edit" type="button" data-id="{{ thread.id }}" class="btn btn-info float-right m-2">Edit</a>
                         </div>
                     </div>
                     {% endif %}
@@ -111,4 +113,5 @@
     <script src="/js/post_liker.js"></script>
     <script src="/js/delete_post.js"></script>
     <script src="/js/edit_post.js"></script>
+    <script src="/js/edit_thread.js"></script>
 {% endblock %}

@@ -11,6 +11,10 @@ use App\Repository\GroupRepository;
 use App\Repository\ThreadRepository;
 use App\Repository\ThreadUserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -75,6 +79,62 @@ class ThreadController extends AbstractController
         return $this->redirectToRoute("show_group", [
                 "group_id" => $group_id
             ]);
+
+    }
+
+    /**
+     *  @Route("/show/{thread_id}/edit", name="edit")
+     */
+    public function edit($group_id, $thread_id, Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $thread = $this->getDoctrine()->getRepository(Thread::class)->find($thread_id);
+        $this->denyAccessUnlessGranted("OWNER", $thread);
+
+        $form = $this->createFormBuilder($thread)
+            ->setAction($this->generateUrl('group.thread.edit', [
+                "group_id" => $group_id,
+                "thread_id" => $thread_id,
+            ]))
+            ->setMethod('POST')
+            ->add('title', TextType::class, [
+                'label' => 'Title *',
+                'required' => true
+            ])
+            ->add('description', TextareaType::class, [
+                'required' => false
+            ])
+            ->add('create', SubmitType::class, [
+                'label' => 'Save',
+                'attr' =>   [
+                    'class' => 'btn btn-primary float-right mt-3 mb-3'
+                ]
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Thread $thread */
+            $thread = $form->getData();
+            $thread->setCreationDate(new \DateTime('now'));
+            $em->persist($thread);
+            $em->flush();
+
+            return new JsonResponse(
+                [
+                    'date' => $thread->getDateString(),
+                    'title' => $thread->getTitle(),
+                    'description' => $thread->getDescription()
+                ], 200);
+        }
+
+        return new JsonResponse(
+            [
+                'message' => 'Success',
+                'form' => $this->renderView('thread/create.html.twig',
+                    [
+                        'form' => $form->createView(),
+                    ])
+            ], 200);
 
     }
 

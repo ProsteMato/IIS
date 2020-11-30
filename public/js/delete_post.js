@@ -10,7 +10,9 @@ delete_buttons.forEach((delete_button) => {
 
         request.onload = function() {
             if (this.status >= 200 && this.status < 400) {
+                let response = JSON.parse(this.response);
                 document.getElementById("post"+post_id).remove();
+                document.getElementById("thread_post_count").innerHTML = response.postCount + " posts";
             }
         }
         request.send();

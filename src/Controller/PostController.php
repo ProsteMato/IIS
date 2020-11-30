@@ -86,8 +86,7 @@ class PostController extends AbstractController
     public function edit($group_id, $thread_id, $post_id, Request $request) {
         $em = $this->getDoctrine()->getManager();
         $post = $this->getDoctrine()->getRepository(Post::class)->find($post_id);
-        $group = $em->getRepository(Group::class)->find($group_id);
-        $this->denyAccessUnlessGranted("GROUP_MEMBER", [$group, $this->getUser()]);
+        $this->denyAccessUnlessGranted("OWNER", $post);
 
         $form = $this->createFormBuilder($post)
             ->setAction($this->generateUrl('edit_post', [
@@ -156,15 +155,12 @@ class PostController extends AbstractController
         }
         $em->flush();
 
-        return new Response(
-            "",
+        return new JsonResponse(
+            [
+                "postCount" => $em->getRepository(Thread::class)->find($thread_id)->getPostsCount()
+            ],
             Response::HTTP_OK
         );
-
-//        return $this->redirectToRoute("group.thread.show", [
-//            "group_id" => $group_id,
-//            "thread_id" => $thread_id
-//        ]);
     }
 
     public function userLike($thread_id, $group_id, $post_id) {
