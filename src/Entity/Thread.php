@@ -66,6 +66,11 @@ class Thread
      */
     private $postUsers;
 
+    /**
+     * @ORM\Column(type="bigint")
+     */
+    private $views;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -246,6 +251,25 @@ class Thread
                 $postUser->setThreads(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getViews(): ?string
+    {
+        return $this->views;
+    }
+
+    public function setViews(string $views): self
+    {
+        $this->views = $views;
+
+        return $this;
+    }
+
+    public function addView(): self
+    {
+        $this->views = $this->views +1;
 
         return $this;
     }

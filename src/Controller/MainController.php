@@ -35,6 +35,7 @@ class MainController extends AbstractController
                               UserRepository $userRepository, ThreadRepository $threadRepository){
         $filter = 'New';
         $time_filter = "All Time";
+        $my_filter = "All";
         if ($this->isGranted('ROLE_USER')){
 
             $users = $loggedUser->getSubscribers();
@@ -56,7 +57,8 @@ class MainController extends AbstractController
                 'threads' => array_slice($threads, 0, 20),
                 'users' => $users,
                 'currentFilter' => $filter,
-                'timeFilter' => $time_filter
+                'timeFilter' => $time_filter,
+                'currentMyFilter' => $my_filter
             ]);
         } else {
             $threads = $threadRepository->getOpen(20, $time_filter);
@@ -66,7 +68,7 @@ class MainController extends AbstractController
                 'threads' => $threads,
                 'users' => $users,
                 'currentFilter' => $filter,
-                'timeFilter' => $time_filter
+                'timeFilter' => $time_filter,
             ]);
         }
     }
@@ -79,70 +81,92 @@ class MainController extends AbstractController
         return $this->render('common/help.html.twig', [ 'loggedUser' => $loggedUser]);
     }
     /**
-     * @Route("/filter/{filter}/{time_filter}", name = "main_page_filter", methods={"GET"})
+     * @Route("/filter/{filter}/{time_filter}/{my_filter}", name = "main_page_filter", methods={"GET"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
      * @return Response view
      */
-    public function filter_threads($filter, $time_filter, Request $request, UserInterface $loggedUser = null,
+    public function filter_threads($filter, $time_filter, $my_filter, Request $request, UserInterface $loggedUser = null,
                             UserRepository $userRepository, ThreadRepository $threadRepository){
 
         if ($this->isGranted('ROLE_USER')){
 
             $users = $loggedUser->getSubscribers();
 
-
-            // filtering by time
-            $threads = [];
-            $groups = $loggedUser->getGroups();
-            foreach($groups as &$group){
-                $threads_temp = $group->getThreads();
-                foreach ($threads_temp as &$thread){
-                    if ($time_filter == "Today"){
-                        if ($this->checkTimeToday($thread->getCreationDate()->getTimestamp())){
+            if ($my_filter == 'My groups'){
+                // filtering by time
+                $threads = [];
+                $groups = $loggedUser->getGroups();
+                foreach($groups as &$group){
+                    $threads_temp = $group->getThreads();
+                    foreach ($threads_temp as &$thread){
+                        if ($time_filter == "Today"){
+                            if ($this->checkTimeToday($thread->getCreationDate()->getTimestamp())){
+                                array_push($threads, $thread);
+                            }
+                        } elseif ($time_filter == "Week"){
+                            if ($this->checkTimeWeek($thread->getCreationDate()->getTimestamp())){
+                                array_push($threads, $thread);
+                            }
+                        } elseif ($time_filter == "Month"){
+                            if ($this->checkTimeMonth($thread->getCreationDate()->getTimestamp())){
+                                array_push($threads, $thread);
+                            }
+                        } elseif ($time_filter == "Year"){
+                            if ($this->checkTimeYear($thread->getCreationDate()->getTimestamp())){
+                                array_push($threads, $thread);
+                            }
+                        } else {
+                            $time_filter = "All Time";
                             array_push($threads, $thread);
                         }
-                    } elseif ($time_filter == "Week"){
-                        if ($this->checkTimeWeek($thread->getCreationDate()->getTimestamp())){
-                            array_push($threads, $thread);
-                        }
-                    } elseif ($time_filter == "Month"){
-                        if ($this->checkTimeMonth($thread->getCreationDate()->getTimestamp())){
-                            array_push($threads, $thread);
-                        }
-                    } elseif ($time_filter == "Year"){
-                        if ($this->checkTimeYear($thread->getCreationDate()->getTimestamp())){
-                            array_push($threads, $thread);
-                        }
-                    } else {
-                        $time_filter = "All Time";
-                        array_push($threads, $thread);
                     }
+                }
+
+                // primary filter
+                if ($filter == 'New'){
+                    usort($threads, function ($a, $b) {
+                        return $b->getCreationDate() <=> $a->getCreationDate();
+                    });
+                } elseif ($filter == 'Top'){
+                    usort($threads, function ($a, $b) {
+                        return $b->getRating() <=> $a->getRating();
+                    });
+                } elseif ($filter == 'Most viewed'){
+                    usort($threads, function ($a, $b) {
+                        return $b->getViews() <=> $a->getViews();
+                    });
+                } elseif ($filter == 'Most commented'){
+                    usort($threads, function ($a, $b) {
+                        return $b->getPosts()->count() <=> $a->getPosts()->count();
+                    });
+                }
+            } else {
+                if ($filter == 'New'){
+                    $threads = $threadRepository->getOpen(200, $time_filter);
+                } elseif ($filter == 'Top'){
+                    $threads = $threadRepository->getTopOpen(200, $time_filter);
+                } elseif ($filter == 'Most viewed'){
+                    $threads = $threadRepository->getViewedOpen(200, $time_filter);
+                } elseif ($filter == "Most commented"){
+                    $threads = $threadRepository->getOpen(200, $time_filter);
+                    usort($threads, function ($a, $b) {
+                        return $b->getPosts()->count() <=> $a->getPosts()->count();
+                    });
+                    $threads = array_slice($threads, 0, 200);
                 }
             }
 
-            // primary filter
-            if ($filter == 'New'){
-                usort($threads, function ($a, $b) {
-                    return $b->getCreationDate() <=> $a->getCreationDate();
-                });
-            } elseif ($filter == 'Top'){
-                usort($threads, function ($a, $b) {
-                    return $b->getRating() <=> $a->getRating();
-                });
-            } elseif ($filter == 'Most commented'){
-                usort($threads, function ($a, $b) {
-                    return $b->getPosts()->count() <=> $a->getPosts()->count();
-                });
-            }
+
 
             return $this->render('user/index.html.twig', [
                 'loggedUser' => $loggedUser,
                 'threads' => array_slice($threads, 0, 20),
                 'users' => $users,
                 'currentFilter' => $filter,
-                'timeFilter' => $time_filter
+                'timeFilter' => $time_filter,
+                'currentMyFilter' => $my_filter
             ]);
         } else {
             $users = $userRepository->getNumOpen(40);
@@ -151,6 +175,8 @@ class MainController extends AbstractController
                 $threads = $threadRepository->getOpen(20, $time_filter);
             } elseif ($filter == 'Top'){
                 $threads = $threadRepository->getTopOpen(20, $time_filter);
+            } elseif ($filter == 'Most viewed'){
+                $threads = $threadRepository->getViewedOpen(200, $time_filter);
             } elseif ($filter == "Most commented"){
                 $threads = $threadRepository->getOpen(20, $time_filter);
                 usort($threads, function ($a, $b) {

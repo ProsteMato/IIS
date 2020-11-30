@@ -82,6 +82,35 @@ class ThreadRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @return Thread[] Returns an array of Thread objects
+     */
+    public function getViewedOpen(int $num, string $timeFilter)
+    {
+        $datetime = new DateTime();
+        if ($timeFilter == "Today"){
+            $datetime->setTimestamp(time()-(24*60*60));
+        } elseif ($timeFilter == "Week"){
+            $datetime->setTimestamp(time()-(7*24*60*60));
+        } elseif ($timeFilter == "Month"){
+            $datetime->setTimestamp(time()-(30*24*60*60));
+        } elseif ($timeFilter == "Year"){
+            $datetime->setTimestamp(time()-(365*24*60*60));
+        } else {
+            $datetime->setTimestamp(0);
+        }
+
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.group_id', 'g', 'WITH', 'g.visibility = 1')
+            ->andWhere('t.creation_date > :date')
+            ->setParameter('date', $datetime)
+            ->orderBy('t.views', 'DESC')
+            ->setMaxResults($num)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Thread[] Returns an array of Thread objects
     //  */

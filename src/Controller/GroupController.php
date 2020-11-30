@@ -41,6 +41,7 @@ class GroupController extends AbstractController
             $thread->setCreationDate(new \DateTime('now'));
             $thread->setCreatedBy($user);
             $thread->setRating(0);
+            $thread->setViews(0);
             $thread->setGroupId($groupRepository->find($group_id));
             $em = $this->getDoctrine()->getManager();
             $em->persist($thread);

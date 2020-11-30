@@ -30,6 +30,9 @@ class ThreadController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $threadRepository = $em->getRepository(Thread::class);
         $thread = $threadRepository->find($thread_id);
+        $thread->addView();
+        $em->persist($thread);
+        $em->flush();
         $posts = $thread->getPosts();
         return $this->render('thread/show.html.twig', [
                 'thread' => $thread,
