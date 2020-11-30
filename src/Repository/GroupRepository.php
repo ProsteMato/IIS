@@ -22,4 +22,13 @@ class GroupRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Group::class);
     }
+
+    public function findByNameSubstr($searchVal)
+    {
+        $qb = $this->createQueryBuilder('g');
+        return $qb->where($qb->expr()->like('g.name', ':substr'))
+            ->setParameter('substr', '%'.$searchVal.'%')
+            ->getQuery()
+            ->getResult();
+    }
 }

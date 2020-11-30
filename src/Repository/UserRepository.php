@@ -80,4 +80,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult()
             ;
     }
+
+    public function findByFirstNameSubstr($searchVal)
+    {
+        $qb = $this->createQueryBuilder('u');
+        return $qb->where($qb->expr()->like('u.firstName', ':substr'))
+            ->setParameter('substr', '%'.$searchVal.'%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByLastNameSubstr($searchVal)
+    {
+        $qb = $this->createQueryBuilder('u');
+        return $qb->where($qb->expr()->like('u.lastName', ':substr'))
+            ->setParameter('substr', '%'.$searchVal.'%')
+            ->getQuery()
+            ->getResult();
+    }
 }
