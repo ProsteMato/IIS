@@ -85,6 +85,7 @@ class GroupController extends AbstractController
     public function list(UserInterface $loggedUser): Response
     {
         $groups = $loggedUser->getGroups();
+
         return $this->render('group/list.html.twig', [
             'loggedUser' => $loggedUser,
             'groups' => $groups

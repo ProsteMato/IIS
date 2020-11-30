@@ -188,6 +188,11 @@ class Group
         return $this->threads;
     }
 
+    public function getThreadsCount(): int
+    {
+        return count($this->getThreads());
+    }
+
     public function addThread(Thread $thread): self
     {
         if (!$this->threads->contains($thread)) {
