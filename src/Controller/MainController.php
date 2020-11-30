@@ -80,6 +80,7 @@ class MainController extends AbstractController
     public function help(UserInterface $loggedUser = null){
         return $this->render('common/help.html.twig', [ 'loggedUser' => $loggedUser]);
     }
+
     /**
      * @Route("/filter/{filter}/{time_filter}/{my_filter}", name = "main_page_filter", methods={"GET"})
      * @param Request $request
@@ -184,7 +185,6 @@ class MainController extends AbstractController
                 });
                 $threads = array_slice($threads, 0, 20);
             }
-
 
             return $this->render('unlogged/index.html.twig', [
                 'loggedUser' => $loggedUser,

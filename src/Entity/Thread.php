@@ -144,6 +144,34 @@ class Thread
         return $this->posts;
     }
 
+    public function getLatestPost(): ?Post
+    {
+        $sorted_posts = $this->posts->toArray();
+        usort($sorted_posts, function ($a, $b) {
+            return $b->getCreationDate() <=> $a->getCreationDate();
+        });
+        if (!empty($sorted_posts)){
+            return $sorted_posts[0];
+        } else{
+            return null;
+        }
+    }
+
+    public function getLatestPostDate(): string
+    {
+        $latest = $this->getLatestPost();
+        return $latest->getStringCreationDate();
+    }
+
+    public function getLastUpdated(): string
+    {
+        if ($this->getLatestPost()){
+            return $this->getLatestPostDate();
+        } else {
+            return $this->getDateString();
+        }
+    }
+
     public function getPostsCount(): int
     {
         return count($this->posts);
