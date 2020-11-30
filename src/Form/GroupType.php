@@ -30,7 +30,8 @@ class GroupType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Name *'
+                'label' => 'Name *',
+                'empty_data' => ''
             ])
             ->add('description', TextareaType::class, [
                 'required'=> false
