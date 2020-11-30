@@ -9,16 +9,53 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Class GroupVoter
+ *
+ * Handles roles in regard with Groups
+ *
+ * @package App\Security\Voter
+ */
 class GroupVoter extends Voter
 {
+    /**
+     * User is member of group
+     */
     const MEMBER = 'GROUP_MEMBER';
+
+    /**
+     * User is moderator of group
+     */
     const MOD = 'GROUP_MOD';
+
+    /**
+     * User is owner of group
+     */
     const OWNER = 'GROUP_OWNER';
+
+    /**
+     * User has submitted join application to group
+     */
     const APPL = 'GROUP_APPL';
+
+    /**
+     * User has submitted application to to become moderator of group
+     */
     const M_APPL = 'GROUP_MOD_APPL';
+
+    /**
+     * User may view group
+     */
     const VIEW = 'GROUP_VIEW';
 
 
+    /**
+     * Checks whether this class supports the attribute and subject
+     *
+     * @param string $attribute
+     * @param mixed $subject
+     * @return bool true if support, false otherwise
+     */
     protected function supports(string $attribute, $subject)
     {
         // if the attribute isn't one we support, return false
@@ -33,6 +70,14 @@ class GroupVoter extends Voter
         return false;
     }
 
+    /**
+     * Vote on attribute, calls further check functions for each attribute
+     *
+     * @param string $attribute
+     * @param mixed $subject
+     * @param TokenInterface $token
+     * @return bool true if granted, false otherwise
+     */
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token)
     {
         /** @var Group $group */
@@ -58,6 +103,13 @@ class GroupVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
+    /**
+     * Checks if user is member of group
+     *
+     * @param Group $group target group
+     * @param User $user target user
+     * @return bool true if granted, false otherwise
+     */
     private function isMember(Group $group, User $user) {
         if ($this->isOwner($group, $user) || $this->isMod($group, $user)) {
             return true;
@@ -66,6 +118,13 @@ class GroupVoter extends Voter
         return $group->isMember($user);
     }
 
+    /**
+     * Checks if user is moderator of group
+     *
+     * @param Group $group target group
+     * @param User $user target user
+     * @return bool true if granted, false otherwise
+     */
     private function isMod(Group $group, User $user) {
         if ($this->isOwner($group, $user)) {
             return true;
@@ -74,18 +133,46 @@ class GroupVoter extends Voter
         return $group->isMOD($user);
     }
 
+    /**
+     * Checks if user is owner of group
+     *
+     * @param Group $group target group
+     * @param User $user target user
+     * @return bool true if granted, false otherwise
+     */
     private function isOwner(Group $group, User $user) {
         return $group->getAdminUser() === $user;
     }
 
+    /**
+     * Checks if user has applied to join the group
+     *
+     * @param Group $group target group
+     * @param User $user target user
+     * @return bool true if granted, false otherwise
+     */
     private function isAppl(Group $group, User $user) {
         return $group->userApplied($user);
     }
 
+    /**
+     * Checks if user has applied to become moderator of group
+     *
+     * @param Group $group target group
+     * @param User $user target user
+     * @return bool true if granted, false otherwise
+     */
     private function isMAppl(Group $group, User $user) {
         return $group->isAppliedMod($user);
     }
 
+    /**
+     * Checks if user can view the the group
+     *
+     * @param Group $group target group
+     * @param User $user target user
+     * @return bool true if granted, false otherwise
+     */
     private function canView(Group $group, User $user) {
         return $group->getVisibility() or $group->isMember($user);
     }
