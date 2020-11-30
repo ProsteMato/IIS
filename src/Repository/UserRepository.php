@@ -17,13 +17,22 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
+    /**
+     * UserRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
     }
 
     /**
+     *
      * Used to upgrade (rehash) the user's password automatically over time.
+     * @param UserInterface $user user whose password will be changed
+     * @param string $newEncodedPassword new password
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
     {
@@ -36,22 +45,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    public function findByEmail($value)
+
+    /**
+     * Fetches User from database whose email is param email
+     *
+     * @param string $email
+     * @return int|mixed|string
+     */
+    public function findByEmail(string $email)
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.email = :val')
-            ->setParameter('val', $value)
+            ->setParameter('val', $email)
             ->setMaxResults(1)
             ->getQuery()
             ->getResult()
         ;
     }
 
+
     /**
-     * @return User[] Returns an array of Thread objects
+     * Fetches visible Users from database
+     *
+     * @param int $num max number of required Users
+     * @return int|mixed|string array of User object
      */
     public function getNumOpen(int $num)
     {
@@ -63,33 +80,4 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult()
             ;
     }
-
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?User
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
