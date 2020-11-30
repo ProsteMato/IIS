@@ -94,10 +94,15 @@ class PostController extends AbstractController
         }
         $em->flush();
 
-        return $this->redirectToRoute("group.thread.show", [
-            "group_id" => $group_id,
-            "thread_id" => $thread_id
-        ]);
+        return new Response(
+            "",
+            Response::HTTP_OK
+        );
+
+//        return $this->redirectToRoute("group.thread.show", [
+//            "group_id" => $group_id,
+//            "thread_id" => $thread_id
+//        ]);
     }
 
     public function userLike($thread_id, $group_id, $post_id) {

@@ -12,8 +12,7 @@ use Symfony\Component\Security\Core\Security;
 
 class ThreadVoter extends Voter
 {
-    const DELETE = 'OWNER_DELETE';
-    const EDIT = 'OWNER_EDIT';
+    const OWNER = 'OWNER';
 
     private $security;
 
@@ -24,7 +23,7 @@ class ThreadVoter extends Voter
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::DELETE, self::EDIT])) {
+        if (!in_array($attribute, [self::OWNER])) {
             return false;
         }
 
@@ -50,20 +49,14 @@ class ThreadVoter extends Voter
         }
 
         switch ($attribute) {
-            case self::EDIT:
-                return $this->canEdit($subject, $user);
-            case self::DELETE:
-                return $this->canDelete($subject, $user);
+            case self::OWNER:
+                return $this->isOwner($subject, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canEdit(Thread $thread, User $user) {
-        return $user === $thread->getCreatedBy();
-    }
-
-    private function canDelete(Thread $thread, User $user) {
+    private function isOwner(Thread $thread, User $user) {
         return $user === $thread->getCreatedBy();
     }
 

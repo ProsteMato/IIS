@@ -49,6 +49,14 @@
                             </p>
                         </div>
                     </div>
+                    {% if is_granted('OWNER', thread) %}
+                    <div class="row ml-1">
+                        <div class="col">
+                            <a href="{{ path('group.thread.delete', {'group_id': thread.groupId.getId, 'thread_id': thread.id}) }}" type="button" class="btn btn-danger float-right m-2">Delete</a>
+                            <a type="button" class="btn btn-info float-right m-2">Edit</a>
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="row ml-1 mb-4 mt-5">
                         <div class="col">
                             {% if is_granted('GROUP_MEMBER', [thread.groupId, loggedUser]) %}
@@ -63,7 +71,7 @@
                 <div class="container">
                     <h4>Posts</h4>
                     {% for post in posts %}
-                        <div class="container border rounded border-light mb-3">
+                        <div id="post{{ post.id }}" class="container border rounded border-light mb-3">
                             <div class="row">
                                 <div class="col mt-1">
                                     <b><a href="{{ path('user', {id: post.createdBy.id }) }}">{{ post.createdBy.firstName }} {{ post.createdBy.lastName }}</a></b> | <b id="rating{{ post.id }}">Post rating: {{ post.rating }}</b>
@@ -78,9 +86,13 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col mb-2">
+                                <div class="col">
                                     {% if is_granted('ROLE_USER') %}
                                         {{ render(controller('App\\Controller\\PostController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId, 'post_id': post.id})) }}
+                                    {% endif %}
+                                    {% if is_granted("OWNER", post) %}
+                                    <button data-id="{{ post.id }}" class="btn btn-danger mb-1 ml-1 delete-post float-right">Delete</button>
+                                    <button class="btn btn-info mb-1 mr-1 edit-post float-right">Edit</button>
                                     {% endif %}
                                 </div>
                             </div>
@@ -95,4 +107,5 @@
 
 {% block javascripts %}
     <script src="/js/post_liker.js"></script>
+    <script src="/js/delete_post.js"></script>
 {% endblock %}

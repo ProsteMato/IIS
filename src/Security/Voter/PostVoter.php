@@ -13,8 +13,7 @@ use Symfony\Component\Security\Core\Security;
 class PostVoter extends Voter
 {
 
-    const DELETE = 'OWNER_DELETE';
-    const EDIT = 'OWNER_EDIT';
+    const OWNER = 'OWNER';
 
     private $security;
 
@@ -25,7 +24,7 @@ class PostVoter extends Voter
 
     protected function supports(string $attribute, $subject)
     {
-        if (!in_array($attribute, [self::DELETE, self::EDIT])) {
+        if (!in_array($attribute, [self::OWNER])) {
             return false;
         }
 
@@ -51,21 +50,14 @@ class PostVoter extends Voter
         }
 
         switch ($attribute) {
-            case self::EDIT:
-                return $this->canEdit($subject, $user);
-            case self::DELETE:
-                return $this->canDelete($subject, $user);
+            case self::OWNER:
+                return $this->isOwner($subject, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canEdit(Post $post, User $user) {
+    private function isOwner(Post $post, User $user) {
         return $user === $post->getCreatedBy();
     }
-
-    private function canDelete(Post $post, User $user) {
-        return $user === $post->getCreatedBy();
-    }
-
 }
