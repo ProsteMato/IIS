@@ -16,7 +16,7 @@
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
                             <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'New', time_filter: timeFilter, my_filter: currentMyFilter }) }}">New</a>
                             <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Top', time_filter: timeFilter, my_filter: currentMyFilter }) }}">Top</a>
-                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Most viewed', time_filter: timeFilter, my_filter: 'All' }) }}">Most viewed</a>
+                            <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Most viewed', time_filter: timeFilter, my_filter: currentMyFilter }) }}">Most viewed</a>
                             <a class="dropdown-item" href="{{ path('main_page_filter', {filter: 'Most commented', time_filter: timeFilter, my_filter: currentMyFilter }) }}">Most commented</a>
                         </div>
                     </div>
