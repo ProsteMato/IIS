@@ -180,6 +180,11 @@ class Group
         return count($this->getUsers());
     }
 
+    public function getModsCount(): int
+    {
+        return count($this->getMods());
+    }
+
     /**
      * @return Collection|Thread[]
      */
@@ -294,8 +299,19 @@ class Group
     public function getUsers()
     {
         $arr = [];
-        foreach ($this->getGroupUser() as &$gu){
+        foreach ($this->getGroupUser() as $gu){
             if(in_array('ROLE_MEM', $gu->getRole())){
+                array_push($arr, $gu->getUser());
+            }
+        }
+        return $arr;
+    }
+
+    public function getOtherUsers()
+    {
+        $arr = [];
+        foreach ($this->getGroupUser() as $gu){
+            if(!in_array('ROLE_MOD', $gu->getRole())){
                 array_push($arr, $gu->getUser());
             }
         }

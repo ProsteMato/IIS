@@ -133,9 +133,32 @@
         <div class="col-md-4">
             <div class="row">
                 <div class="jumbotron col-md-11 offset-md-1">
-                    <h4 class="display-5 mt-0" align="center">Members: {{ group.getUsersCount }}</h4>
+                    <h4 class="display-5 mt-0">Owner:</h4>
                     <div class="container">
-                        {% for user in users %}
+                        <div class="row mb-1">
+                            <div class="col-md-2">
+                                <img style="width: 25px; height: 25px" href="#" src="{{ asset('/profilepics/' ~ group.adminUser.getProfilePicture()) }}">
+                            </div>
+                            <div class="col-md-8 pl-3">
+                                <a href="{{ path('user', {'id': group.adminUser.getId() }) }}"><b>{{ group.adminUser.getFirstName() }} {{ group.adminUser.getLastName() }}</b></a>
+                            </div>
+                            {% if (is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]))
+                                and not is_granted('GROUP_OWNER', [group, group.adminUser])
+                                and group.adminUser != loggedUser
+                            %}
+                            <div class="col-md-2 pl-3">
+                                <a href="{{ path('group_kick_user', {'group_id': group.id, 'user_id': group.adminUser.getId()}) }}" type="button" class="btn btn-danger float-right">Kick</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% if (group.getModsCount - 1) != 0 %}
+                <div class="jumbotron col-md-11 offset-md-1">
+                    <h4 class="display-5 mt-0">Moderators: {{ group.getModsCount - 1 }}</h4>
+                    <div class="container">
+                        {% for user in mods %}
+                            {% if user != group.adminUser %}
                             <div class="row mb-1">
                                 <div class="col-md-2">
                                     <img style="width: 25px; height: 25px" href="#" src="{{ asset('/profilepics/' ~ user.getProfilePicture()) }}">
@@ -147,14 +170,41 @@
                                     and not is_granted('GROUP_OWNER', [group, user])
                                     and user != loggedUser
                                 %}
-                                <div class="col-md-2 pl-3">
-                                    <a href="{{ path('group_kick_user', {'group_id': group.id, 'user_id': user.getId()}) }}" type="button" class="btn btn-danger float-right">Kick</a>
+                                    <div class="col-md-2 pl-3">
+                                        <a href="{{ path('group_kick_user', {'group_id': group.id, 'user_id': user.getId()}) }}" type="button" class="btn btn-danger float-right">Kick</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                {% if (group.getUsersCount - group.getModsCount) != 0 %}
+                <div class="jumbotron col-md-11 offset-md-1">
+                    <h4 class="display-5 mt-0">Other members: {{ group.getUsersCount - group.getModsCount }}</h4>
+                    <div class="container">
+                        {% for user in otherUsers %}
+                            <div class="row mb-1">
+                                <div class="col-md-2">
+                                    <img style="width: 25px; height: 25px" href="#" src="{{ asset('/profilepics/' ~ user.getProfilePicture()) }}">
                                 </div>
+                                <div class="col-md-8 pl-3">
+                                    <a href="{{ path('user', {'id': user.getId() }) }}"><b>{{ user.getFirstName() }} {{ user.getLastName() }}</b></a>
+                                </div>
+                                {% if (is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]))
+                                    and not is_granted('GROUP_OWNER', [group, user])
+                                    and user != loggedUser
+                                %}
+                                    <div class="col-md-2 pl-3">
+                                        <a href="{{ path('group_kick_user', {'group_id': group.id, 'user_id': user.getId()}) }}" type="button" class="btn btn-danger float-right">Kick</a>
+                                    </div>
                                 {% endif %}
                             </div>
                         {% endfor %}
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

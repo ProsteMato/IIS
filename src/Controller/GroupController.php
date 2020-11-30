@@ -27,6 +27,8 @@ class GroupController extends AbstractController
     {
         $group = $groupRepository->find($group_id);
         $users = $group->getUsers();
+        $otherUsers = $group->getOtherUsers();
+        $mods = $group->getMods();
 
         $threads = $group->getThreads();
         $thread = new Thread();
@@ -54,7 +56,8 @@ class GroupController extends AbstractController
             return $this->render('group/show.html.twig', [
                 'group' => $group,
                 'loggedUser' => $user,
-                'users' => $users,
+                'otherUsers' => $otherUsers,
+                'mods' => $mods,
                 'threads' => $threads,
                 'form' => $form->createView()
             ]);
@@ -65,7 +68,8 @@ class GroupController extends AbstractController
                     return $this->render('group/show.html.twig', [
                         'group' => $group,
                         'loggedUser' => $user,
-                        'users' => $users,
+                        'otherUsers' => $otherUsers,
+                        'mods' => $mods,
                         'threads' => $threads,
                         'form' => $form->createView()
                     ]);
