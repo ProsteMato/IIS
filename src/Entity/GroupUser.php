@@ -5,6 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ *
+ * Class representing relation between group and user
+ *
  * @ORM\Entity
  * @ORM\Table(name="group_user")
  */
@@ -35,7 +38,9 @@ class GroupUser
     private $role = [];
 
     /**
-     * @return mixed
+     * Getter for id of relation
+     *
+     * @return int id
      */
     public function getId()
     {
@@ -43,7 +48,9 @@ class GroupUser
     }
 
     /**
-     * @return mixed
+     * Getter for group
+     *
+     * @return Group
      */
     public function getGroup()
     {
@@ -51,7 +58,9 @@ class GroupUser
     }
 
     /**
-     * @param mixed $group
+     * Setter for group
+     *
+     * @param Group $group
      */
     public function setGroup($group): void
     {
@@ -59,7 +68,9 @@ class GroupUser
     }
 
     /**
-     * @return mixed
+     * Getter for user
+     *
+     * @return User
      */
     public function getUser()
     {
@@ -67,7 +78,9 @@ class GroupUser
     }
 
     /**
-     * @param mixed $user
+     * Setter for user
+     *
+     * @param User $user
      */
     public function setUser($user): void
     {
@@ -75,13 +88,20 @@ class GroupUser
     }
 
     /**
-     * @return array
+     * Returns roles
+     *
+     * @return string[] roles of userin group
      */
     public function getRole(): array
     {
         return $this->role;
     }
 
+    /**
+     * Adds role to the member of froup
+     *
+     * @param string $role role to be added
+     */
     public function giveRole(string $role): void
     {
         if (!in_array($role, $this->role)){
@@ -89,16 +109,16 @@ class GroupUser
         }
     }
 
+    /**
+     * Removes role from member of group
+     *
+     * @param string $role role to be removed
+     */
     public function removeRole(string $role): void
     {
         if (($key = array_search($role, $this->role)) !== false) {
             unset($this->role[$key]);
         }
-        /*
-        if (in_array($role, $this->role)){
-            array_push($this->role, $role);
-        }
-        */
     }
 
 }

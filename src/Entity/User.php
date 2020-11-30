@@ -11,6 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
+ *
+ * Class representing registered user
+ *
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(
  * fields={"email"},
