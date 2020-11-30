@@ -32,35 +32,46 @@
                         <p><b>Members: </b>{{ group.getUsersCount() }}</p>
                         <p align="justify"> <b>Description: </b>{{ group.description }} </p>
                         <div>
-                            {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
-                                <a href="{{ path('leave_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right ml-2">Leave</a>
-                                {% if is_granted('GROUP_MOD', [group, loggedUser]) and not is_granted('GROUP_OWNER', [group, loggedUser])%}
-                                    <a href="{{ path('group_revoke_mod', {'group_id': group.id}) }}" type="button" class="btn btn-danger ml-2 float-right">Revoke mod</a>
-                                {% endif %}
-                                {% if is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]) %}
-                                    <a href="{{ path('edit_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Settings</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
+                                    <a href="{{ path('leave_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right">Leave</a>
                                 {% else %}
-                                    {% if not is_granted('GROUP_MOD', [group, loggedUser]) and not is_granted('GROUP_MOD_APPL', [group, loggedUser]) %}
-                                        <a href="{{ path('group_apply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply mod</a>
-                                    {% elseif not is_granted('GROUP_MOD', [group, loggedUser]) and is_granted('GROUP_MOD_APPL', [group, loggedUser]) %}
-                                        <a href="{{ path('group_unapply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply mod</a>
-                                     {% endif %}
-                                {% endif %}
-
-
-
-                            {% else %}
-                                {% if group.getOpen() == true %}
                                     <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Join</a>
-                                {% else %}
-                                    {% if is_granted('GROUP_APPL', [group, loggedUser]) %}
-                                        <a href="{{ path('unapply_group', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply</a>
+                                {% endif %}
+                                <a href="{{ path('edit_group', {'group_id': group.id}) }}" type="button" class="btn btn-info mr-2 float-right">Settings</a>
+                            {% else %}
+
+                                {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
+                                    <a href="{{ path('leave_group', {'group_id': group.id}) }}" type="button" class="btn btn-danger float-right ml-2">Leave</a>
+                                    {% if is_granted('GROUP_MOD', [group, loggedUser]) and not is_granted('GROUP_OWNER', [group, loggedUser])%}
+                                        <a href="{{ path('group_revoke_mod', {'group_id': group.id}) }}" type="button" class="btn btn-danger ml-2 float-right">Revoke mod</a>
+                                    {% endif %}
+                                    {% if is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]) %}
+                                        <a href="{{ path('edit_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Settings</a>
                                     {% else %}
-                                        {% if is_granted('ROLE_USER') %}
-                                            <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply</a>
+                                        {% if not is_granted('GROUP_MOD', [group, loggedUser]) and not is_granted('GROUP_MOD_APPL', [group, loggedUser]) %}
+                                            <a href="{{ path('group_apply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply mod</a>
+                                        {% elseif not is_granted('GROUP_MOD', [group, loggedUser]) and is_granted('GROUP_MOD_APPL', [group, loggedUser]) %}
+                                            <a href="{{ path('group_unapply_mod', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply mod</a>
+                                        {% endif %}
+                                    {% endif %}
+
+
+
+                                {% else %}
+                                    {% if group.getOpen() == true %}
+                                        <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-info float-right">Join</a>
+                                    {% else %}
+                                        {% if is_granted('GROUP_APPL', [group, loggedUser]) %}
+                                            <a href="{{ path('unapply_group', {'group_id': group.id}) }}" type="button" class="btn btn-warning float-right">Unapply</a>
+                                        {% else %}
+                                            {% if is_granted('ROLE_USER') %}
+                                                <a href="{{ path('subscribe_group', {'group_id': group.id}) }}" type="button" class="btn btn-success float-right">Apply</a>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 {% endif %}
+
                             {% endif %}
                         </div>
                     </div>
@@ -72,11 +83,11 @@
                 <div  class="container">
                     <div class="row">
                         <div class="col"><h3 class="display-5" style="display: inline">Threads</h3></div>
-                        {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
+                        {% if is_granted('GROUP_MEMBER', [group, loggedUser]) or is_granted('ROLE_ADMIN') %}
                             <div class="col"><a class="float-right pt-2" data-toggle="collapse" aria-expanded="true" aria-controls="collapseExample" style="text-decoration: none; font-size: 18px" href="#collapseExample">Create Thread</a></div>
                         {% endif %}
                     </div>
-                    {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
+                    {% if is_granted('GROUP_MEMBER', [group, loggedUser]) or is_granted('ROLE_ADMIN') %}
                     <div class="collapse row" id="collapseExample">
                         <div class="col">
                             {{ form(form) }}
@@ -93,7 +104,7 @@
                                 <div class="col">
                                     <p class="text-right" style="font-size: 14px">
                                         <b>Rating: {{ thread.rating }}</b><br>
-                                        {% if is_granted('ROLE_USER') %}
+                                        {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
                                             {{ render(controller('App\\Controller\\ThreadController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId})) }}
                                         {% endif %}
                                     </p>
@@ -166,7 +177,7 @@
                                 <div class="col-md-8 pl-3">
                                     <a href="{{ path('user', {'id': user.getId() }) }}"><b>{{ user.getFirstName() }} {{ user.getLastName() }}</b></a>
                                 </div>
-                                {% if (is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]))
+                                {% if (is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]) or is_granted('ROLE_ADMIN'))
                                     and not is_granted('GROUP_OWNER', [group, user])
                                     and user != loggedUser
                                 %}
@@ -192,7 +203,7 @@
                                 <div class="col-md-8 pl-3">
                                     <a href="{{ path('user', {'id': user.getId() }) }}"><b>{{ user.getFirstName() }} {{ user.getLastName() }}</b></a>
                                 </div>
-                                {% if (is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]))
+                                {% if (is_granted('GROUP_OWNER', [group, loggedUser]) or is_granted('GROUP_MOD', [group, loggedUser]) or is_granted('ROLE_ADMIN'))
                                     and not is_granted('GROUP_OWNER', [group, user])
                                     and user != loggedUser
                                 %}

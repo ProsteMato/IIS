@@ -52,7 +52,7 @@ class GroupController extends AbstractController
         }
 
         // Anyone can see the group
-        if ($group->getVisibility() == 1){
+        if ($group->getVisibility() == 1 or $this->isGranted('ROLE_ADMIN')){
             return $this->render('group/show.html.twig', [
                 'group' => $group,
                 'loggedUser' => $user,
@@ -145,9 +145,6 @@ class GroupController extends AbstractController
      */
     public function delete_group(Group $group)
     {
-        // aj s threadmi a postmi !!
-
-
         $em = $this->getDoctrine()->getManager();
         $groupUser = $group->getGroupUser();
         foreach ($groupUser as &$gu){
@@ -187,7 +184,7 @@ class GroupController extends AbstractController
         $group = $groupRepository->find($group_id);
         $em = $this->getDoctrine()->getManager();
 
-        if ($group->getOpen()){
+        if ($group->getOpen() or $this->isGranted('ROLE_ADMIN')){
             $gu = $group->getGroupUser();
             $newGU = new GroupUser();
             $newGU->setGroup($group);
