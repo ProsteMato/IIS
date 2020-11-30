@@ -18,12 +18,6 @@ class GroupVoter extends Voter
     const APPL = 'GROUP_APPL';
     const M_APPL = 'GROUP_MOD_APPL';
 
-    private $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
 
     protected function supports(string $attribute, $subject)
     {
@@ -89,10 +83,6 @@ class GroupVoter extends Voter
     }
 
     private function isOwner(Group $group, User $user) {
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            return true;
-        }
-
         return $group->getAdminUser() === $user;
     }
 

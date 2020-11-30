@@ -198,7 +198,7 @@ class Group
         return $this;
     }
 
-    public function removeThreah(Thread $thread): self
+    public function removeThread(Thread $thread): self
     {
         if ($this->threads->removeElement($thread)) {
             // set the owning side to null (unless already changed)

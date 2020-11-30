@@ -6,6 +6,7 @@ use App\Entity\Group;
 use App\Entity\Post;
 use App\Entity\PostUser;
 use App\Entity\Thread;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -72,6 +73,30 @@ class PostController extends AbstractController
 
         return $this->render('post/create.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/group/show/{group_id}/thread/show/{thread_id}/post/{post_id}/delete", name="delete_post")
+     *
+     */
+    public function delete($group_id, $thread_id, $post_id){
+        $em = $this->getDoctrine()->getManager();
+        $postRepository = $em->getRepository(Post::class);
+        /** @var Post $post */
+        $post = $postRepository->find($post_id);
+
+        $post_likes = $post->getPostUsers();
+
+        $em->remove($post);
+        foreach ($post_likes as $like) {
+            $em->remove($like);
+        }
+        $em->flush();
+
+        return $this->redirectToRoute("group.thread.show", [
+            "group_id" => $group_id,
+            "thread_id" => $thread_id
         ]);
     }
 

@@ -37,6 +37,40 @@ class ThreadController extends AbstractController
                 'loggedUser' => $this->getUser()
             ]);
     }
+    /**
+     *  @Route("/{thread_id}/delete", name="delete")
+     */
+    public function delete($group_id, $thread_id) {
+        $em = $this->getDoctrine()->getManager();
+        $threadRepository = $em->getRepository(Thread::class);
+
+        /** @var Thread $thread */
+        $thread = $threadRepository->find($thread_id);
+
+        $posts = $thread->getPosts();
+        $likes_thread = $thread->getThreadUsers();
+        $posts_likes = $thread->getPostUsers();
+
+        foreach ($posts as $post) {
+            $em->remove($post);
+        }
+
+        foreach ($likes_thread as $likes) {
+            $em->remove($likes);
+        }
+
+        foreach ($posts_likes as $likes) {
+            $em->remove($likes);
+        }
+
+        $em->remove($thread);
+        $em->flush();
+
+        return $this->redirectToRoute("show_group", [
+                "group_id" => $group_id
+            ]);
+
+    }
 
     public function userLike($thread_id, $group_id) {
         $user = $this->getUser();

@@ -150,14 +150,14 @@ class GroupController extends AbstractController
         }
 
         $threads = $group->getThreads();
-        foreach ($threads as &$thread){
-            foreach ($thread->getPosts() as &$post){
+        foreach ($threads as $thread){
+            foreach ($thread->getPosts() as $post){
                 $em->remove($post);
             }
-            foreach ($thread->getPostUsers() as &$pu){
+            foreach ($thread->getPostUsers() as $pu){
                 $em->remove($pu);
             }
-            foreach ($thread->getThreadUsers() as &$tu){
+            foreach ($thread->getThreadUsers() as $tu){
                 $em->remove($tu);
             }
             $em->remove($thread);
