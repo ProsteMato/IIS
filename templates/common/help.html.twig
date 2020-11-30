@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search results!{% endblock %}
+
+{% block body %}
+    {{ include('common/navbar.html.twig') }}
+{% endblock %}
+
+{% block body_container %}
+    <h3> Help Centrum</h3>
+    <ul class="nav nav-tabs">
+        <li class="nav-item" >
+            <a class="nav-link active" data-toggle="tab" href="#basic">Basic informations</a>
+        </li>
+        <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#groups">Groups </a>
+        </li>
+        <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#threads">Creating threads and posts </a>
+        </li>
+        <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#user">User profile</a>
+        </li>
+    </ul>
+
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade active show" id="basic">
+            <p class="mt-2"></p>
+            <b>What is SocialNetwork?</b>
+            <p> Social network is web application where you can discuss in groups on whatever topic you would like.
+            You can create your own groups and manage who will see posts inside it. If you like some post/thread you
+            can improve its rating. If you didnt like it, you can decrease its rating.</p>
+
+            <b>Can I see groups/threads/posts when Im not registered?</b>
+            <p>Yes you can, but you cant add new posts or create threads or groups.</p>
+
+            <b> How do i register?</b>
+            <p>Just click on Register on main page and you can create your own profile.</p>
+
+            <b>I have created profile. How do I log in?</b>
+            <p>Click on log in and just fill in with your email and password.</p>
+
+            <b>What can I seen on main page?</b>
+            <p><b>If you arent logged in</b>, you can see some posts/threads based on filter you choose and
+                new user profiles registered. <br>
+            <b>If you are logged in</b>, you can see posts from groups you are member in, and on the right side,
+                you can see people you follow.</p>
+
+        </div>
+
+        <div class="tab-pane fade" id="groups">
+            <p class="mt-2"></p>
+            <b>What are groups?</b>
+            <p> Groups are places, where you can discuss in threads about anything you want with other members of groups.</p>
+
+            <b>Do I have to be a member to post in group?</b>
+            <p> Yes, you have to be a member to create threads and new posts in group.</p>
+
+            <b> Can I add rating to thread/posts if I am not a member?</b>
+            <p>Yes you can, if the group is visible. </p>
+
+            <b> What is difference between Apply and Join?</b>
+            <p> <b>Join</b> means, that you can join the group anytime, you dont need approval from owner or mods. <br>
+            <b> Apply</b> means, that you can apply for membership, but you need approval from owner or mods.</p>
+
+            <b> What it means that group is visible?</b>
+            <p> It means, that you can see threads and posts in this group. If group is not visible, you need to first
+            apply for membership and after approval you can seen everything posted in group.</p>
+
+            <b>I am an owner of group. What can I do?</b>
+            <p>You can change group name, description and her visibility. You can also add new mods or delete mods.
+            You can approve/disapprove new members to group. You can kick out someone from group. You can give the group
+                to someone else (change owners). Also, you can edit and delete threads and posts. And you can delete group.</p>
+
+            <b> I am moderator of group. What can I do?</b>
+            <p> You can approve/disapprove new members to group. You can kick out someone from group, unless they are
+                also moderator or owner of group, than you cant kick them out. Also, you can edit and delete threads and posts.</p>
+        </div>
+
+        <div class="tab-pane fade " id="threads">
+            <p class="mt-2"></p>
+            <b>How do I create new thread?</b>
+            <p>Just click on Create thread, add Name to the thread and click on Create thread. </p>
+
+            <b>How do I add posts to thread?</b>
+            <p> Open thread where you want to add new post. And then just write what you want in the box and
+                click on Create post.</p>
+
+            <b>How do I change rating to post/thread?</b>
+            <p>If you liked post/thread just click on thumbs up. If you didnt like it, just click on thumbs down.</p>
+        </div>
+
+        <div class="tab-pane fade" id="user">
+            <p class="mt-2"></p>
+            <b>How do I change my informations?</b>
+            <p> Just click on Edit profile, if you are on your profile or choose from drop-down menu Account settings.</p>
+
+            <b> Can I delete my account?</b>
+            <p> Yes you can. Just go to Account settings and then tab Account and there you have button for deletin your account.
+            But, if you delete it, it cant be restored after.</p>
+
+            <b>What each option in visibility means?</b>
+            <p> <b>Everyone</b> means that everyone can see your profile - even not registered users. <br>
+            <b>Only registered users</b> means, that your profile can see only if they are logged in.  <br>
+                <b> Only members of same group</b> means, that your profile can see only people that are at least
+                in one group with you. You have at least one group common with them.<br>
+                <b> Only me </b> No one can see your profile, just you.
+            </p>
+        </div>
+    </div>
+{% endblock %}

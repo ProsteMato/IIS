@@ -72,6 +72,13 @@ class MainController extends AbstractController
     }
 
     /**
+     * @Route("/help", name = "help")
+     * @return Response
+     */
+    public function help(UserInterface $loggedUser = null){
+        return $this->render('common/help.html.twig', [ 'loggedUser' => $loggedUser]);
+    }
+    /**
      * @Route("/filter/{filter}/{time_filter}", name = "main_page_filter", methods={"GET"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager

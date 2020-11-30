@@ -22,7 +22,7 @@
                         </div>
                         <div class="d-flex w-100 justify-content-between">
                             <p class="mb-1">{{ group.description }}</p>
-                            <small class="text-muted"> Threads: 0 </small>
+                            <small class="text-muted"> Threads: {{ group.getThreadsCount() }} </small>
                         </div>
                     </div>
                 </div>
