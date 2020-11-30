@@ -23,7 +23,14 @@ class GroupRepository extends ServiceEntityRepository
         parent::__construct($registry, Group::class);
     }
 
-    public function findByNameSubstr($searchVal)
+
+    /**
+     * Fetches Groups from database whose name contains substring searchVal
+     *
+     * @param string $searchVal searched substring
+     * @return Group[]
+     */
+    public function findByNameSubstr(string $searchVal)
     {
         $qb = $this->createQueryBuilder('g');
         return $qb->where($qb->expr()->like('g.name', ':substr'))

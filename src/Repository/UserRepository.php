@@ -81,7 +81,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ;
     }
 
-    public function findByFirstNameSubstr($searchVal)
+    /**
+     * Fetches Users from database whose first name contains substring searchVal
+     *
+     * @param string $searchVal searched substring
+     * @return User[] found Users
+     */
+    public function findByFirstNameSubstr(string $searchVal)
     {
         $qb = $this->createQueryBuilder('u');
         return $qb->where($qb->expr()->like('u.firstName', ':substr'))
@@ -90,7 +96,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
-    public function findByLastNameSubstr($searchVal)
+    /**
+     * Fetches Users from database whose last name contains substring searchVal
+     *
+     * @param string $searchVal searched substring
+     * @return User[] found Users
+     */
+    public function findByLastNameSubstr(string $searchVal)
     {
         $qb = $this->createQueryBuilder('u');
         return $qb->where($qb->expr()->like('u.lastName', ':substr'))
