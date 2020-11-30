@@ -23,18 +23,27 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class MainController extends AbstractController
 {
+    /**
+     * Maximum number of threads that should be displayed on main page
+     */
     const MAX_THREADS = 200;
+
+    /**
+     * Maximum number of users that should be displayed on main page
+     */
     const MAX_USERS = 200;
 
     /**
+     *
+     * Main page controller
+     *
      * @Route("/", name = "main_page", methods={"GET"})
-     * @param Request $request
      * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
      * @param UserRepository $userRepository
      * @param ThreadRepository $threadRepository
      * @return Response view
      */
-    public function main_page(Request $request, UserInterface $loggedUser = null,
+    public function main_page(UserInterface $loggedUser = null,
                               UserRepository $userRepository, ThreadRepository $threadRepository){
         $filter = 'New';
         $time_filter = "All Time";
@@ -77,6 +86,8 @@ class MainController extends AbstractController
     }
 
     /**
+     * Help page controller
+     *
      * @Route("/help", name = "help")
      * @return Response
      */
@@ -85,13 +96,15 @@ class MainController extends AbstractController
     }
 
     /**
+     *
+     * Main page filters controler
+     *
      * @Route("/filter/{filter}/{time_filter}/{my_filter}", name = "main_page_filter", methods={"GET"})
-     * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param UserInterface|null $loggedUser object of logged in user - if no one is logged it is null
      * @return Response view with filtered posts
      */
-    public function filter_threads($filter, $time_filter, $my_filter, Request $request, UserInterface $loggedUser = null,
+    public function filter_threads($filter, $time_filter, $my_filter, UserInterface $loggedUser = null,
                             UserRepository $userRepository, ThreadRepository $threadRepository){
 
         if ($this->isGranted('ROLE_USER')){
@@ -128,9 +141,11 @@ class MainController extends AbstractController
 
 
     /**
+     * Access denied controller
+     *
      * @Route("/acces_denied", name = "acces_denied")
      * @param UserInterface|null $loggedUser
-     * @return Response
+     * @return Response view access denied
      */
     public function access_denied(UserInterface $loggedUser = null){
         return $this->render('common/access_denied.html.twig', [
@@ -138,8 +153,9 @@ class MainController extends AbstractController
         ]);
     }
 
-    /*
+    /**
      * Checks whether the timestamp is within last day - 24hours
+     *
      * @param int $timestamp time to check in seconds since epoch
      * @return bool
      */
@@ -148,8 +164,10 @@ class MainController extends AbstractController
         return (time()-(24*60*60)) < $timestamp;
     }
 
-    /*
+
+    /**
      * Checks whether the timestamp is within last week - 7 days
+     *
      * @param int $timestamp time to check in seconds since epoch
      * @return bool
      */
@@ -158,8 +176,9 @@ class MainController extends AbstractController
         return (time()-(7*24*60*60)) < $timestamp;
     }
 
-    /*
+    /**
      * Checks whether the timestamp is within last month - 30 days
+     *
      * @param int $timestamp time to check in seconds since epoch
      * @return bool
      */
@@ -168,8 +187,9 @@ class MainController extends AbstractController
         return (time()-(30*24*60*60)) < $timestamp;
     }
 
-    /*
+    /**
      * Checks whether the timestamp is within last year
+     *
      * @param int $timestamp time to check in seconds since epoch
      * @return bool
      */
@@ -178,10 +198,14 @@ class MainController extends AbstractController
         return (time()-(365*24*60*60)) < $timestamp;
     }
 
-    /*
-     * Checks whether the timestamp is within last year
-     * @param int $timestamp time to check in seconds since epoch
-     * @return bool
+    /**
+     * Filters threads the are visible to all users
+     *
+     * @param int $limit max number of required threads
+     * @param string $filter primary filter
+     * @param string $time_filter time filter
+     * @param ThreadRepository $threadRepository
+     * @return \App\Entity\Thread[] filtered threads
      */
     private function filterAll(int $limit, string $filter, string $time_filter, ThreadRepository $threadRepository)
     {
@@ -200,6 +224,15 @@ class MainController extends AbstractController
         return $threads;
     }
 
+    /**
+     * Filters threads that are from the groups in which user is
+     *
+     * @param int $limit max number of required threads
+     * @param string $filter primary filter
+     * @param string $time_filter time filter
+     * @param User $user logged user
+     * @return \App\Entity\Thread[] filtered threads
+     */
     private function filterGroups(int $limit, string $filter, string $time_filter, User $user)
     {
         $threads = [];
@@ -210,7 +243,14 @@ class MainController extends AbstractController
         return array_slice($threads, 0, $limit);
     }
 
-    private function timeFilter($time_filter, User $user, &$threads)
+    /**
+     * Filters threads according to time of their creation
+     *
+     * @param string $time_filter time filter
+     * @param User $user logged user
+     * @param Array $threads output input array of threads
+     */
+    private function timeFilter(string $time_filter, User $user, Array &$threads)
     {
         $groups = $user->getGroups();
         foreach($groups as &$group){
@@ -240,7 +280,13 @@ class MainController extends AbstractController
         }
     }
 
-    private function primaryFilter(string $filter, &$threads)
+    /**
+     * Filters threads according to primary filter
+     *
+     * @param string $filter primary filter
+     * @param Array $threads output input array of threads
+     */
+    private function primaryFilter(string $filter, Array &$threads)
     {
         if ($filter == 'New'){
             usort($threads, function ($a, $b) {

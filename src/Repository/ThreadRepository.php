@@ -18,6 +18,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ThreadRepository extends ServiceEntityRepository
 {
+    /**
+     * ThreadRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Thread::class);
@@ -25,7 +29,11 @@ class ThreadRepository extends ServiceEntityRepository
 
 
     /**
-     * @return Thread[] Returns an array of Thread objects
+     * Fetches Threads from database, that are visible and according to time filter, sorted by creation_date
+     *
+     * @param int $num max number of Threads required
+     * @param string $timeFilter time filter
+     * @return int|mixed|string queried Threads
      */
     public function getOpen(int $num, string $timeFilter)
     {
@@ -46,15 +54,20 @@ class ThreadRepository extends ServiceEntityRepository
             ->innerJoin('t.group_id', 'g', 'WITH', 'g.visibility = 1')
             ->andWhere('t.creation_date > :date')
             ->setParameter('date', $datetime)
-            ->orderBy('t.id', 'DESC')
+            ->orderBy('t.creation_date', 'DESC')
             ->setMaxResults($num)
             ->getQuery()
             ->getResult()
         ;
     }
 
+
     /**
-     * @return Thread[] Returns an array of Thread objects
+     * Fetches Threads from database, that are visible, according to time filter and sorted by rating
+     *
+     * @param int $num max number of Threads required
+     * @param string $timeFilter time filter
+     * @return int|mixed|string queried Threads
      */
     public function getTopOpen(int $num, string $timeFilter)
     {
@@ -82,8 +95,13 @@ class ThreadRepository extends ServiceEntityRepository
             ;
     }
 
+
     /**
-     * @return Thread[] Returns an array of Thread objects
+     * Fetches Threads from database, that are visible, according to time filter and sorted by views
+     *
+     * @param int $num max number of Threads required
+     * @param string $timeFilter time filter
+     * @return int|mixed|string queried Threads
      */
     public function getViewedOpen(int $num, string $timeFilter)
     {
@@ -110,33 +128,4 @@ class ThreadRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
-
-    // /**
-    //  * @return Thread[] Returns an array of Thread objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Thread
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
