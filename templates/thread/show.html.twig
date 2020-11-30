@@ -77,12 +77,14 @@
                                     <b><a href="{{ path('user', {id: post.createdBy.id }) }}">{{ post.createdBy.firstName }} {{ post.createdBy.lastName }}</a></b> | <b id="rating{{ post.id }}">Post rating: {{ post.rating }}</b>
                                 </div>
                                 <div class="col mt-1">
-                                    <p class="text-right"><b>Last update: {{ post.getStringCreationDate }}</b></p>
+                                    <p class="text-right"><b id="last_update{{ post.id }}">Last update: {{ post.getStringCreationDate }}</b></p>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col ml-3">
-                                    <p>{{ post.text }}</p>
+                            <div class="row mb-1">
+                                <div id="edit{{ post.id }}" class="col ml-3">
+                                    <div>
+                                        <p style="word-break: break-word">{{ post.text }}</p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -92,7 +94,7 @@
                                     {% endif %}
                                     {% if is_granted("OWNER", post) %}
                                     <button data-id="{{ post.id }}" class="btn btn-danger mb-1 ml-1 delete-post float-right">Delete</button>
-                                    <button class="btn btn-info mb-1 mr-1 edit-post float-right">Edit</button>
+                                    <button data-id="{{ post.id }}" class="btn btn-info mb-1 mr-1 edit-post float-right">Edit</button>
                                     {% endif %}
                                 </div>
                             </div>
@@ -108,4 +110,5 @@
 {% block javascripts %}
     <script src="/js/post_liker.js"></script>
     <script src="/js/delete_post.js"></script>
+    <script src="/js/edit_post.js"></script>
 {% endblock %}

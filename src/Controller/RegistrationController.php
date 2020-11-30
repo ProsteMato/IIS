@@ -69,7 +69,7 @@ class RegistrationController extends AbstractController
             /**
              * Uncomment when want to create user with admin role
              */
-            $user->setRoles(['ROLE_ADMIN']);
+            //$user->setRoles(['ROLE_ADMIN']);
 
 
             $entityManager->persist($user);

@@ -44,11 +44,14 @@ class ThreadController extends AbstractController
      *  @Route("/{thread_id}/delete", name="delete")
      */
     public function delete($group_id, $thread_id) {
+
         $em = $this->getDoctrine()->getManager();
         $threadRepository = $em->getRepository(Thread::class);
 
         /** @var Thread $thread */
         $thread = $threadRepository->find($thread_id);
+
+        $this->denyAccessUnlessGranted("OWNER", $thread);
 
         $posts = $thread->getPosts();
         $likes_thread = $thread->getThreadUsers();
@@ -118,6 +121,9 @@ class ThreadController extends AbstractController
      * @Route("/show/{thread_id}/liker", name="like_thread")
      */
     public function liker($group_id, $thread_id, Request $request) {
+
+        $this->denyAccessUnlessGranted("ROLE_USER");
+
         if (strpos($request->headers->get('Content-Type'), 'application/json') === 0) {
             $data = json_decode($request->getContent(), true);
             $request->request->replace(is_array($data) ? $data : array());

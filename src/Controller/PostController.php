@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,6 +30,9 @@ class PostController extends AbstractController
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
         $threadRepository = $em->getRepository(Thread::class);
+        $group = $em->getRepository(Group::class)->find($group_id);
+
+        $this->denyAccessUnlessGranted("GROUP_MEMBER", [$group, $this->getUser()]);
 
         $form = $this->createFormBuilder($post)
             ->setAction($this->generateUrl('create_post', [
@@ -40,7 +44,6 @@ class PostController extends AbstractController
             'label' => "Create new post",
                 'attr' => array(
                     'placeholder' => "What is on your mind?",
-                    'style' => "height: 120px;"
                 ),
                 'required' => true
             ])
@@ -77,6 +80,63 @@ class PostController extends AbstractController
     }
 
     /**
+     * @Route("/group/show/{group_id}/thread/show/{thread_id}/post/{post_id}/edit", name="edit_post")
+     *
+     */
+    public function edit($group_id, $thread_id, $post_id, Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $post = $this->getDoctrine()->getRepository(Post::class)->find($post_id);
+        $group = $em->getRepository(Group::class)->find($group_id);
+        $this->denyAccessUnlessGranted("GROUP_MEMBER", [$group, $this->getUser()]);
+
+        $form = $this->createFormBuilder($post)
+            ->setAction($this->generateUrl('edit_post', [
+                "group_id" => $group_id,
+                "thread_id" => $thread_id,
+                "post_id" => $post_id
+            ]))
+            ->setMethod('POST')
+            ->add('text', TextareaType::class, [
+                'label' => "Edit post",
+                'attr' => array(
+                    'placeholder' => "Text to be saved...",
+                ),
+                'required' => true
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'Save post',
+                'attr' => array(
+                    'class' => 'btn btn-primary float-right'
+                ),
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Post $post */
+            $post = $form->getData();
+            $post->setCreationDate(new \DateTime('now'));
+            $em->persist($post);
+            $em->flush();
+
+            return new JsonResponse(
+                [
+                    'date' => $post->getStringCreationDate(),
+                    'message' => $post->getText()
+                ], 200);
+        }
+
+        return new JsonResponse(
+            [
+                'message' => 'Success',
+                'form' => $this->renderView('post/create.html.twig',
+                [
+                    'form' => $form->createView(),
+                ])
+            ], 200);
+    }
+
+    /**
      * @Route("/group/show/{group_id}/thread/show/{thread_id}/post/{post_id}/delete", name="delete_post")
      *
      */
@@ -85,6 +145,8 @@ class PostController extends AbstractController
         $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
         $post = $postRepository->find($post_id);
+
+        $this->denyAccessUnlessGranted("OWNER", $post);
 
         $post_likes = $post->getPostUsers();
 
@@ -149,6 +211,8 @@ class PostController extends AbstractController
      * @Route("/group/show/{group_id}/thread/show/{thread_id}/post/{post_id}/liker", name="like_post")
      */
     public function liker($group_id, $thread_id, $post_id, Request $request) {
+        $this->denyAccessUnlessGranted("ROLE_USER");
+
         if (strpos($request->headers->get('Content-Type'), 'application/json') === 0) {
             $data = json_decode($request->getContent(), true);
             $request->request->replace(is_array($data) ? $data : array());
