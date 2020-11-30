@@ -14,38 +14,21 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class GroupRepository extends ServiceEntityRepository
 {
+    /**
+     * GroupRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Group::class);
     }
 
-
-    // /**
-    //  * @return Group[] Returns an array of Group objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findByNameSubstr($searchVal)
     {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
+        $qb = $this->createQueryBuilder('g');
+        return $qb->where($qb->expr()->like('g.name', ':substr'))
+            ->setParameter('substr', '%'.$searchVal.'%')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Group
-    {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

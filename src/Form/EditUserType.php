@@ -27,19 +27,26 @@ use Symfony\Component\Validator\Constraints\NotNull;
  */
 class EditUserType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('email', TextType::class, [
                 'label' => 'Email *',
+                'empty_data' => '',
                 'required' => true,
             ])
             ->add('firstName', TextType::class, [
                 'required' => true,
+                'empty_data'=> '',
                 'label' => 'First Name *'
             ])
             ->add('lastName', TextType::class, [
                 'required' => true,
+                'empty_data' => '',
                 'label' => 'Last Name *'
             ])
             ->add('birthDate', BirthdayType::class, [
@@ -73,6 +80,9 @@ class EditUserType extends AbstractType
         ;
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Group;
 use App\Entity\User;
+use App\Repository\GroupRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,10 +33,11 @@ class SearchController extends AbstractController
      * @param UserInterface|null $loggedUser user object, if not logged it is set to null
      * @return Response
      */
-    public function search(Request $request,  EntityManagerInterface $entityManager, UserInterface $loggedUser = null){
+    public function search(Request $request,  EntityManagerInterface $entityManager, GroupRepository $groupRepo,
+                           UserRepository $userRepo, UserInterface $loggedUser = null){
         $search_val = $request->query->get('search_val');
-        $users = $this->search_users($entityManager, $search_val);
-        $groups = $this->search_groups($entityManager, $search_val);
+        $users = $this->search_users($entityManager, $search_val, $userRepo);
+        $groups = $this->search_groups($entityManager, $search_val, $groupRepo);
         $count_users = count($users);
         $count_groups = count($groups);
 
@@ -55,21 +58,17 @@ class SearchController extends AbstractController
      * @param $search_val 'searched value'
      * @return array Array of User-type objects
      */
-    public function search_users(EntityManagerInterface $entityManager, $search_val){
+    public function search_users(EntityManagerInterface $entityManager, $search_val, UserRepository $userRepo){
 
         if ($search_val )
         {
-            $usersFirstName = $entityManager->getRepository(User::class)->findBy([
-                'firstName'  => $search_val]);
-            $usersLastName = $entityManager->getRepository(User::class)->findBy([
-                'lastName' => $search_val]);
+            $usersFirstName = $userRepo->findByFirstNameSubstr($search_val);
+            $usersLastName = $userRepo->findByLastNameSubstr($search_val);
             $users = array_unique(array_merge($usersFirstName,$usersLastName), SORT_REGULAR);
-
         }
         else {
             $users = $entityManager->getRepository(User::class)->findAll();
         }
-
 
         return $users;
     }
@@ -81,11 +80,10 @@ class SearchController extends AbstractController
      * @param $search_val 'searched value'
      * @return object[] object of groups
      */
-    public function search_groups(EntityManagerInterface $entityManager, $search_val){
+    public function search_groups(EntityManagerInterface $entityManager, $search_val, GroupRepository $groupRepo){
         if ($search_val)
         {
-            $groups = $entityManager->getRepository(Group::class)->findBy([
-                'name'  => $search_val]);
+            $groups = $groupRepo->findByNameSubstr($search_val);
         }
         else {
             $groups= $entityManager->getRepository(Group::class)->findAll();

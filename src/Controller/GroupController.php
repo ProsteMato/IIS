@@ -18,12 +18,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Class GroupController handles everything related to groups
+ * @package App\Controller
+ */
 class GroupController extends AbstractController
 {
     /**
      * @Route("/group/show/{group_id}", name="show_group")
+     *
+     * Shows group page if loggedUser can view it, otherwise redirects to noshow page
+     *
+     * @param string $group_id id of group
+     * @param Request $request
+     * @param GroupRepository $groupRepository
+     * @param UserInterface|null $user
+     * @return Response
      */
-    public function show($group_id, Request $request, GroupRepository $groupRepository, UserInterface $user = null): Response
+    public function show(string $group_id, Request $request, GroupRepository $groupRepository, UserInterface $user = null): Response
     {
         $group = $groupRepository->find($group_id);
         $users = $group->getUsers();
@@ -84,8 +96,14 @@ class GroupController extends AbstractController
         }
     }
 
+
     /**
      * @Route("/group/list", name="list_groups")
+     *
+     * lists users groups
+     *
+     * @param UserInterface $loggedUser
+     * @return Response
      */
     public function list(UserInterface $loggedUser): Response
     {
@@ -101,8 +119,16 @@ class GroupController extends AbstractController
         ]);
     }
 
+
     /**
      * @Route("/group/create", name="create_group")
+     *
+     * Controller for new group creation
+     *
+     * @param Request $request
+     * @param GroupRepository $groupRepository
+     * @param UserInterface|null $loggedUser
+     * @return Response
      */
     public function create(Request $request, GroupRepository $groupRepository, UserInterface $loggedUser = null): Response
     {
@@ -150,8 +176,14 @@ class GroupController extends AbstractController
         ]);
     }
 
+
     /**
      * @Route ("/group/show/{id}/edit/delete", name="delete_group")
+     *
+     * Controller for group deletion
+     *
+     * @param Group $group
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function delete_group(Group $group)
     {
@@ -190,10 +222,18 @@ class GroupController extends AbstractController
         }
     }
 
+
     /**
      * @Route ("/group/{group_id}/subscribe", name="subscribe_group")
+     *
+     * User will submit application to join the group
+     *
+     * @param string $group_id id of group
+     * @param GroupRepository $groupRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function subscribe($group_id, GroupRepository $groupRepository, UserInterface $loggedUser = null)
+    public function subscribe(string $group_id, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
 
@@ -228,8 +268,16 @@ class GroupController extends AbstractController
         }
 
     }
+
     /**
      * @Route ("/group/{group_id}/unapply", name="unapply_group")
+     *
+     * User will delete his application to join group
+     *
+     * @param string $group_id id of group
+     * @param GroupRepository $groupRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function unapply($group_id, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
@@ -251,10 +299,19 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/edit", name="edit_group")
+     *
+     * Open group setting window
+     *
+     * @param string $group_id id of group
+     * @param Request $request
+     * @param GroupRepository $groupRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function edit($group_id, Request $request, GroupRepository $groupRepository, UserInterface $loggedUser = null)
+    public function edit(string $group_id, Request $request, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
 
@@ -317,10 +374,18 @@ class GroupController extends AbstractController
         ]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/leave", name="leave_group")
+     *
+     * Logged user will leave group
+     *
+     * @param string $group_id id of group
+     * @param GroupRepository $groupRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function leave($group_id,  GroupRepository $groupRepository, UserInterface $loggedUser = null)
+    public function leave(string $group_id, GroupRepository $groupRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
 
@@ -344,10 +409,20 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('show_group', ['group_id' => $group->getId()]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/edit/mod/delete/{user_id}", name="group_delete_mod")
+     *
+     * Remove moderator role from user who is moderator in the group
+     *
+     * @param string $group_id id of group
+     * @param string $user_id id of user who will be stripped of moderator role
+     * @param GroupRepository $groupRepository
+     * @param UserRepository $userRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+    public function delete_mod($group_id, $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
                                UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
@@ -377,10 +452,19 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/unapplymod", name="group_unapply_mod")
+     *
+     * Remove loggedUsers application to become moderator of group
+     *
+     * @param string $group_id id of group
+     * @param GroupRepository $groupRepository
+     * @param UserRepository $userRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function unapply_mod($group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    public function unapply_mod(string $group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
 
@@ -406,10 +490,19 @@ class GroupController extends AbstractController
         ]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/revokemod", name="group_revoke_mod")
+     *
+     * Revoke moderator role of loggedUser in the the group
+     *
+     * @param string $group_id group id
+     * @param GroupRepository $groupRepository
+     * @param UserRepository $userRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function revoke_mod($group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    public function revoke_mod(string $group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
 
@@ -434,10 +527,19 @@ class GroupController extends AbstractController
         ]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/applymod", name="group_apply_mod")
+     *
+     * Submit application of loggedUser to become moderator of group
+     *
+     * @param string $group_id group id
+     * @param GroupRepository $groupRepository
+     * @param UserRepository $userRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function apply_mod($group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
+    public function apply_mod(string $group_id, GroupRepository $groupRepository, UserRepository $userRepository, UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
 
@@ -462,10 +564,20 @@ class GroupController extends AbstractController
         ]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/edit/mod/accept/{user_id}", name="group_accept_mod")
+     *
+     * Function to accpet application of user to become group moderator
+     *
+     * @param string $group_id group id
+     * @param string $user_id id of user who submited application
+     * @param GroupRepository $groupRepository
+     * @param UserRepository $userRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function accept_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+    public function accept_mod(string $group_id, string $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
                                UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
@@ -489,10 +601,20 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/edit/mod/give/{user_id}", name="group_give_mod")
+     *
+     * Function to give moderator privileges to user
+     *
+     * @param string $group_id group id
+     * @param string $user_id user who will be given moderator role
+     * @param GroupRepository $groupRepository
+     * @param UserRepository $userRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function give_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+    public function give_mod(string $group_id, string $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
                              UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
@@ -515,10 +637,20 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/edit/mod/deny/{user_id}", name="group_deny_mod")
+     *
+     * Function to deny application to became moderator of group
+     *
+     * @param string $group_id id of group
+     * @param string $user_id id of user who created application
+     * @param GroupRepository $groupRepository
+     * @param UserRepository $userRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deny_mod($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+    public function deny_mod(string $group_id, string $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
                              UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
@@ -541,10 +673,20 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/edit/apps/accep/{user_id}", name="group_app_accept")
+     *
+     * Function for accepting application to join group
+     *
+     * @param string $group_id id of group
+     * @param string $user_id id of user who created application
+     * @param GroupRepository $groupRepository
+     * @param UserRepository $userRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function appl_accept($group_id,  $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
+    public function appl_accept(string $group_id, string $user_id, GroupRepository $groupRepository, UserRepository $userRepository,
                                 UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
@@ -569,10 +711,20 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/edit/apps/deny/{user_id}", name="group_app_deny")
+     *
+     * Function for denying application to join group
+     *
+     * @param string $group_id id of group
+     * @param string $user_id id of user who created application
+     * @param UserRepository $userRepository
+     * @param GroupRepository $groupRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function appl_deny($group_id, $user_id, UserRepository $userRepository, GroupRepository $groupRepository,
+    public function appl_deny(string $group_id, string $user_id, UserRepository $userRepository, GroupRepository $groupRepository,
                               UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
@@ -596,11 +748,21 @@ class GroupController extends AbstractController
         return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/edit/changeowner/{email}", name="group_change_owner")
+     *
+     * Function for changing owner of group
+     *
+     * @param string $group_id group id
+     * @param string $email email of new owner user
+     * @param UserRepository $userRepository
+     * @param GroupRepository $groupRepository
+     * @param UserInterface|null $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function change_owner($group_id, $email, UserRepository $userRepository, GroupRepository $groupRepository,
-                              UserInterface $loggedUser = null)
+    public function change_owner(string $group_id, string $email, UserRepository $userRepository, GroupRepository $groupRepository,
+                                 UserInterface $loggedUser = null)
     {
         $group = $groupRepository->find($group_id);
 
@@ -634,11 +796,21 @@ class GroupController extends AbstractController
         }
     }
 
+
     /**
      * @Route ("/group/show/{group_id}/kick/{user_id}", name="group_kick_user")
+     *
+     * Funtion for kicking user from group
+     *
+     * @param string $group_id id of group
+     * @param string $user_id id of user
+     * @param UserRepository $userRepository
+     * @param GroupRepository $groupRepository
+     * @param UserInterface $loggedUser
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function group_kick($group_id, $user_id, UserRepository $userRepository, GroupRepository $groupRepository,
-                                UserInterface $loggedUser)
+    public function group_kick(string $group_id, string $user_id, UserRepository $userRepository, GroupRepository $groupRepository,
+                               UserInterface $loggedUser)
     {
         $group = $groupRepository->find($group_id);
 

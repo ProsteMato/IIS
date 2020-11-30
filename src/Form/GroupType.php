@@ -13,13 +13,25 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 
+/**
+ * Class GroupType
+ *
+ * Class that represents form for creating group
+ *
+ * @package App\Form
+ */
 class GroupType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Name *'
+                'label' => 'Name *',
+                'empty_data' => ''
             ])
             ->add('description', TextareaType::class, [
                 'required'=> false
@@ -56,6 +68,9 @@ class GroupType extends AbstractType
         ;
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

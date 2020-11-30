@@ -9,8 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
+ *
+ * Class representing registered user
+ *
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(
  * fields={"email"},
@@ -562,4 +566,31 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload){
+        if ($this->getFirstName() == null or $this->getFirstName() == "")
+        {
+            $context->buildViolation('First name should not be empty!')
+                ->atPath('firstName')
+                ->addViolation();
+        }
+
+        if ($this->getLastName() == null or $this->getLastName() == "")
+        {
+            $context->buildViolation('Last name should not be empty!')
+                ->atPath('lastName')
+                ->addViolation();
+        }
+
+        if ($this->getEmail() == null or $this->getEmail() == "")
+        {
+            $context->buildViolation('Email should not be empty!')
+                ->atPath('email')
+                ->addViolation();
+        }
+    }
+
 }

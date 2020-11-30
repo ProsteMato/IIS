@@ -17,13 +17,22 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
+    /**
+     * UserRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
     }
 
     /**
+     *
      * Used to upgrade (rehash) the user's password automatically over time.
+     * @param UserInterface $user user whose password will be changed
+     * @param string $newEncodedPassword new password
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
     {
@@ -36,22 +45,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    public function findByEmail($value)
+
+    /**
+     * Fetches User from database whose email is param email
+     *
+     * @param string $email
+     * @return int|mixed|string
+     */
+    public function findByEmail(string $email)
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.email = :val')
-            ->setParameter('val', $value)
+            ->setParameter('val', $email)
             ->setMaxResults(1)
             ->getQuery()
             ->getResult()
         ;
     }
 
+
     /**
-     * @return User[] Returns an array of Thread objects
+     * Fetches visible Users from database
+     *
+     * @param int $num max number of required Users
+     * @return int|mixed|string array of User object
      */
     public function getNumOpen(int $num)
     {
@@ -64,32 +81,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ;
     }
 
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findByFirstNameSubstr($searchVal)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
+        $qb = $this->createQueryBuilder('u');
+        return $qb->where($qb->expr()->like('u.firstName', ':substr'))
+            ->setParameter('substr', '%'.$searchVal.'%')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?User
+    public function findByLastNameSubstr($searchVal)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
+        $qb = $this->createQueryBuilder('u');
+        return $qb->where($qb->expr()->like('u.lastName', ':substr'))
+            ->setParameter('substr', '%'.$searchVal.'%')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }

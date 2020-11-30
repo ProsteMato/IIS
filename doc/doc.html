@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0067)https://www.fit.vutbr.cz/study/courses/IIS/private/projekt/doc.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-2">
+    
+    <title>Projekt IIS</title>
+    <style type="text/css">
+    	table { border-collapse: collapse; }
+    	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+    	dt { font-weight: bold; margin-top: 0.5em; }
+    </style>
+<link id="avast_os_ext_custom_font" href="chrome-extension://eofcbnmajmjmplflapaojjnihcjkigck/common/ui/fonts/fonts.css" rel="stylesheet" type="text/css"><script src="chrome-extension://mooikfkahbdckldjjndioackbalphokd/assets/prompt.js"></script></head>
+<body>
+
+<!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu 
+     podle použitého editoru -->
+
+<h1>Sociální síť: diskuse v diskusních skupinách</h1> <!-- Nahradte názvem svého zadání -->
+
+<dl>
+	<dt>Autoři</dt>
+	<dd>Martin Koči <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xkocim05@stud.fit.vutbr.cz">xautor01@stud.fit.vutbr.cz</a> -
+		tvorba vlákien a príspevkov
+	</dd>
+	<dd>Michal Koval <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xkoval17@stud.fit.vutbr.cz">xautor02@stud.fit.vutbr.cz</a> -
+		tvorba skupín a hlavnej stránky
+	</dd>
+  <dd>Magdaléna Ondrušková <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xondru16@stud.fit.vutbr.cz">xautor03@stud.fit.vutbr.cz</a> -
+		tvorba užívateľa, vyhľadávanie a grafická úprava
+	</dd>
+	<dt>URL aplikace</dt>
+	<dd><a href="http://www.stud.fit.vutbr.cz/~xautor01/IIS">http://www.stud.fit.vutbr.cz/~xautor01/IIS</a></dd>
+	<dd>(pokud má aplikace více vstupních stránek, napište obdobně další URL)</dd>
+</dl>
+
+<h2>Uživatelé systému pro testování</h2>
+<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
+<table>
+<tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+<tr><td>admin@admin.com</td><td>test00</td><td>Administrátor</td></tr>
+<tr><td>reg@email.com</td><td>test00</td><td>Registrovaný užívateľ</td></tr>
+<tr><td>owner@email.com</td><td>test00</td><td>Vlastnik skupiny</td></tr>
+<tr><td>mod@email.com</td><td>test00</td><td>Mod skupiny</td></tr>
+<tr><td>member@email.com</td><td>test00</td><td>Člen skupiny</td></tr>
+</tbody></table>
+
+<h2>Implementace</h2>
+
+<h3>Backend</h3>
+Ako implementačný jazyk sme si zvolili php, a to konkrétne framework Symfony.
+
+<h4>Controller:</h4>
+<b>AdminController.php</b> popisuje funkcionalitu pre administrátora. Administrátor môže vymazať užívateľa, a takisto
+si vie zobraziť list všetkých registrovaných užívateľov a skupín. Takisto vie vymazať skupinu. <br><br>
+<b>GroupController.php</b> popisuje základnú funkcionalitu okolo skupín. Užívateľ si môže skupinu zobraziť, prípadne
+si vie zobraziť list skupín, kde je členom. Takisto vie vytvoriť novú skupinu. Skupinu môže vymazať iba administrátor
+alebo majiteľ skupiny. Užívateľ môže podať žiadosť o pridanie do skupiny (ak skupina nemá nastavené, že ktokoľvek sa
+môže pridať), takisto môže odstrániť túto žiadosť. Meniť nastavenia súkromia a informácie o skupine vie iba majiteľ
+skupiny alebo administrátor. Každý člen (až na majiteľa) môže opustiť skupinu. Majiteľ skupiny alebo administrátor môžu
+meniť moderátorov skupiny (pridávať/schvalovať žiadosti o moderátora/vymazať). Moderátor sa vie sám vzdať moderátorstva
+v skupine. Každý člen skupiny si vie podať žiadosť o to, aby bol moderátorom skupiny. Moderátor skupiny môže
+prijať nových členov, prípadne vyhodiť členov (ak nie sú vlastníkom alebo moderátorom skupiny).<br><br>
+<b>MainController.php</b> implementuje zobrazenie hlavnej stránky pre prihláseného/neprihláseného užívateľa. Vrámci
+zobrazenia si môže užívateľ vybrať, na základe akého filtra mu budú príspevky zobrazené. <br><br>
+<b>PostController.php</b> implementuje pridanie nového príspevku, vymazanie príspevku a zmenu ratingu u príspevku. <br><br>
+<b>RegistrationController.php</b> implementuje registráciu užívateľa.<br><br>
+<b>SearchController.php</b>  implementuje funkcionalitu ohľadne vyhľadávania užívateľov a skupín.<br><br>
+<b>SecurityController.php</b> implementuje prihlásenie a odhlásenie užívateľa. <br><br>
+<b>ThreadController.php</b> popisuje funkciu ohľadne vlákien v skupine. Užívateľ si môže vlákno zobraziť. Vlákno môže byť
+vymazané (ako už bolo vyššie spomenuté). Takisto implementuje zmenu rankingu u vlákna. <br><br>
+<b>UserController.php</b> popisuje funkcionalitu ohľadne užívateľa - zobrazenie užívateľského profilu, zmena údajov a takisto
+odstránenie užívateľského profilu.
+<br><br>
+
+<h4>View:</h4>
+Je implementovaný pomocou <b>html.twig</b> súborov v priečinku <b>templates</b>. Twig má obrovskú výhodu najmä v tom, ako
+kombinuje php kód vrámci svojej šablóny. Vďaka tomu je kód veľmi prehľadný. <br><br>
+
+<h3>Fronted</h3>
+Stránky boli vytvárané pomocou jednotlivých .html.twig súborov, ktoré sa nachádzajú v priečinku templates. Jednotlivé súbory
+reprezentujú vždy nejakú stránku, ktorá sa zobrazuje užívateľovi. Jednotlivé stránky sú uložené vo viacerých priečinkov, najmä
+kvôli prehľadnosti - každý jeden súbor má ale spoločný základ v súbore base.html.twig. Vrámci projektu sme sa rozhodli
+zakombinovať do view aj voľne dostupnú bootstrap šablónu Darkly.
+
+<h3>Databáza</h3>
+Pre databázu sme si vybrali MySQL. Databáza bola implementovaná podľa nasledujúceho schématu:
+<image src="./schema.png"></image><br><br>
+<h2>Instalace</h2>
+
+Stručně popište: 
+<ul>
+<li>postup instalace na server,</li>
+<li>softwarové požadavky (verze PHP apod.),</li>
+	verzia php: >= 7.2.5
+<li>jak rozbalit, konfigurovat, inicializovat databázi, ...</li>
+</ul>
+
+<h2>Známé problémy</h2>
+<p>Zde popište, které body zadání nejsou implementovány a z jakého důvodu. Např. &#8222;Z časových důvodů nebyla implementována správa uživatelů.&#8221; Pomůžete tím zrychlit hodnocení, když neimplementované funkce nebudeme muset dlouze hledat.</p>
+
+
+
+</body></html>
