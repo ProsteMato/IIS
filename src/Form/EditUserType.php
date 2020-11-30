@@ -36,14 +36,17 @@ class EditUserType extends AbstractType
         $builder
             ->add('email', TextType::class, [
                 'label' => 'Email *',
+                'empty_data' => '',
                 'required' => true,
             ])
             ->add('firstName', TextType::class, [
                 'required' => true,
+                'empty_data'=> '',
                 'label' => 'First Name *'
             ])
             ->add('lastName', TextType::class, [
                 'required' => true,
+                'empty_data' => '',
                 'label' => 'Last Name *'
             ])
             ->add('birthDate', BirthdayType::class, [
