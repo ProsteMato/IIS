@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Group;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -78,12 +79,72 @@ class AdminController extends AbstractController
                                 UserInterface $loggedUser = null){
 
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+        $this->delete_user_actions($user, $entityManager);
 
         $entityManager->remove($user);
         $entityManager->flush();
 
-        $this->addFlash('notice', 'User was deleted');
-
         return $this->redirectToRoute('show_list_users');
+    }
+
+    public function delete_user_actions(User $user, EntityManager $entityManager){
+        $groups = $user->getGroups();
+
+        foreach ($groups as $group){
+            if ($group->getAdminUser() == $user){ // je vlastnikom
+                $groupUser = $group->getGroupUser();
+                foreach ($groupUser as &$gu){
+                    $entityManager->remove($gu);
+                }
+                $threads = $group->getThreads();
+                foreach ($threads as $thread){
+                    foreach ($thread->getPosts() as $post){
+                        $entityManager->remove($post);
+                    }
+                    foreach ($thread->getPostUsers() as $pu){
+                        $entityManager->remove($pu);
+                    }
+                    foreach ($thread->getThreadUsers() as $tu){
+                        $entityManager->remove($tu);
+                    }
+                    $entityManager->remove($thread);
+                }
+                $entityManager->remove($group);
+            }
+            else{ // je iba clenom - jeho prispevky sa nastavia na deleted user
+                //nastavi userove posty autora na null
+                $posts = $user->getPosts();
+                foreach ($posts as $post){
+                    $post->setCreatedBy(NULL);
+                    $entityManager->persist($post);
+                }
+
+                //nastavi userove thready autora na null
+                $threads = $user->getThreads();
+                foreach ($threads as $thread){
+                    $thread->setCreatedBy(NULL);
+                    $entityManager->persist($thread);
+
+                }
+                // leavne groupy kde je clenom
+                foreach ($user->getGroups() as $group_mem){
+                    if(!$this->isGranted('GROUP_MEMBER', [$group_mem, $user])){
+                        throw $this->createAccessDeniedException('not allowed');
+                    }
+
+                    $groupUser = $group_mem->getGroupUser();
+                    foreach ($groupUser as &$gu){
+                        if ($gu->getUser() == $user){
+                            $entityManager->remove($gu);
+                            $entityManager->flush();
+                            break;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        $entityManager->flush();
     }
 }

@@ -8,6 +8,7 @@ use App\Form\EditUserType;
 use App\Form\Model\ChangePassword;
 use App\Form\UserProfileType;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -141,7 +142,7 @@ class UserController extends AbstractController
     /**
      * @Route("/user/delete", name="delete_user")
      *
-     * Function handles deleting loggin-in users profile
+     * Function handles deleting logged-in users profile
      *
      * @param UserInterface $user
      * @param Request $request
@@ -149,6 +150,10 @@ class UserController extends AbstractController
      * @return RedirectResponse
      */
     public function delete_user(Request $request, EntityManagerInterface $entityManager, UserInterface $user = null){
+
+        //dump($user);
+
+        //$this->delete_user_posts($user, $entityManager);
 
         $this->get('security.token_storage')->setToken(null); // odhlasenie uzivatela
 
@@ -158,7 +163,16 @@ class UserController extends AbstractController
         $response = new Response();
         $response->send();
 
-        return $this->redirectToRoute('main_page_unlogged');
+        return $this->redirectToRoute('main_page');
+    }
+
+    public function delete_user_posts(User $user, EntityManager $entityManager){
+        $posts = $user->getPosts();
+        foreach ($posts as $post){
+            $post->setId(0);
+            $entityManager->persist($post);
+        }
+        $entityManager->flush();
     }
 
 

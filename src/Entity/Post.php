@@ -53,7 +53,7 @@ class Post
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $created_by;
 
@@ -67,6 +67,7 @@ class Post
         $this->replays = new ArrayCollection();
         $this->postUsers = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {

@@ -57,7 +57,7 @@ class Thread
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="threahs")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $created_by;
 

@@ -43,7 +43,13 @@
                         <div class="row ml-1">
                             <div class="col">
                                 <p class="text-left">
-                                    <b>Created by:</b> <a style="text-decoration: none" href="{{ path('user', {id: thread.getCreatedBy().getId}) }}"><b>{{ thread.getCreatedBy().getFirstName() }} {{ thread.getCreatedBy().getLastName }}</b></a>
+                                    {% if thread.getCreatedBy() %}
+                                        <b>Created by:</b> <a style="text-decoration: none" href="{{ path('user', {id: thread.getCreatedBy().getId}) }}"><b>{{ thread.getCreatedBy().getFirstName() }} {{ thread.getCreatedBy().getLastName }}</b></a>
+
+                                    {% else %}
+                                        <b>Created by:</b> Deleted User
+
+                                    {% endif %}
                                     &nbsp;&nbsp;|&nbsp;&nbsp;<b>{{ thread.getDateString() }}</b>
                                     &nbsp;&nbsp;|&nbsp;&nbsp;<b id="thread_post_count">{{ thread.getPostsCount }} posts</b>
                                 </p>
@@ -80,7 +86,11 @@
                         <div id="post{{ post.id }}" class="container border rounded border-light mb-3">
                             <div class="row">
                                 <div class="col mt-1">
+                                    {% if post.createdBy() %}
                                     <b><a href="{{ path('user', {id: post.createdBy.id }) }}">{{ post.createdBy.firstName }} {{ post.createdBy.lastName }}</a></b> | <b id="rating{{ post.id }}">Post rating: {{ post.rating }}</b>
+                                    {% else %}
+                                        <b>Created by:</b> Deleted User
+                                    {% endif %}
                                 </div>
                                 <div class="col mt-1">
                                     <p class="text-right"><b id="last_update{{ post.id }}">Last update: {{ post.getStringCreationDate }}</b></p>
