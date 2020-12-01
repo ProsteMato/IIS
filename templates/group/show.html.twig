@@ -21,7 +21,7 @@
                               class="avatar img-circle img-thumbnail" alt="Group picture">
                     </div>
                     <div class="col-md-9">
-                        <h3> {{ group.name }} </h3>
+                        <h3 style="word-break: break-word"> {{ group.name }} </h3>
 
                         {% if group.visibility == 1 %}
                             <p><b>Visibility: </b>Anyone</p>
@@ -30,7 +30,7 @@
                         {% endif %}
                         <p><b>Created: </b>{{ group.getDateString() }}</p>
                         <p><b>Members: </b>{{ group.getUsersCount() }}</p>
-                        <p align="justify"> <b>Description: </b>{{ group.description }} </p>
+                        <p align="justify" style="word-break: break-word"> <b>Description: </b>{{ group.description }} </p>
                         <div>
                             {% if is_granted('ROLE_ADMIN') %}
                                 {% if is_granted('GROUP_MEMBER', [group, loggedUser]) %}
@@ -98,7 +98,7 @@
                         <div class="container mb-3 rounded border border-light">
                             <div class="row mt-1 border-bottom border-light">
                                 <div class="col-8">
-                                    <a style="text-decoration: none" href="{{ path('group.thread.show', {group_id: group.getId ,thread_id: thread.getId}) }}"><h5>{{ thread.getTitle }}</h5></a>
+                                    <a style="word-break: break-word" href="{{ path('group.thread.show', {group_id: group.getId ,thread_id: thread.getId}) }}"><h5>{{ thread.getTitle }}</h5></a>
                                 </div>
 
                                 <div class="col">
@@ -113,7 +113,7 @@
                             </div>
                             <div class="row">
                                 <div class="col mt-1">
-                                    <p>
+                                    <p style="word-break: break-word">
                                         <b>Description: </b>{{ thread.getDescription() }}
                                     </p>
                                 </div>
