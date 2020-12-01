@@ -190,7 +190,7 @@ class UserController extends AbstractController
      * @param string $user_id
      * @param EntityManagerInterface $entityManager
      * @param UserInterface $user
-     * @return RedirectResponse
+     * @return Response
      */
     public function follow_user($user_id, EntityManagerInterface $entityManager, UserRepository $userRepository,
                                 UserInterface $loggedUser =null)
@@ -226,7 +226,7 @@ class UserController extends AbstractController
      * @param string $user_id
      * @param EntityManagerInterface $entityManager
      * @param UserInterface $user
-     * @return RedirectResponse
+     * @return Response
      */
     public function unfollow_user($user_id, EntityManagerInterface $entityManager, UserRepository $userRepository,
                                 UserInterface $loggedUser =null)
