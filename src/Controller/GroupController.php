@@ -679,7 +679,9 @@ class GroupController extends AbstractController
      *
      * Deletes group picture
      *
+     * @param string $group_id id of group
      * @param UserInterface $loggedUser
+     * @param GroupRepository $groupRepository
      * @return Response
      */
     public function delete_photo(string $group_id, UserInterface $loggedUser, GroupRepository $groupRepository): Response
