@@ -20,15 +20,15 @@
 	<dt>Autoøi</dt>
 	<dd>Martin Koèi <!-- Nahraïte skuteèným jménem a e-mailem autora a popisem èinnosti -->
 	    <a href="mailto:xkocim05@stud.fit.vutbr.cz">xautor01@stud.fit.vutbr.cz</a> -
-		tvorba vlákien a príspevkov
+		tvorba a úprava vlákien, príspevkov, rating system
 	</dd>
 	<dd>Michal Koval <!-- Nahraïte skuteèným jménem a e-mailem autora a popisem èinnosti -->
 	    <a href="mailto:xkoval17@stud.fit.vutbr.cz">xautor02@stud.fit.vutbr.cz</a> -
-		tvorba skupín a hlavnej stránky
+		tvorba a úprava skupín a hlavnej stránky
 	</dd>
   <dd>Magdaléna Ondru¹ková <!-- Nahraïte skuteèným jménem a e-mailem autora a popisem èinnosti -->
 	    <a href="mailto:xondru16@stud.fit.vutbr.cz">xautor03@stud.fit.vutbr.cz</a> -
-		tvorba u¾ívateµa, vyhµadávanie, admin
+		tvorba u¾ívateµa, vyhµadávanie, admin, správa rolí
 	</dd>
 	<dt>URL aplikace</dt>
 	<dd><a href="http://www.stud.fit.vutbr.cz/~xautor01/IIS">http://www.stud.fit.vutbr.cz/~xautor01/IIS</a></dd>
@@ -36,7 +36,6 @@
 </dl>
 
 <h2>U¾ivatelé systému pro testování</h2>
-<p>Uveïte prosím existující zástupce <strong>v¹ech rolí u¾ivatelù</strong>.</p>
 <table>
 <tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
 <tr><td>admin@email.com</td><td>test00</td><td>Administrátor</td></tr>
@@ -109,17 +108,96 @@ Pre databázu sme si vybrali MySQL. Databáza bola implementovaná podµa nasledujúc
 <image src="./schema.png"></image><br><br>
 <h2>Instalace</h2>
 
-Struènì popi¹te: 
+Pospis in¹talácie na local host (návod bol robený pre u¾ívateµov Ubuntu):
 <ul>
-<li>postup instalace na server,</li>
-<li>softwarové po¾adavky (verze PHP apod.),</li>
-	verzia php: >= 7.2.5
-<li>jak rozbalit, konfigurovat, inicializovat databázi, ...</li>
+	<ol>
+		<li>
+			Stiahnem si prieèinok z projektom
+		</li>
+		<li>
+			Nain¹talujte si v¹etky potrebné súbory pomocou composer install
+		</li>
+		<li>
+			V .env súbore si treba vyplni» do polo¾ky DATABASE_URL podµa example
+		</li>
+		<li>
+			Vytvorým si databázu pomocou príkazu <b>php bin/console doctrine:database:create</b>
+		</li>
+			Ak chcete naplni» databázu pomocou testovacích dát pou¾ite príkaz <b>mysql -uUSER_NAME DATABASE_NAME -pPASSWORD < database/create_database.sql</b>
+			za USER_NAME, DATABASE_NAME a PASSWORD si dajte vlastné údaje z .env súboru z polo¾ky DATABASE_URL
+		<li>
+		<li>
+			Databázu ak chcete viete vymaza» pomocou <b>php bin/console doctrine:schema:drop --force</b>
+			(Ak chcete pridáva» zase testovacie dáta pomocou príkazu èo bol zmienený vy¹ie je lep¹ie pou¾i» najskôr tento príkaz inak to nebude fungova» kvôli právam)
+		</li>
+		<li>
+			Server si viete spusti» pomocou <b>symfony server:start</b> a aplikácia by mala be¾a».
+		</li>
+	</ol>
+	<li>
+		Softwarové po¾adavky:
+		php: >= 7.2.5
+		composer: >= 2.0.7
+		mysql >= 14.14
+		symfony >= 4.21.0
+	</li>
 </ul>
 
+
+Pospis in¹talácie na Heroku (návod bol robený pre u¾ívateµov Ubuntu):
+<ul>
+	<ol>
+		<li>
+			Stiahnem si prieèinok z projektom
+		</li>
+		<li>
+			Otvorime si terminal a prihlásime sa do násho existujúceho heroku úètu pomocou <b>heroku login</b>
+		</li>
+		<li>
+			Nasledne si otvorime prieèinok projektu. Spustíme príkaz <b>heroku create</b>
+		</li>
+		<li>
+			Pre vytvorenie databázy na heroku pou¾ijete príkaz <b>heroku addons:create cleardb:ignite</b>
+		</li>
+		<li>
+			Následne si viete získa» odkaz na pripojenie do databáze pomocou príkazu <b>heroku config | grep CLEARDB_DATABASE_URL</b>.
+			Výsledok príkazu si zapí¹te do .env súboru v projekte do políèka DATABASE_URL
+		</li>
+		<li>
+			Ulo¾te v¹etky zmeny pomocou <b>git add .evn</b> a <b>git commit -m "edit .env"</b>
+		</li>
+		<li>
+			Ako posledné v¹etky zmeny nahrajte na heroku <b>git push heroku main</b>
+		</li>
+		<li>
+			Do databáze viete nahra» testovacie dáta pomocou príkazu <b>mysql -uUSER_NAME DATABASE_NAME -pPASSWORD --host=HOST < database/create_database.sql</b>
+			na USER_NAME, DATABASE_NAME, PASSWORD a HOST si dajte vlastné údaje z .env súboru z polo¾ky DATABASE_URL
+		</li>
+		<li>
+			Databázu ak chcete viete vymaza» pomocou <b>heroku run php bin/console doctrine:schema:drop --force</b>
+			(Ak chcete pridáva» zase testovacie dáta pomocou príkazu èo bol zmienený vy¹ie je lep¹ie pou¾i» najskôr tento príkaz inak to nebude fungova» kvôli právam)
+		</li>
+	</ol>
+	<li>
+		Softwarové po¾adavky:
+			php: >= 7.2.5
+			git: >= 2.17.1
+			heroku >= 7.47.3
+			mysql >= 14.14
+	</li>
+</ul>
+
+
+
 <h2>Známé problémy</h2>
-<p>Zde popi¹te, které body zadání nejsou implementovány a z jakého dùvodu. Napø. &#8222;
-	Z èasových dùvodù nebyla implementována správa u¾ivatelù.&#8221; Pomù¾ete tím zrychlit hodnocení, kdy¾
-	neimplementované funkce nebudeme muset dlouze hledat.</p>
+<ul>
+	<li>
+		Databáza, ktorú pou¾ívame na heroku hostingu (CleanDB) má pre u¾ívateµov, ktorý pou¾ívajú jej free verziu obmedzený
+		poèet po¾iadavkov na databázu na hodinu. Preto ak sa zavolá na databázu veµa dotazov za hodinu stránka prestane fungova».
+	</li>
+	<li>
+		Pri naèítavaný súborov pri v¹etkých formulároch sa do formuláru nevypí¹e názov súboru ktorý sme zvolili. Je chyba zvolenej boostrap ¹ablony
+		Darkly.
+	</li>
 
 </body></html>
