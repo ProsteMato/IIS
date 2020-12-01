@@ -1,37 +1,24 @@
--- Autor: Magdaléna Ondrušková <xondru16@stud.fit.vutbr.cz>
--- Date:  15.11.2020
--- --------------------------------------------------------
+-- phpMyAdmin SQL Dump
+-- version 5.0.3
+-- https://www.phpmyadmin.net/
+--
+-- Hostiteľ: 127.0.0.1
+-- Čas generovania: Út 01.Dec 2020, 13:33
+-- Verzia serveru: 10.4.14-MariaDB
+-- Verzia PHP: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
-DROP TABLE IF EXISTS `ban`;
-DROP TABLE IF EXISTS `group`;
-DROP TABLE IF EXISTS `member`;
-DROP TABLE IF EXISTS `moderator`;
-DROP TABLE IF EXISTS `post`;
-DROP TABLE IF EXISTS `registration`;
-DROP TABLE IF EXISTS `subscribe`;
-DROP TABLE IF EXISTS `thread`;
-DROP TABLE IF EXISTS `user`;
-
--- --------------------------------------------------------
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Štruktúra tabuľky pre tabuľku `ban`
 --
-
-CREATE TABLE `ban` (
-  `groupID` int(11) NOT NULL,
-  `userID` int(11) NOT NULL,
-  PRIMARY KEY (`groupID`,`userID`),
-  KEY `userID` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
-
-
-INSERT INTO `ban` (`groupID`, `userID`) VALUES
-(2, 3);
 
 -- --------------------------------------------------------
 
@@ -39,62 +26,45 @@ INSERT INTO `ban` (`groupID`, `userID`) VALUES
 -- Štruktúra tabuľky pre tabuľku `group`
 --
 
+DROP TABLE IF EXISTS `group`;
 CREATE TABLE `group` (
-  `gID` int(11) NOT NULL AUTO_INCREMENT,
-  `name` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `admin_user_id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `visibility` tinyint(1) NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `picture` blob,
-  `administrate` int(11) NOT NULL,
-  PRIMARY KEY (`gID`),
-  KEY `administrate` (`administrate`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs AUTO_INCREMENT=6 ;
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `date_created` datetime NOT NULL,
+  `picture` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `open` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Sťahujem dáta pre tabuľku `group`
+--
 
-INSERT INTO `group` (`gID`, `name`, `visibility`, `description`, `date_created`, `picture`, `administrate`) VALUES
-(1, 'Coronavirus', 1, 'Group to discuss actual situation in world about epidemic of coronavirus ', '2020-11-02', NULL, 1),
-(2, 'Political situation in USA', 1, 'Discussion about election in USA. ', '2020-11-01', NULL, 2),
-(3, 'Programming ', 0, 'Let''s talk about programming. ', '2020-11-14', NULL, 2),
-(4, 'World news', 1, 'Discussion about everything that is going on in the world', '2020-10-14', NULL, 2),
-(5, 'Movies ', 0, 'new movies in cinema, on netflix or just general news about movies ', '2020-11-03', NULL, 3);
+INSERT INTO `group` (`id`, `admin_user_id`, `name`, `visibility`, `description`, `date_created`, `picture`, `open`) VALUES
+(1, 2, 'Group1', 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin sed tincidunt mi, et tempor dui. Curabitur convallis lacus ac fermentum maximus. Sed varius nec tellus nec pretium. Vestibulum at posuere metus. Phasellus bibendum ut nisl eget gravida. Praesent interdum enim nisi, a tempus lacus viverra ac.', '2020-12-01 13:30:18', '6ddd09c851390efe43ff37b45f352240.jpeg', 1);
 
 -- --------------------------------------------------------
 
 --
--- Štruktúra tabuľky pre tabuľku `member`
+-- Štruktúra tabuľky pre tabuľku `group_user`
 --
 
-CREATE TABLE `member` (
-  `groupID` int(11) NOT NULL,
-  `userID` int(11) NOT NULL,
-  PRIMARY KEY (`groupID`,`userID`),
-  KEY `userID` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
-
-
-INSERT INTO `member` (`groupID`, `userID`) VALUES
-(4, 1),
-(1, 2),
-(5, 2),
-(1, 3);
-
--- --------------------------------------------------------
+DROP TABLE IF EXISTS `group_user`;
+CREATE TABLE `group_user` (
+  `id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `role` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:array)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Štruktúra tabuľky pre tabuľku `moderator`
+-- Sťahujem dáta pre tabuľku `group_user`
 --
 
-CREATE TABLE `moderator` (
-  `groupID` int(11) NOT NULL,
-  `userID` int(11) NOT NULL,
-  PRIMARY KEY (`groupID`,`userID`),
-  KEY `userID` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
-
-
-INSERT INTO `moderator` (`groupID`, `userID`) VALUES
-(1, 2);
+INSERT INTO `group_user` (`id`, `group_id`, `user_id`, `role`) VALUES
+(1, 1, 2, 'a:2:{i:0;s:8:\"ROLE_MEM\";i:1;s:8:\"ROLE_MOD\";}');
 
 -- --------------------------------------------------------
 
@@ -102,58 +72,46 @@ INSERT INTO `moderator` (`groupID`, `userID`) VALUES
 -- Štruktúra tabuľky pre tabuľku `post`
 --
 
+DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
-  `pID` int(11) NOT NULL AUTO_INCREMENT,
-  `text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `picture` blob,
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ranking` int(11) NOT NULL DEFAULT '0',
-  `wrote` int(11) NOT NULL,
-  `is_answer` int(11) DEFAULT NULL,
-  `in_thread` int(11) NOT NULL,
-  PRIMARY KEY (`pID`),
-  KEY `wrote` (`wrote`),
-  KEY `is_answer` (`is_answer`),
-  KEY `in_thread` (`in_thread`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs AUTO_INCREMENT=8 ;
+  `id` int(11) NOT NULL,
+  `post_id` int(11) DEFAULT NULL,
+  `thread_id` int(11) NOT NULL,
+  `created_by_id` int(11) NOT NULL,
+  `text` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rating` int(11) NOT NULL,
+  `creation_date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Sťahujem dáta pre tabuľku `post`
+--
 
-INSERT INTO `post` (`pID`, `text`, `picture`, `date_created`, `ranking`, `wrote`, `is_answer`, `in_thread`) VALUES
-(1, 'Numbers are great but they are also testing less and less people. ', NULL, '2020-11-15 10:21:19', 0, 1, NULL, 1),
-(2, 'Yeah, they are testing less and less people but the number of positive people tested is decreasing, so thats good thing.', NULL, '2020-11-15 14:03:11', 0, 2, 1, 1),
-(3, 'And the number of people in hospital si also getting lower, so it looks like the things will be getting slowly better.', NULL, '2020-11-15 14:13:53', 0, 1, 1, 1),
-(4, 'But I think it is too soon to celebrate. ', NULL, '2020-11-15 15:07:52', 0, 3, NULL, 1);
+INSERT INTO `post` (`id`, `post_id`, `thread_id`, `created_by_id`, `text`, `rating`, `creation_date`) VALUES
+(1, NULL, 1, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius.', 1, '2020-12-01 13:32:50');
 
 -- --------------------------------------------------------
 
 --
--- Štruktúra tabuľky pre tabuľku `registration`
+-- Štruktúra tabuľky pre tabuľku `post_user`
 --
 
-CREATE TABLE `registration` (
-  `groupID` int(11) NOT NULL,
-  `userID` int(11) NOT NULL,
-  PRIMARY KEY (`groupID`,`userID`),
-  KEY `userID` (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
-
--- --------------------------------------------------------
+DROP TABLE IF EXISTS `post_user`;
+CREATE TABLE `post_user` (
+  `id` int(11) NOT NULL,
+  `threads_id` int(11) NOT NULL,
+  `group_list_id` int(11) NOT NULL,
+  `posts_id` int(11) NOT NULL,
+  `users_id` int(11) NOT NULL,
+  `liked` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Štruktúra tabuľky pre tabuľku `subscribe`
+-- Sťahujem dáta pre tabuľku `post_user`
 --
 
-CREATE TABLE `subscribe` (
-  `userID` int(11) NOT NULL,
-  `subscribeID` int(11) NOT NULL,
-  PRIMARY KEY (`userID`,`subscribeID`),
-  KEY `subscribeID` (`subscribeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs;
-
-
-INSERT INTO `subscribe` (`userID`, `subscribeID`) VALUES
-(1, 2),
-(1, 3);
+INSERT INTO `post_user` (`id`, `threads_id`, `group_list_id`, `posts_id`, `users_id`, `liked`) VALUES
+(1, 1, 1, 1, 2, 'like');
 
 -- --------------------------------------------------------
 
@@ -161,26 +119,47 @@ INSERT INTO `subscribe` (`userID`, `subscribeID`) VALUES
 -- Štruktúra tabuľky pre tabuľku `thread`
 --
 
+DROP TABLE IF EXISTS `thread`;
 CREATE TABLE `thread` (
-  `tID` int(11) NOT NULL AUTO_INCREMENT,
-  `title` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `ranking` int(11) NOT NULL DEFAULT '0',
-  `picture` blob,
-  `in_group` int(11) NOT NULL,
-  `created` int(11) NOT NULL,
-  PRIMARY KEY (`tID`),
-  KEY `has` (`in_group`),
-  KEY `created` (`created`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs AUTO_INCREMENT=6 ;
+  `id` int(11) NOT NULL,
+  `group_id_id` int(11) NOT NULL,
+  `created_by_id` int(11) NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `rating` int(11) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  `last_update` datetime NOT NULL,
+  `views` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Sťahujem dáta pre tabuľku `thread`
+--
 
-INSERT INTO `thread` (`tID`, `title`, `description`, `ranking`, `picture`, `in_group`, `created`) VALUES
-(1, 'Situation in Czech Republic', 'The situation is getting better. What do you think was the main reason it started getting better? ', 0, NULL, 1, 1),
-(2, 'Slovakia''s Borders', 'What does it mean for students in Czech republic? ', 0, NULL, 1, 2),
-(3, 'Who do you think will win?', 'I''m not exactly fan of Trump, so I hope for Biden. ', 0, NULL, 2, 3),
-(4, 'Poland protests', 'Im supporting protests in Poland. I don''t think that another people should decide what I would do with my body. ', 0, NULL, 4, 1),
-(5, 'Tenet', 'I just saw Tenet yesterday. So if you saw it, I want to know what did you think about it. ', 0, NULL, 5, 3);
+INSERT INTO `thread` (`id`, `group_id_id`, `created_by_id`, `title`, `description`, `rating`, `creation_date`, `last_update`, `views`) VALUES
+(1, 1, 2, 'Thread1', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem.', 1, '2020-12-01 13:32:27', '2020-12-01 13:32:50', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Štruktúra tabuľky pre tabuľku `thread_user`
+--
+
+DROP TABLE IF EXISTS `thread_user`;
+CREATE TABLE `thread_user` (
+  `id` int(11) NOT NULL,
+  `threads_id` int(11) NOT NULL,
+  `users_id` int(11) NOT NULL,
+  `group_list_id` int(11) NOT NULL,
+  `liked` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Sťahujem dáta pre tabuľku `thread_user`
+--
+
+INSERT INTO `thread_user` (`id`, `threads_id`, `users_id`, `group_list_id`, `liked`) VALUES
+(1, 1, 2, 1, 'like');
 
 -- --------------------------------------------------------
 
@@ -188,82 +167,214 @@ INSERT INTO `thread` (`tID`, `title`, `description`, `ranking`, `picture`, `in_g
 -- Štruktúra tabuľky pre tabuľku `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `uID` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_slovak_ci NOT NULL,
-  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `first_name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `last_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `sex` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
-  `date_of_birth` date NOT NULL,
-  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `visibility` tinyint(1) NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
-  `profile_picture` blob,
-  PRIMARY KEY (`uID`),
-  UNIQUE KEY `username` (`username`,`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin2 COLLATE=latin2_czech_cs AUTO_INCREMENT=4 ;
-
-
-INSERT INTO `user` (`uID`, `username`, `password`, `first_name`, `last_name`, `sex`, `date_of_birth`, `email`, `visibility`, `description`, `profile_picture`) VALUES
-(1, 'kate', 'heslo123', 'Kate', 'White', 'female', '1998-05-15', 'kate_white@email.com', 1, 'I like marvel movies and books', NULL),
-(2, 'adam', 'Heslo123', 'Adam', 'Smith', 'male', '1996-01-01', 'smith@email.com', 0, 'I like programming.', NULL),
-(3, 'michael', 'Heslo456', 'Michael', 'Black', 'male', '2000-03-02', 'michael.black@email.com', 1, NULL, NULL);
-
+  `id` int(11) NOT NULL,
+  `email` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `roles` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:json)',
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `first_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `birth_date` date DEFAULT NULL,
+  `profile_picture` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sex` varchar(6) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `visibility` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Obmedzenie pre tabuľku `ban`
+-- Sťahujem dáta pre tabuľku `user`
 --
-ALTER TABLE `ban`
-  ADD CONSTRAINT `ban_ibfk_1` FOREIGN KEY (`groupID`) REFERENCES `group` (`gID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `ban_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `user` (`uID`) ON UPDATE CASCADE;
+
+INSERT INTO `user` (`id`, `email`, `roles`, `password`, `first_name`, `last_name`, `birth_date`, `profile_picture`, `description`, `sex`, `visibility`) VALUES
+(1, 'admin@admin.com', '[\"ROLE_ADMIN\"]', '$argon2i$v=19$m=65536,t=4,p=1$WGpUWndvOUNPYy5ieFN2TQ$R+NqAwsrLgaG4NTwcjZznp+5s+xMtJq8BsiOib4mwQI', 'Admin', 'Admin', NULL, 'blank.png', NULL, NULL, 'noone'),
+(2, 'user@email.com', '[]', '$argon2i$v=19$m=65536,t=4,p=1$emNHN2lSNzdPTi92LkNoWA$z/TrowhxoDvanxvfWaENHm9dnE8s1R1L8Mn2L1ECyI8', 'Joe', 'Smith', '1999-04-19', 'blank.png', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius.', 'male', 'registered');
+
+-- --------------------------------------------------------
+
+--
+-- Štruktúra tabuľky pre tabuľku `user_user`
+--
+
+DROP TABLE IF EXISTS `user_user`;
+CREATE TABLE `user_user` (
+  `user_source` int(11) NOT NULL,
+  `user_target` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Kľúče pre exportované tabuľky
+--
+
+--
+-- Indexy pre tabuľku `group`
+--
+ALTER TABLE `group`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_6DC044C56352511C` (`admin_user_id`);
+
+--
+-- Indexy pre tabuľku `group_user`
+--
+ALTER TABLE `group_user`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_A4C98D39FE54D947` (`group_id`),
+  ADD KEY `IDX_A4C98D39A76ED395` (`user_id`);
+
+--
+-- Indexy pre tabuľku `post`
+--
+ALTER TABLE `post`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_5A8A6C8D4B89032C` (`post_id`),
+  ADD KEY `IDX_5A8A6C8DE2904019` (`thread_id`),
+  ADD KEY `IDX_5A8A6C8DB03A8386` (`created_by_id`);
+
+--
+-- Indexy pre tabuľku `post_user`
+--
+ALTER TABLE `post_user`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_44C6B14283F885A5` (`threads_id`),
+  ADD KEY `IDX_44C6B142BBAE4287` (`group_list_id`),
+  ADD KEY `IDX_44C6B142D5E258C5` (`posts_id`),
+  ADD KEY `IDX_44C6B14267B3B43D` (`users_id`);
+
+--
+-- Indexy pre tabuľku `thread`
+--
+ALTER TABLE `thread`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_31204C832F68B530` (`group_id_id`),
+  ADD KEY `IDX_31204C83B03A8386` (`created_by_id`);
+
+--
+-- Indexy pre tabuľku `thread_user`
+--
+ALTER TABLE `thread_user`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_922CAC783F885A5` (`threads_id`),
+  ADD KEY `IDX_922CAC767B3B43D` (`users_id`),
+  ADD KEY `IDX_922CAC7BBAE4287` (`group_list_id`);
+
+--
+-- Indexy pre tabuľku `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UNIQ_8D93D649E7927C74` (`email`);
+
+--
+-- Indexy pre tabuľku `user_user`
+--
+ALTER TABLE `user_user`
+  ADD PRIMARY KEY (`user_source`,`user_target`),
+  ADD KEY `IDX_F7129A803AD8644E` (`user_source`),
+  ADD KEY `IDX_F7129A80233D34C1` (`user_target`);
+
+--
+-- AUTO_INCREMENT pre exportované tabuľky
+--
+
+--
+-- AUTO_INCREMENT pre tabuľku `group`
+--
+ALTER TABLE `group`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pre tabuľku `group_user`
+--
+ALTER TABLE `group_user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pre tabuľku `post`
+--
+ALTER TABLE `post`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pre tabuľku `post_user`
+--
+ALTER TABLE `post_user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pre tabuľku `thread`
+--
+ALTER TABLE `thread`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pre tabuľku `thread_user`
+--
+ALTER TABLE `thread_user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pre tabuľku `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Obmedzenie pre exportované tabuľky
+--
 
 --
 -- Obmedzenie pre tabuľku `group`
 --
 ALTER TABLE `group`
-  ADD CONSTRAINT `group_ibfk_1` FOREIGN KEY (`administrate`) REFERENCES `user` (`uID`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_6DC044C56352511C` FOREIGN KEY (`admin_user_id`) REFERENCES `user` (`id`);
 
 --
--- Obmedzenie pre tabuľku `member`
+-- Obmedzenie pre tabuľku `group_user`
 --
-ALTER TABLE `member`
-  ADD CONSTRAINT `member_ibfk_1` FOREIGN KEY (`groupID`) REFERENCES `group` (`gID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `member_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `user` (`uID`) ON UPDATE CASCADE;
-
---
--- Obmedzenie pre tabuľku `moderator`
---
-ALTER TABLE `moderator`
-  ADD CONSTRAINT `moderator_ibfk_1` FOREIGN KEY (`groupID`) REFERENCES `group` (`gID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `moderator_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `user` (`uID`) ON UPDATE CASCADE;
+ALTER TABLE `group_user`
+  ADD CONSTRAINT `FK_A4C98D39A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `FK_A4C98D39FE54D947` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`);
 
 --
 -- Obmedzenie pre tabuľku `post`
 --
 ALTER TABLE `post`
-  ADD CONSTRAINT `post_ibfk_1` FOREIGN KEY (`wrote`) REFERENCES `user` (`uID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `post_ibfk_2` FOREIGN KEY (`is_answer`) REFERENCES `post` (`pID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `post_ibfk_4` FOREIGN KEY (`in_thread`) REFERENCES `thread` (`tID`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_5A8A6C8D4B89032C` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`),
+  ADD CONSTRAINT `FK_5A8A6C8DB03A8386` FOREIGN KEY (`created_by_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `FK_5A8A6C8DE2904019` FOREIGN KEY (`thread_id`) REFERENCES `thread` (`id`);
 
 --
--- Obmedzenie pre tabuľku `registration`
+-- Obmedzenie pre tabuľku `post_user`
 --
-ALTER TABLE `registration`
-  ADD CONSTRAINT `registration_ibfk_1` FOREIGN KEY (`groupID`) REFERENCES `group` (`gID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `registration_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `user` (`uID`) ON UPDATE CASCADE;
-
---
--- Obmedzenie pre tabuľku `subscribe`
---
-ALTER TABLE `subscribe`
-  ADD CONSTRAINT `subscribe_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`uID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `subscribe_ibfk_2` FOREIGN KEY (`subscribeID`) REFERENCES `user` (`uID`) ON UPDATE CASCADE;
+ALTER TABLE `post_user`
+  ADD CONSTRAINT `FK_44C6B14267B3B43D` FOREIGN KEY (`users_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `FK_44C6B14283F885A5` FOREIGN KEY (`threads_id`) REFERENCES `thread` (`id`),
+  ADD CONSTRAINT `FK_44C6B142BBAE4287` FOREIGN KEY (`group_list_id`) REFERENCES `group` (`id`),
+  ADD CONSTRAINT `FK_44C6B142D5E258C5` FOREIGN KEY (`posts_id`) REFERENCES `post` (`id`);
 
 --
 -- Obmedzenie pre tabuľku `thread`
 --
 ALTER TABLE `thread`
-  ADD CONSTRAINT `thread_ibfk_1` FOREIGN KEY (`in_group`) REFERENCES `group` (`gID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `thread_ibfk_2` FOREIGN KEY (`created`) REFERENCES `user` (`uID`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_31204C832F68B530` FOREIGN KEY (`group_id_id`) REFERENCES `group` (`id`),
+  ADD CONSTRAINT `FK_31204C83B03A8386` FOREIGN KEY (`created_by_id`) REFERENCES `user` (`id`);
 
+--
+-- Obmedzenie pre tabuľku `thread_user`
+--
+ALTER TABLE `thread_user`
+  ADD CONSTRAINT `FK_922CAC767B3B43D` FOREIGN KEY (`users_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `FK_922CAC783F885A5` FOREIGN KEY (`threads_id`) REFERENCES `thread` (`id`),
+  ADD CONSTRAINT `FK_922CAC7BBAE4287` FOREIGN KEY (`group_list_id`) REFERENCES `group` (`id`);
+
+--
+-- Obmedzenie pre tabuľku `user_user`
+--
+ALTER TABLE `user_user`
+  ADD CONSTRAINT `FK_F7129A80233D34C1` FOREIGN KEY (`user_target`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_F7129A803AD8644E` FOREIGN KEY (`user_source`) REFERENCES `user` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
