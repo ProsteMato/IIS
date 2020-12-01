@@ -32,7 +32,32 @@ use function Sodium\add;
  */
 class UserController extends AbstractController
 {
+    /**
+     * @Route("/user/delete", name="delete_user")
+     *
+     * Function handles deleting logged-in users profile
+     *
+     * @param UserInterface $user
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return RedirectResponse
+     */
+    public function delete_user(Request $request, EntityManagerInterface $entityManager, UserInterface $user = null){
 
+        //dump($user);
+
+        //$this->delete_user_posts($user, $entityManager);
+
+        $this->get('security.token_storage')->setToken(null); // odhlasenie uzivatela
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        $response = new Response();
+        $response->send();
+
+        return $this->redirect('/');
+    }
     /**
      * @Route("/user/{id}", name="user")
      *
@@ -139,32 +164,7 @@ class UserController extends AbstractController
         ));
     }
 
-    /**
-     * @Route("/user/delete", name="delete_user")
-     *
-     * Function handles deleting logged-in users profile
-     *
-     * @param UserInterface $user
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @return RedirectResponse
-     */
-    public function delete_user(Request $request, EntityManagerInterface $entityManager, UserInterface $user = null){
 
-        //dump($user);
-
-        //$this->delete_user_posts($user, $entityManager);
-
-        $this->get('security.token_storage')->setToken(null); // odhlasenie uzivatela
-
-        $entityManager->remove($user);
-        $entityManager->flush();
-
-        $response = new Response();
-        $response->send();
-
-        return $this->redirect('/');
-    }
 
     public function delete_user_posts(User $user, EntityManager $entityManager){
         $posts = $user->getPosts();
