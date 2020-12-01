@@ -19,7 +19,7 @@
         <div class="tab-pane fade active show" id="users">
 
             {% if users %}
-                <label class="mt-2"> Search results for: {{ search_val }}</label>
+                <label style="word-break: break-word" class="mt-2"> Search results for: {{ search_val }}</label>
                 {% for user in users %}
                     <a href="{{ path('user', {'id': user.id }) }}" class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="row">
@@ -29,11 +29,11 @@
                             </div>
                             <div class="col-11">
                                 <div class="d-flex w-100 justify-content-between">
-                                    <h4 class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
+                                    <h4 style="word-break: break-word" class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
 
                                 </div>
                                 <div class="d-flex w-100 justify-content-between">
-                                    <p class="mb-1">{{ user.description }}</p>
+                                    <p style="word-break: break-word" class="mb-1">{{ user.description }}</p>
 
                                 </div>
                                 {% if not ('ROLE_ADMIN' in user.getRoles) and is_granted('ROLE_ADMIN')%}
@@ -47,13 +47,13 @@
                     </a>
                 {% endfor %}
             {% else %}
-                <h5> No results for: {{ search_val }}</h5>
+                <h5 style="word-break: break-word"> No results for: {{ search_val }}</h5>
             {% endif %}
         </div>
 
         <div class="tab-pane fade" id="groups">
             {% if groups %}
-                <label class="mt-2"> Search results for: {{ search_val }}</label>
+                <label style="word-break: break-word" class="mt-2"> Search results for: {{ search_val }}</label>
                 {% for group in groups %}
                     <a href="{{ path('show_group', {'group_id': group.id }) }}" class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="row">
@@ -63,11 +63,11 @@
                             </div>
                             <div class="col-11">
                                 <div class="d-flex w-100 justify-content-between">
-                                    <h4 class="mb-1">{{ group.name}}</h4>
+                                    <h4 style="word-break: break-word" class="mb-1">{{ group.name}}</h4>
 
                                 </div>
                                 <div class="d-flex w-100 justify-content-between">
-                                    <p class="mb-1">{{ group.description }}</p>
+                                    <p style="word-break: break-word" class="mb-1">{{ group.description }}</p>
 
                                 </div>
                                 {% if is_granted('ROLE_ADMIN') %}
@@ -81,7 +81,7 @@
                     </a>
                 {% endfor %}
             {% else %}
-                <h5> No results for: {{ search_val }}</h5>
+                <h5 style="word-break: break-word"> No results for: {{ search_val }}</h5>
             {% endif %}
         </div>
     </div>

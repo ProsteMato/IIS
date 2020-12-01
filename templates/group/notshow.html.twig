@@ -10,7 +10,7 @@
     <div class="row justify-content-center">
         <div class="d-flex">
             <div class="jumbotron">
-                <h1 class="h3 mb-3 font-weight-normal text-center">You have to be member of <b>{{ group.name }}</b> to view it's content.</h1>
+                <h1 style="word-break: break-word" class="h3 mb-3 font-weight-normal text-center">You have to be member of <b>{{ group.name }}</b> to view it's content.</h1>
                 {% if is_granted('ROLE_USER') %}
                     {% if group.open == true %}
                         <div class="row justify-content-center">

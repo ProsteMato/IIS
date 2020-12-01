@@ -17,11 +17,11 @@
                 </div>
                 <div class="col-11">
                     <div class="d-flex w-100 justify-content-between">
-                        <h4 class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
+                        <h4 style="word-break: break-word" class="mb-1">{{ user.firstName ~ ' ' ~ user.lastName}}</h4>
 
                     </div>
                     <div class="d-flex w-100 justify-content-between">
-                        <p class="mb-1">{{ user.description }}</p>
+                        <p style="word-break: break-word" class="mb-1">{{ user.description }}</p>
 
                     </div>
                     {% if not ('ROLE_ADMIN' in user.getRoles) %}
