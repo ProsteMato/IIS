@@ -346,8 +346,6 @@ class GroupController extends AbstractController
                 $filename = md5(uniqid()) . '.' . $file->guessClientExtension();
                 $file->move($this->getParameter('group_pics_dir'), $filename);
                 $group->setPicture($filename);
-            } else {
-                $group->setPicture("blank_group.png");
             }
             $em->persist($group);
             $em->flush();
