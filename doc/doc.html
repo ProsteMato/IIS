@@ -122,9 +122,10 @@ Pospis inštalácie na local host (návod bol robený pre užívateľov Ubuntu):
 		<li>
 			Vytvorým si databázu pomocou príkazu <b>php bin/console doctrine:database:create</b>
 		</li>
+		<li>
 			Ak chcete naplniť databázu pomocou testovacích dát použite príkaz <b>mysql -uUSER_NAME DATABASE_NAME -pPASSWORD < database/create_database.sql</b>
 			za USER_NAME, DATABASE_NAME a PASSWORD si dajte vlastné údaje z .env súboru z položky DATABASE_URL
-		<li>
+		</li>
 		<li>
 			Databázu ak chcete viete vymazať pomocou <b>php bin/console doctrine:schema:drop --force</b>
 			(Ak chcete pridávať zase testovacie dáta pomocou príkazu čo bol zmienený vyššie je lepšie použiť najskôr tento príkaz inak to nebude fungovať kvôli právam)
