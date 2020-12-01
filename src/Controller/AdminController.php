@@ -79,7 +79,7 @@ class AdminController extends AbstractController
                                 UserInterface $loggedUser = null){
 
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
-        $this->delete_user_actions($user, $entityManager);
+        $this->delete_user_actions();
 
         $entityManager->remove($user);
         $entityManager->flush();
@@ -87,7 +87,9 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('show_list_users');
     }
 
-    public function delete_user_actions(User $user, EntityManager $entityManager){
+    public function delete_user_actions(){
+        $user = $this->getUser();
+        $entityManager = $this->getDoctrine()->getManager();
         $groups = $user->getGroups();
 
         foreach ($groups as $group){
