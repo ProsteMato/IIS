@@ -63,7 +63,7 @@ class GroupVoter extends Voter
             return false;
         }
         // if the subject isn't one we support, return false
-        if ($subject[0] instanceof Group and $subject[1] instanceof User) {
+        if ($subject[0] instanceof Group) {
             return true;
         }
 
@@ -173,11 +173,10 @@ class GroupVoter extends Voter
      * @param User $user target user
      * @return bool true if granted, false otherwise
      */
-    private function canView(Group $group, User $user) {
-        if ($group->getVisibility()){
+    private function canView(Group $group, User $user = null) {
+        if ($user == null){
             return $group->getVisibility();
-        } else {
-            return $group->isMember($user);
         }
+        return $group->getVisibility() or $group->isMember($user);
     }
 }
