@@ -32,6 +32,20 @@ use function Sodium\add;
  */
 class UserController extends AbstractController
 {
+
+    /**
+     * User doesnt exist controller
+     *
+     * @Route("/no_user", name = "not_exist_user")
+     * @param UserInterface|null $loggedUser
+     * @return Response view access denied
+     */
+    public function no_user(UserInterface $loggedUser = null){
+        return $this->render('common/user_doestn_exist.html.twig', [
+            'loggedUser' => $loggedUser
+        ]);
+    }
+
     /**
      * @Route("/user/delete", name="delete_user")
      *
@@ -73,8 +87,14 @@ class UserController extends AbstractController
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
-        $groups = $user->getGroups();
-        $posts = $user->getPosts();
+        if ($user){
+            $groups = $user->getGroups();
+            $posts = $user->getPosts();
+        }
+        else {
+            return $this->redirectToRoute('not_exist_user');
+        }
+
 
         $commonGroup = false;
         if ($loggedUser) {

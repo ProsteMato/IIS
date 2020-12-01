@@ -153,6 +153,7 @@ class MainController extends AbstractController
         ]);
     }
 
+
     /**
      * Checks whether the timestamp is within last day - 24hours
      *
