@@ -73,7 +73,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function getNumOpen(int $num)
     {
         return $this->createQueryBuilder('u')
-            ->andWhere('u.visibility = 1')
+            ->andWhere('u.visibility = :val')
+            ->setParameter('val', 'everyone')
             ->orderBy('u.id', 'DESC')
             ->setMaxResults($num)
             ->getQuery()
