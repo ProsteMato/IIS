@@ -174,6 +174,10 @@ class GroupVoter extends Voter
      * @return bool true if granted, false otherwise
      */
     private function canView(Group $group, User $user) {
-        return $group->getVisibility() or $group->isMember($user);
+        if ($group->getVisibility()){
+            return $group->getVisibility();
+        } else {
+            return $group->isMember($user);
+        }
     }
 }
