@@ -40,10 +40,6 @@ class Post
      */
     private $post;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="post", orphanRemoval=true)
-     */
-    private $replays;
 
     /**
      * @ORM\ManyToOne(targetEntity=Thread::class, inversedBy="posts")
@@ -127,35 +123,6 @@ class Post
         return $this;
     }
 
-    /**
-     * @return Collection|self[]
-     */
-    public function getReplays(): Collection
-    {
-        return $this->replays;
-    }
-
-    public function addReplay(self $replay): self
-    {
-        if (!$this->replays->contains($replay)) {
-            $this->replays[] = $replay;
-            $replay->setPost($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReplay(self $replay): self
-    {
-        if ($this->replays->removeElement($replay)) {
-            // set the owning side to null (unless already changed)
-            if ($replay->getPost() === $this) {
-                $replay->setPost(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getThread(): ?Thread
     {
