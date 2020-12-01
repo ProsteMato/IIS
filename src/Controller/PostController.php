@@ -66,7 +66,6 @@ class PostController extends AbstractController
             $post->setCreatedBy($user);
             $post->setRating(0);
             $post->setThread($thread);
-            $post->setPost(null);
 
             $em->persist($post);
             $em->flush();
@@ -90,8 +89,10 @@ class PostController extends AbstractController
     public function edit($group_id, $thread_id, $post_id, Request $request) {
         $em = $this->getDoctrine()->getManager();
         $post = $this->getDoctrine()->getRepository(Post::class)->find($post_id);
-        $this->denyAccessUnlessGranted("OWNER", $post);
-        $this->denyAccessUnlessGranted("GROUP_MOD", [$post->getThread()->getGroupId(), $this->getUser()]);
+
+        if (!$this->isGranted("OWNER", $post) and !$this->isGranted("GROUP_MOD", [$post->getThread()->getGroupId(), $this->getUser()])) {
+            throw $this->createAccessDeniedException('not allowed');
+        }
 
         $form = $this->createFormBuilder($post)
             ->setAction($this->generateUrl('edit_post', [
@@ -152,8 +153,9 @@ class PostController extends AbstractController
         /** @var Post $post */
         $post = $postRepository->find($post_id);
 
-        $this->denyAccessUnlessGranted("OWNER", $post);
-        $this->denyAccessUnlessGranted("GROUP_MOD", [$post->getThread()->getGroupId(), $this->getUser()]);
+        if (!$this->isGranted("OWNER", $post) and !$this->isGranted("GROUP_MOD", [$post->getThread()->getGroupId(), $this->getUser()])) {
+            throw $this->createAccessDeniedException('not allowed');
+        }
 
         $post_likes = $post->getPostUsers();
         $post->getThread()->setLastUpdate(new \DateTime('now'));

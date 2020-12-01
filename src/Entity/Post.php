@@ -34,12 +34,6 @@ class Post
      */
     private $creation_date;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="replays")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $post;
-
 
     /**
      * @ORM\ManyToOne(targetEntity=Thread::class, inversedBy="posts")
@@ -110,19 +104,6 @@ class Post
 
         return $this;
     }
-
-    public function getPost(): ?self
-    {
-        return $this->post;
-    }
-
-    public function setPost(?self $post): self
-    {
-        $this->post = $post;
-
-        return $this;
-    }
-
 
     public function getThread(): ?Thread
     {

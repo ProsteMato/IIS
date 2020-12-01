@@ -55,8 +55,9 @@ class ThreadController extends AbstractController
         /** @var Thread $thread */
         $thread = $threadRepository->find($thread_id);
 
-        $this->denyAccessUnlessGranted("OWNER", $thread);
-        $this->denyAccessUnlessGranted("GROUP_MOD", [$thread->getGroupId(), $this->getUser()]);
+        if (!$this->isGranted("OWNER", $thread) and !$this->isGranted("GROUP_MOD", [$thread->getGroupId(), $this->getUser()])) {
+            throw $this->createAccessDeniedException('not allowed');
+        }
 
         $posts = $thread->getPosts();
         $likes_thread = $thread->getThreadUsers();
@@ -89,8 +90,10 @@ class ThreadController extends AbstractController
     public function edit($group_id, $thread_id, Request $request) {
         $em = $this->getDoctrine()->getManager();
         $thread = $this->getDoctrine()->getRepository(Thread::class)->find($thread_id);
-        $this->denyAccessUnlessGranted("OWNER", $thread);
-        $this->denyAccessUnlessGranted("GROUP_MOD", [$thread->getGroupId(), $this->getUser()]);
+
+        if (!$this->isGranted("OWNER", $thread) and !$this->isGranted("GROUP_MOD", [$thread->getGroupId(), $this->getUser()])) {
+            throw $this->createAccessDeniedException('not allowed');
+        }
 
         $form = $this->createFormBuilder($thread)
             ->setAction($this->generateUrl('group.thread.edit', [
