@@ -49,8 +49,8 @@
                     <div class="container mb-3 rounded border border-light">
                         <div class="row mt-1 border-bottom border-light">
                             <div class="col-8">
-                                <a class="text-primary" href="{{ path('show_group', {group_id: thread.getGroupId().getId()}) }}">{{ thread.getGroupId().getName() }}</a>
-                                <a class="text-info" style="text-decoration: none " href="{{ path('group.thread.show', {group_id: thread.getGroupId().getId() ,thread_id: thread.getId()}) }}"><h5><b>{{ thread.getTitle }}</b></h5></a>
+                                <a class="text-primary" style="word-break: break-word" href="{{ path('show_group', {group_id: thread.getGroupId().getId()}) }}">{{ thread.getGroupId().getName() }}</a>
+                                <a class="text-info" style="word-break: break-word"style="text-decoration: none " href="{{ path('group.thread.show', {group_id: thread.getGroupId().getId() ,thread_id: thread.getId()}) }}"><h5><b>{{ thread.getTitle }}</b></h5></a>
                             </div>
                             <div class="col">
                                 <p class="text-right" style="font-size: 14px">
@@ -63,7 +63,7 @@
                         </div>
                         <div class="row">
                             <div class="col mt-1">
-                                <p class="text-muted">
+                                <p style="word-break: break-word" class="text-muted">
                                     {{ thread.getDescription() }}
                                 </p>
                             </div>
