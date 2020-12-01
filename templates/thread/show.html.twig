@@ -55,7 +55,7 @@
                             </div>
                         </div>
                     </div>
-                    {% if is_granted('OWNER', thread) %}
+                    {% if is_granted('OWNER', thread) or is_granted("GROUP_MOD", [thread.groupId, loggedUser]) %}
                     <div class="row ml-1">
                         <div class="col">
                             <a href="{{ path('group.thread.delete', {'group_id': thread.groupId.getId, 'thread_id': thread.id}) }}" type="button" class="btn btn-danger float-right m-2">Delete</a>
@@ -98,7 +98,7 @@
                                     {% if is_granted('ROLE_USER') %}
                                         {{ render(controller('App\\Controller\\PostController::userLike', {'thread_id': thread.getId, 'group_id': thread.groupId.getId, 'post_id': post.id})) }}
                                     {% endif %}
-                                    {% if is_granted("OWNER", post) %}
+                                    {% if is_granted("OWNER", post) or is_granted("GROUP_MOD", [thread.groupId, loggedUser]) %}
                                     <button data-id="{{ post.id }}" class="btn btn-danger mb-1 ml-1 delete-post float-right">Delete</button>
                                     <button data-id="{{ post.id }}" class="btn btn-info mb-1 mr-1 edit-post float-right">Edit</button>
                                     {% endif %}

@@ -56,6 +56,7 @@ class ThreadController extends AbstractController
         $thread = $threadRepository->find($thread_id);
 
         $this->denyAccessUnlessGranted("OWNER", $thread);
+        $this->denyAccessUnlessGranted("GROUP_MOD", [$thread->getGroupId(), $this->getUser()]);
 
         $posts = $thread->getPosts();
         $likes_thread = $thread->getThreadUsers();
@@ -89,6 +90,7 @@ class ThreadController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $thread = $this->getDoctrine()->getRepository(Thread::class)->find($thread_id);
         $this->denyAccessUnlessGranted("OWNER", $thread);
+        $this->denyAccessUnlessGranted("GROUP_MOD", [$thread->getGroupId(), $this->getUser()]);
 
         $form = $this->createFormBuilder($thread)
             ->setAction($this->generateUrl('group.thread.edit', [
