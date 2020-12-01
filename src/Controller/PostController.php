@@ -31,7 +31,8 @@ class PostController extends AbstractController
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
         $threadRepository = $em->getRepository(Thread::class);
-        $group = $em->getRepository(Group::class)->find($group_id);
+        $thread = $threadRepository->find($thread_id);
+        $group = $thread->getGroupId();
 
         $this->denyAccessUnlessGranted("GROUP_MEMBER", [$group, $this->getUser()]);
 
@@ -55,8 +56,6 @@ class PostController extends AbstractController
                 ),
             ])
             ->getForm();
-
-        $thread = $threadRepository->find($thread_id);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -92,6 +91,7 @@ class PostController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $post = $this->getDoctrine()->getRepository(Post::class)->find($post_id);
         $this->denyAccessUnlessGranted("OWNER", $post);
+        $this->denyAccessUnlessGranted("GROUP_MOD", [$post->getThread()->getGroupId(), $this->getUser()]);
 
         $form = $this->createFormBuilder($post)
             ->setAction($this->generateUrl('edit_post', [
@@ -153,6 +153,7 @@ class PostController extends AbstractController
         $post = $postRepository->find($post_id);
 
         $this->denyAccessUnlessGranted("OWNER", $post);
+        $this->denyAccessUnlessGranted("GROUP_MOD", [$post->getThread()->getGroupId(), $this->getUser()]);
 
         $post_likes = $post->getPostUsers();
         $post->getThread()->setLastUpdate(new \DateTime('now'));
