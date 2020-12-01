@@ -51,7 +51,7 @@
 <h3>Backend</h3>
 Ako implementaèný jazyk sme si zvolili php, a to konkrétne framework Symfony.
 
-<h4>Controller:</h4>
+<h4>Controllery:</h4>
 <b>AdminController.php</b> popisuje funkcionalitu pre administrátora. Administrátor mô¾e vymaza» u¾ívateµa, a takisto
 si vie zobrazi» list v¹etkých registrovaných u¾ívateµov a skupín. Takisto vie vymaza» skupinu. <br><br>
 <b>GroupController.php</b> popisuje základnú funkcionalitu okolo skupín. U¾ívateµ si mô¾e skupinu zobrazi», prípadne
@@ -74,14 +74,11 @@ vymazané (ako u¾ bolo vy¹¹ie spomenuté). Takisto implementuje zmenu rankingu u v
 odstránenie u¾ívateµského profilu.
 <br><br>
 
-<h4>View:</h4>
-Je implementovaný pomocou <b>html.twig</b> súborov v prieèinku <b>templates</b>. Twig má obrovskú výhodu najmä v tom, ako
-kombinuje php kód vrámci svojej ¹ablóny. Vïaka tomu je kód veµmi prehµadný. <br><br>
-
 <h3>Fronted</h3>
-Stránky boli vytvárané pomocou jednotlivých .html.twig súborov, ktoré sa nachádzajú v prieèinku templates. Jednotlivé súbory
-reprezentujú v¾dy nejakú stránku, ktorá sa zobrazuje u¾ívateµovi. Jednotlivé stránky sú ulo¾ené vo viacerých prieèinkov, najmä
-kvôli prehµadnosti - ka¾dý jeden súbor má ale spoloèný základ v súbore base.html.twig. Vrámci projektu sme sa rozhodli
+Stránky boli vytvárané pomocou jednotlivých .html.twig súborov v prieèinku <b>templates</b>. Jednotlivé súbory
+reprezentujú v¾dy nejakú stránku, ktorá sa zobrazuje u¾ívateµovi (boli vyrenderované vrámci funkcie v controlleri).
+Jednotlivé stránky sú ulo¾ené vo viacerých prieèinkov, najmä kvôli prehµadnosti - ka¾dý jeden súbor má ale spoloèný
+základ v súbore base.html.twig. Vrámci projektu sme sa rozhodli
 zakombinova» do view aj voµne dostupnú bootstrap ¹ablónu Darkly.
 
 <h3>Databáza</h3>
@@ -98,8 +95,8 @@ Struènì popi¹te:
 </ul>
 
 <h2>Známé problémy</h2>
-<p>Zde popi¹te, které body zadání nejsou implementovány a z jakého dùvodu. Napø. &#8222;Z èasových dùvodù nebyla implementována správa u¾ivatelù.&#8221; Pomù¾ete tím zrychlit hodnocení, kdy¾ neimplementované funkce nebudeme muset dlouze hledat.</p>
-
-
+<p>Zde popi¹te, které body zadání nejsou implementovány a z jakého dùvodu. Napø. &#8222;
+	Z èasových dùvodù nebyla implementována správa u¾ivatelù.&#8221; Pomù¾ete tím zrychlit hodnocení, kdy¾
+	neimplementované funkce nebudeme muset dlouze hledat.</p>
 
 </body></html>
