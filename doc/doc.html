@@ -40,11 +40,22 @@
 <table>
 <tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
 <tr><td>admin@admin.com</td><td>test00</td><td>Administrátor</td></tr>
-<tr><td>reg@email.com</td><td>test00</td><td>Registrovaný u¾ívateµ</td></tr>
-<tr><td>owner@email.com</td><td>test00</td><td>Vlastnik skupiny</td></tr>
-<tr><td>mod@email.com</td><td>test00</td><td>Mod skupiny</td></tr>
-<tr><td>member@email.com</td><td>test00</td><td>Èlen skupiny</td></tr>
+<tr><td>user@email.com</td><td>test00</td><td>Registrovaný u¾ívateµ</td></tr>
+
 </tbody></table>
+
+<h2>Testovanie rolí u¾ívateµa vrámci skupín</h2>
+<table>
+    <tbody><tr><th>U¾ívateµ</th><th>Skupina</th><th>Rola v skupine</th></tr>
+        <tr><td>user@email.com</td><td>Group1</td><td>vlastník skupiny</td></tr>
+        <tr><td>user@email.com</td><td>Group2</td><td>moderátor skupiny</td></tr>
+        <tr><td>user@email.com</td><td>Group3</td><td>èlen skupiny</td></tr>
+        <tr><td>user@email.com</td><td>Group4</td><td>otvorená skupina</td></tr>
+        <tr><td>user@email.com</td><td>Group5</td><td>neotvorená skupina</td></tr>
+    </tbody>
+</table> <br>
+Otvorená skupina = Ktokoµvek sa mô¾e prida» <br>
+Zatvorená skupina = ®iados» o èlenstvo musí by» schválená vlastníkom/moderátorom<br>
 
 <h2>Implementace</h2>
 
