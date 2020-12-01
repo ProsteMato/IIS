@@ -470,7 +470,7 @@ class GroupController extends AbstractController
     {
         $group = $groupRepository->find($group_id);
 
-        if(!($this->isGranted('GROUP_MEMBER', [$group, $loggedUser]) and !$this->isGranted('GROUP_MOD_APPL', [$group, $loggedUser]))){
+        if(!$this->isGranted('GROUP_MEMBER', [$group, $loggedUser]) or !$this->isGranted('GROUP_MOD_APPL', [$group, $loggedUser])){
             throw $this->createAccessDeniedException('not allowed');
         }
 
@@ -545,9 +545,10 @@ class GroupController extends AbstractController
     {
         $group = $groupRepository->find($group_id);
 
-        if(!($this->isGranted('GROUP_MEMBER', [$group, $loggedUser]) and $this->isGranted('ROLE_MOD_APPL', [$group, $loggedUser]))){
+        if(!$this->isGranted('GROUP_MEMBER', [$group, $loggedUser]) or $this->isGranted('ROLE_MOD_APPL', [$group, $loggedUser])){
             throw $this->createAccessDeniedException('not allowed');
         }
+
 
         $groupUser = $group->getGroupUser();
         foreach ($groupUser as &$gu){
