@@ -56,7 +56,7 @@ class UserController extends AbstractController
         $response = new Response();
         $response->send();
 
-        return $this->redirectToRoute('main_page');
+        return $this->redirect('/');
     }
 
     /**
