@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hostiteľ: 127.0.0.1
--- Čas generovania: Út 01.Dec 2020, 19:38
+-- Čas generovania: Út 01.Dec 2020, 21:58
 -- Verzia serveru: 10.4.14-MariaDB
 -- Verzia PHP: 7.2.34
 
@@ -18,6 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
+-- Databáza: `sn`
 --
 
 -- --------------------------------------------------------
@@ -100,7 +101,7 @@ INSERT INTO `post` (`id`, `thread_id`, `created_by_id`, `text`, `rating`, `creat
 (1, 1, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin sed tincidunt mi, et tempor dui. Curabitur convallis lacus ac fermentum maximus. Sed varius nec tellus nec pretium. Vestibulum at posuere metus. Phasellus bibendum ut nisl eget gravida. Praesent interdum enim nisi, a tempus lacus viverra ac.', 0, '2020-12-01 19:10:47'),
 (2, 2, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin sed tincidunt mi, et tempor dui. Curabitur convallis lacus ac fermentum maximus. Sed varius nec tellus nec pretium. Vestibulum at posuere metus. Phasellus bibendum ut nisl eget gravida. Praesent interdum enim nisi, a tempus lacus viverra ac.', 1, '2020-12-01 19:11:22'),
 (3, 2, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin sed tincidunt mi, et tempor dui. Curabitur convallis lacus ac fermentum maximus. Sed varius nec tellus nec pretium. Vestibulum at posuere metus. Phasellus bibendum ut nisl eget gravida. Praesent interdum enim nisi, a tempus lacus viverra ac.', 0, '2020-12-01 19:14:43'),
-(4, 3, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin sed tincidunt mi, et tempor dui. Curabitur convallis lacus ac fermentum maximus. Sed varius nec tellus nec pretium. Vestibulum at posuere metus. Phasellus bibendum ut nisl eget gravida. Praesent interdum enim nisi, a tempus lacus viverra ac.', 0, '2020-12-01 19:12:20');
+(5, 5, 2, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 0, '2020-12-01 20:00:06');
 
 -- --------------------------------------------------------
 
@@ -151,7 +152,9 @@ CREATE TABLE `thread` (
 INSERT INTO `thread` (`id`, `group_id_id`, `created_by_id`, `title`, `description`, `rating`, `creation_date`, `last_update`, `views`) VALUES
 (1, 1, 2, 'Thread1', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin sed tincidunt mi, et tempor dui. Curabitur convallis lacus ac fermentum maximus. Sed varius nec tellus nec pretium. Vestibulum at posuere metus. Phasellus bibendum ut nisl eget gravida. Praesent interdum enim nisi, a tempus lacus viverra ac.', 1, '2020-12-01 19:07:46', '2020-12-01 19:10:47', 3),
 (2, 2, 3, 'Thread1', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin sed tincidunt mi, et tempor dui. Curabitur convallis lacus ac fermentum maximus. Sed varius nec tellus nec pretium. Vestibulum at posuere metus. Phasellus bibendum ut nisl eget gravida. Praesent interdum enim nisi, a tempus lacus viverra ac.', 1, '2020-12-01 19:11:12', '2020-12-01 19:14:43', 6),
-(3, 2, 2, 'Thread2', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin sed tincidunt mi, et tempor dui. Curabitur convallis lacus ac fermentum maximus. Sed varius nec tellus nec pretium. Vestibulum at posuere metus. Phasellus bibendum ut nisl eget gravida. Praesent interdum enim nisi, a tempus lacus viverra ac.', -1, '2020-12-01 19:12:02', '2020-12-01 19:12:20', 3);
+(3, 2, 2, 'Thread2', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi turpis metus, euismod nec pharetra in, sodales eu lorem. Nulla venenatis leo nulla, vitae eleifend eros pretium non. Sed auctor lorem nec finibus varius. Pellentesque et sollicitudin leo. Curabitur interdum mollis risus, vitae ultrices risus aliquet sed. Nunc ligula nisi, viverra non metus accumsan, mollis dictum sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin sed tincidunt mi, et tempor dui. Curabitur convallis lacus ac fermentum maximus. Sed varius nec tellus nec pretium. Vestibulum at posuere metus. Phasellus bibendum ut nisl eget gravida. Praesent interdum enim nisi, a tempus lacus viverra ac.', -1, '2020-12-01 19:12:02', '2020-12-01 20:19:40', 7),
+(4, 1, 2, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', NULL, 0, '2020-12-01 19:57:38', '2020-12-01 19:57:38', 3),
+(5, 1, 2, 'A', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 0, '2020-12-01 19:57:51', '2020-12-01 20:00:06', 3);
 
 -- --------------------------------------------------------
 
@@ -204,9 +207,9 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `email`, `roles`, `password`, `first_name`, `last_name`, `birth_date`, `profile_picture`, `description`, `sex`, `visibility`) VALUES
 (1, 'admin@email.com', '[\"ROLE_ADMIN\"]', '$argon2i$v=19$m=65536,t=4,p=1$aGpWOWtLNnYuS2w3eHJKbw$Ts60SiwwyI5l9ekGxmLSYpS4GlNdU9pSnyUCogZXgi8', 'Admin', 'A', NULL, 'blank.png', NULL, NULL, 'noone'),
-(2, 'user@email.com', '[]', '$argon2i$v=19$m=65536,t=4,p=1$UVp6ZEt4NHI4NXpYOFJJdw$Z4SElxZ0e3RELJFlPMbPE55fvflguyku9gVqsZXxGc8', 'Joe', 'Black', '2001-05-18', 'ae8bffcaeeaf525e43b6b9901d053cc6.jpeg', NULL, 'male', 'registered'),
+(2, 'user@email.com', '[]', '$argon2i$v=19$m=65536,t=4,p=1$UVp6ZEt4NHI4NXpYOFJJdw$Z4SElxZ0e3RELJFlPMbPE55fvflguyku9gVqsZXxGc8', 'Joe', 'Black', '2001-05-18', 'ae8bffcaeeaf525e43b6b9901d053cc6.jpeg', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'male', 'registered'),
 (3, 'user2@email.com', '[]', '$argon2i$v=19$m=65536,t=4,p=1$SkdxbEh6TVp0Tm1YVmRpcg$JkMx5vRJzkc9hXbTxm9ioxg0r+5EgJd1HjKZYCdi9ks', 'Anna', 'Smith', '1999-06-05', 'blank.png', NULL, 'female', 'members'),
-(4, 'user3@email.com', '[]', '$argon2i$v=19$m=65536,t=4,p=1$RGwwTTRlV1JuNTM3Y3ZRTQ$KTj4TzjM4KpGuEEBBRvCIVIe6xatgOe2RAjwou8Hehg', 'Bea', 'Happy', '1996-04-05', '122d61ad933bd07fd9de2b9b3c983487.jpeg', NULL, 'female', 'everyone');
+(4, 'user3@email.com', '[]', '$argon2i$v=19$m=65536,t=4,p=1$RGwwTTRlV1JuNTM3Y3ZRTQ$KTj4TzjM4KpGuEEBBRvCIVIe6xatgOe2RAjwou8Hehg', 'Bea', 'Happy', '1996-04-05', 'blank.png', NULL, 'female', 'everyone');
 
 -- --------------------------------------------------------
 
@@ -309,7 +312,7 @@ ALTER TABLE `group_user`
 -- AUTO_INCREMENT pre tabuľku `post`
 --
 ALTER TABLE `post`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pre tabuľku `post_user`
@@ -321,7 +324,7 @@ ALTER TABLE `post_user`
 -- AUTO_INCREMENT pre tabuľku `thread`
 --
 ALTER TABLE `thread`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pre tabuľku `thread_user`
