@@ -42,7 +42,7 @@ class PostUser
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="postUsers")
-     * @ORM\JoinColumn(nullable=false)
+     *
      */
     private $users;
 

@@ -115,16 +115,33 @@ class AdminController extends AbstractController
                 //nastavi userove posty autora na null
                 $posts = $user->getPosts();
                 foreach ($posts as $post){
-                    $post->setCreatedBy(NULL);
+                    $user->removePost($post);
                     $entityManager->persist($post);
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+
+                    foreach ($post->getPostUsers() as $post_likes) {
+                        $user->removePostUser($post_likes);
+                        $entityManager->persist($post_likes);
+                        $entityManager->persist($user);
+                        $entityManager->flush();
+                    }
+
                 }
 
                 //nastavi userove thready autora na null
                 $threads = $user->getThreads();
                 foreach ($threads as $thread){
-                    $thread->setCreatedBy(NULL);
+                    $user->removeThread($thread);
                     $entityManager->persist($thread);
-
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                    foreach ($thread->getThreadUsers() as $thread_likes) {
+                        $user->removeThreadUser($thread_likes);
+                        $entityManager->persist($thread_likes);
+                        $entityManager->persist($user);
+                        $entityManager->flush();
+                    }
                 }
                 // leavne groupy kde je clenom
                 foreach ($user->getGroups() as $group_mem){
@@ -144,7 +161,6 @@ class AdminController extends AbstractController
             }
 
         }
-
         $entityManager->flush();
     }
 }

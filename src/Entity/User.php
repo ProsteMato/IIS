@@ -93,7 +93,7 @@ class User implements UserInterface
     private $admin_for_groups;
 
     /**
-     * @ORM\OneToMany(targetEntity=Thread::class, mappedBy="created_by", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Thread::class, mappedBy="created_by")
      */
     private $threads;
 
@@ -119,17 +119,17 @@ class User implements UserInterface
     }
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="created_by", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="created_by")
      */
     private $posts;
 
     /**
-     * @ORM\OneToMany(targetEntity=ThreadUser::class, mappedBy="users", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=ThreadUser::class, mappedBy="users")
      */
     private $threadUsers;
 
     /**
-     * @ORM\OneToMany(targetEntity=PostUser::class, mappedBy="users", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PostUser::class, mappedBy="users")
      */
     private $postUsers;
 
@@ -404,6 +404,14 @@ class User implements UserInterface
     public function getPosts(): Collection
     {
         return $this->posts;
+    }
+
+    public function deletePosts(Post $post) {
+        $this->posts->remove($post);
+    }
+
+    public function deleteThread(Thread $thread) {
+        $this->threads->remove($thread);
     }
 
     public function addPost(Post $post): self

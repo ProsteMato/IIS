@@ -30,7 +30,7 @@ class ThreadUser
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="threadUsers")
-     * @ORM\JoinColumn(nullable=false)
+     *
      */
     private $users;
 

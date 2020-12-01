@@ -89,7 +89,7 @@
                                     {% if post.createdBy() %}
                                     <b><a href="{{ path('user', {id: post.createdBy.id }) }}">{{ post.createdBy.firstName }} {{ post.createdBy.lastName }}</a></b> | <b id="rating{{ post.id }}">Post rating: {{ post.rating }}</b>
                                     {% else %}
-                                        <b>Created by:</b> Deleted User
+                                        <b>Created by:</b> Deleted User | <b id="rating{{ post.id }}">Post rating: {{ post.rating }}</b>
                                     {% endif %}
                                 </div>
                                 <div class="col mt-1">

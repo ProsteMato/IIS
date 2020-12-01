@@ -163,7 +163,7 @@ class UserController extends AbstractController
         $response = new Response();
         $response->send();
 
-        return $this->redirectToRoute('main_page');
+        return $this->redirect('/');
     }
 
     public function delete_user_posts(User $user, EntityManager $entityManager){
