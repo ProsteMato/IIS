@@ -52,10 +52,9 @@
                     <div class="form-group">
                         {%   if group.getPicture() != 'blank_group.png' %}
 
-                            <a href="/delete_photo"  class="txt2">Delete profile photo</a></p>
+                            <a href="{{ path('group_delete_photo', {'group_id': group.getId()}) }}" class="txt2">Delete group photo</a></p>
 
                         {% endif %}
-                        {#<label for="exampleInputFile">Upload/Change profile photo</label>#}
                     </div>
                 </div>
             </div>

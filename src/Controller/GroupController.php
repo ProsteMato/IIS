@@ -121,7 +121,6 @@ class GroupController extends AbstractController
         ]);
     }
 
-
     /**
      * @Route("/group/create", name="create_group")
      *
@@ -187,7 +186,7 @@ class GroupController extends AbstractController
      * @param Group $group
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete_group(Group $group)
+    public function delete_group(Group $group, UserInterface $loggedUser)
     {
         if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])){
             throw $this->createAccessDeniedException('not allowed');
@@ -673,6 +672,30 @@ class GroupController extends AbstractController
                 return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
             }
         }
+        return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
+    }
+
+
+    /**
+     * @Route("/group/show/{group_id}/edit/delete_photo", name="group_delete_photo")
+     *
+     * Deletes group picture
+     *
+     * @param UserInterface $loggedUser
+     * @return Response
+     */
+    public function delete_photo(string $group_id, UserInterface $loggedUser, GroupRepository $groupRepository): Response
+    {
+        $group = $groupRepository->find($group_id);
+        if(!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('GROUP_OWNER', [$group, $loggedUser])){
+            throw $this->createAccessDeniedException('not allowed');
+        }
+
+        $group->setPicture('blank_group.png');
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($group);
+        $em->flush();
+
         return $this->redirectToRoute('edit_group', ['group_id' => $group->getId()]);
     }
 
