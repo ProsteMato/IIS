@@ -66,7 +66,6 @@ class PostController extends AbstractController
             $post->setCreatedBy($user);
             $post->setRating(0);
             $post->setThread($thread);
-            $post->setPost(null);
 
             $em->persist($post);
             $em->flush();
