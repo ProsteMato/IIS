@@ -56,8 +56,9 @@ class UserController extends AbstractController
         $response = new Response();
         $response->send();
 
-        return $this->redirect('/');
+        return $this->redirectToRoute('main_page');
     }
+
     /**
      * @Route("/user/{id}", name="user")
      *
