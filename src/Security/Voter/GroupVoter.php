@@ -151,7 +151,7 @@ class GroupVoter extends Voter
      * @param User $user target user
      * @return bool true if granted, false otherwise
      */
-    private function isAppl(Group $group, User $user) {
+    private function isAppl(Group $group, User $user = null) {
         return $group->userApplied($user);
     }
 
@@ -162,7 +162,7 @@ class GroupVoter extends Voter
      * @param User $user target user
      * @return bool true if granted, false otherwise
      */
-    private function isMAppl(Group $group, User $user) {
+    private function isMAppl(Group $group, User $user = null) {
         return $group->isAppliedMod($user);
     }
 
