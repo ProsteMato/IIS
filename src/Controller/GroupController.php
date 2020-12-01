@@ -50,7 +50,9 @@ class GroupController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $thread = $form->getData();
-            $thread->setCreationDate(new \DateTime('now'));
+            $date = new \DateTime('now');
+            $thread->setCreationDate($date);
+            $thread->setLastUpdate($date);
             $thread->setCreatedBy($user);
             $thread->setRating(0);
             $thread->setViews(0);

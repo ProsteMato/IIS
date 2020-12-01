@@ -44,6 +44,8 @@ edit_buttons.forEach((edit_button) => {
                                 response = JSON.parse(request.response);
                                 edit.innerHTML = "<p style='word-break: break-word'>" + response.message + "</p>";
                                 let last_update = document.getElementById("last_update" + post_id);
+                                let thread_last_update = document.getElementById("thread_last_update");
+                                thread_last_update.innerText = "Last update: " + response.date;
                                 last_update.innerHTML = "Last update: " + response.date;
                                 edit_button.innerHTML = "Edit";
                             }

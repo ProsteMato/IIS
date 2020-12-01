@@ -115,13 +115,13 @@ class ThreadController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Thread $thread */
             $thread = $form->getData();
-            $thread->setCreationDate(new \DateTime('now'));
+            $thread->setLastUpdate(new \DateTime('now'));
             $em->persist($thread);
             $em->flush();
 
             return new JsonResponse(
                 [
-                    'date' => $thread->getDateString(),
+                    'date' => $thread->getLastUpdateString(),
                     'title' => $thread->getTitle(),
                     'description' => $thread->getDescription()
                 ], 200);

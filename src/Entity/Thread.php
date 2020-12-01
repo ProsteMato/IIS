@@ -40,6 +40,11 @@ class Thread
     private $creation_date;
 
     /**
+     * @ORM\Column(type="datetime")
+     */
+    private $last_update;
+
+    /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="thread", orphanRemoval=true)
      */
     private $posts;
@@ -132,6 +137,23 @@ class Thread
     public function setCreationDate(\DateTimeInterface $creation_date): self
     {
         $this->creation_date = $creation_date;
+
+        return $this;
+    }
+
+    public function getLastUpdate(): ?\DateTimeInterface
+    {
+        return $this->last_update;
+    }
+
+    public function getLastUpdateString(): string
+    {
+        return $this->getLastUpdate()->format('d.m.Y H:i:s');
+    }
+
+    public function setLastUpdate(\DateTimeInterface $last_update): self
+    {
+        $this->last_update = $last_update;
 
         return $this;
     }

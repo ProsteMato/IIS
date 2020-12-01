@@ -12,6 +12,8 @@ delete_buttons.forEach((delete_button) => {
             if (this.status >= 200 && this.status < 400) {
                 let response = JSON.parse(this.response);
                 document.getElementById("post"+post_id).remove();
+                let thread_last_update = document.getElementById("thread_last_update");
+                thread_last_update.innerText = "Last update: " + response.date;
                 document.getElementById("thread_post_count").innerHTML = response.postCount + " posts";
             }
         }

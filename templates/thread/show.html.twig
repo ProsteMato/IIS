@@ -1,11 +1,14 @@
 {% extends 'base.html.twig' %}
 
+
+
 {% block title %} {{ thread.getTitle }} {% endblock %}
 {% block body %}
     {{ include('common/navbar.html.twig') }}
 {% endblock %}
 
 {% block body_container %}
+    {% if is_granted("GROUP_VIEW", [thread.groupId, loggedUser]) or is_granted("ROLE_ADMIN") %}
     {% for message in app.flashes ('notice') %}
         <div class="alert alert-warning">
             {{ message }}
@@ -13,6 +16,7 @@
     {% endfor %}
     <div class="row">
         <div class="container">
+            <a href="{{ path('show_group', {'group_id': thread.groupId.getId}) }}" type="button" class="btn btn-info float-right m-2">Back to Group</a>
             <div class="jumbotron">
                 <div class="container mb-3">
                     <div id="thread-info">
@@ -46,7 +50,7 @@
                             </div>
                             <div class="col">
                                 <p class="text-right">
-                                    <b id="thread_last_update">Last update: {{ thread.getDateString() }}</b>
+                                    <b id="thread_last_update">Last update: {{ thread.getLastUpdateString() }}</b>
                                 </p>
                             </div>
                         </div>
@@ -106,7 +110,15 @@
             </div>
         </div>
     </div>
-
+    {% else %}
+        <div class="row">
+            <div class="container">
+                <div class="jumbotron">
+                    <h2>You dont have access to this thread</h2>
+                </div>
+            </div>
+        </div>
+{% endif %}
 {% endblock %}
 
 {% block javascripts %}
@@ -115,3 +127,5 @@
     <script src="/js/edit_post.js"></script>
     <script src="/js/edit_thread.js"></script>
 {% endblock %}
+
+

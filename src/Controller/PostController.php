@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class PostController extends AbstractController
 {
@@ -55,13 +56,17 @@ class PostController extends AbstractController
             ])
             ->getForm();
 
+        $thread = $threadRepository->find($thread_id);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $post = $form->getData();
-            $post->setCreationDate(new \DateTime('now'));
+            $date = new \DateTime('now');
+            $post->setCreationDate($date);
+            $thread->setLastUpdate($date);
             $post->setCreatedBy($user);
             $post->setRating(0);
-            $post->setThread($threadRepository->find($thread_id));
+            $post->setThread($thread);
             $post->setPost(null);
 
             $em->persist($post);
@@ -114,7 +119,9 @@ class PostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Post $post */
             $post = $form->getData();
-            $post->setCreationDate(new \DateTime('now'));
+            $date = new \DateTime('now');
+            $post->setCreationDate($date);
+            $post->getThread()->setLastUpdate($date);
             $em->persist($post);
             $em->flush();
 
@@ -148,6 +155,7 @@ class PostController extends AbstractController
         $this->denyAccessUnlessGranted("OWNER", $post);
 
         $post_likes = $post->getPostUsers();
+        $post->getThread()->setLastUpdate(new \DateTime('now'));
 
         $em->remove($post);
         foreach ($post_likes as $like) {
@@ -157,7 +165,8 @@ class PostController extends AbstractController
 
         return new JsonResponse(
             [
-                "postCount" => $em->getRepository(Thread::class)->find($thread_id)->getPostsCount()
+                "postCount" => $em->getRepository(Thread::class)->find($thread_id)->getPostsCount(),
+                "date" => $post->getThread()->getLastUpdateString(),
             ],
             Response::HTTP_OK
         );
